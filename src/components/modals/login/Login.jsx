@@ -75,7 +75,7 @@ function Login() {
       setOtpEmail(data);
       setBtn('verify');
       setLoading(false);
-      setErr('An otp has sent to your email');
+      setErr('An otp has been sent to your email');
     } catch (error) {
       setLoading(false);
       setErr(error.response.data);
