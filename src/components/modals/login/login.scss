@@ -1,0 +1,119 @@
+.login-modal {
+  max-width: 600px !important;
+  .modal-content {
+    border-radius: 20px;
+    h1 {
+      cursor: pointer;
+    }
+
+    .gradient-background {
+      position: relative;
+
+      .close-btn {
+        position: absolute;
+        top: 8px;
+        right: 11px;
+        z-index: 99;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-image: url("../../../assets/icons/modal-close.svg");
+        background-size: 25px;
+      }
+    }
+
+    .modal-body {
+      padding: 17px;
+      .terms-condition {
+        span {
+          &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .input-box {
+        border: 1px solid #96a7b2;
+        border-radius: 30px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 20px;
+
+        &:focus-within {
+          border: 1px solid #7728fe;
+          box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+        }
+
+        span {
+          width: 1.3rem;
+          height: 1.3rem;
+        }
+        .user-icon {
+          background-image: url("../../../assets/icons/login-user.svg");
+          background-size: 17px;
+          margin-top: 8px;
+        }
+        .email-icon {
+          background-image: url("../../../assets/icons/email.svg");
+          background-size: 17px;
+          margin-top: 8px;
+        }
+        .password-icon {
+          background-image: url("../../../assets/icons/password.svg");
+          background-size: 17px;
+          margin-top: 5px;
+        }
+
+        .show-pass {
+          background-image: url("../../../assets/icons/show-pass.svg");
+          background-size: 20px;
+          margin-top: 5px;
+        }
+        .hide-pass {
+          background-image: url("../../../assets/icons/hide-pass.svg");
+          background-size: 20px;
+          margin-top: 5px;
+        }
+
+        input {
+          height: 50px;
+          border: none;
+          font-weight: 600;
+          color: #37495c;
+        }
+
+        .fa-eye {
+          color: #96a7b2;
+          cursor: pointer;
+        }
+      }
+
+      button {
+        height: 50px;
+      }
+
+      .forget {
+        p {
+          &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+          }
+        }
+      }
+
+      .google-sign-up {
+        cursor: pointer;
+      }
+
+      .google-btn {
+        padding: 0 21px;
+        height: 44px;
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+.next-page {
+  padding: 4rem 0;
+
+  .prev-next-btn {
+    display: flex;
+    gap: 5px;
+
+    .border {
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 5px;
+    }
+
+    .page {
+      cursor: pointer;
+      &:active {
+        background-color: #f3f4f5;
+      }
+    }
+
+    .btn-bg {
+      background-color: #f3f4f5;
+
+      &:active {
+        background-color: #fff;
+      }
+    }
+
+    .prev-btn {
+      width: 1rem;
+      height: 1rem;
+      background-image: url("../../../assets/icons/slide-left.svg");
+      background-size: 7px;
+    }
+    .next-btn {
+      width: 1rem;
+      height: 1rem;
+      background-image: url("../../../assets/icons/slide-right.svg");
+      background-size: 7px;
+    }
+  }
+}

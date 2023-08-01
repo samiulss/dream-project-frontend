@@ -1,0 +1,41 @@
+.custom-select {
+  width: 200px;
+  place-content: center;
+  place-items: center;
+  cursor: pointer;
+  position: relative;
+  border-right: 1px solid;
+
+  .select-menu {
+    width: 180px;
+    background-color: #fff;
+    padding: 9px 11px;
+    position: absolute;
+    top: 58px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    z-index: 99;
+
+    @media (max-width: 480px) {
+      left: -20px;
+    }
+
+    li {
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 40px;
+      color: #37495c;
+
+      &:hover {
+        background-color: #f3f4f5;
+      }
+
+      i {
+        color: #37495c;
+        margin-right: 7px;
+      }
+      .fa-file-lines {
+        font-size: 19px;
+      }
+    }
+  }
+}

@@ -1,0 +1,185 @@
+.dashboard {
+  //left sidebar desgin
+  .left-sidebar {
+    @media (max-width: 480px) {
+      display: none;
+    }
+
+    .position-sticky {
+      top: 56px;
+    }
+
+    .menu {
+      height: 500px;
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        appearance: none;
+      }
+
+      li {
+        margin: 40px 0;
+        font-weight: 600;
+        opacity: 1 !important;
+
+        &:hover {
+          color: #7728fe;
+        }
+
+        .message-notification {
+          background-color: red;
+          font-size: 12px;
+          padding: 0 3px;
+        }
+      }
+    }
+  }
+
+  //main content desgin
+  .main-content {
+    @media (max-width: 480px) {
+      margin: 0 auto;
+    }
+    .upload-logo {
+      background-image: url("../../assets/icons/upload.svg");
+    }
+
+    //upload section design
+    .upload-content {
+      border: 1px dashed #7728fe;
+      position: relative;
+      cursor: pointer;
+
+      .upload-logo {
+        width: 240px;
+        height: 240px;
+        background-size: 200px;
+      }
+
+      .click-to-upload-text {
+        position: absolute;
+        bottom: 40px;
+        right: 58px;
+        color: #be6ee5;
+      }
+    }
+
+    //sory by file name
+    .custom-select {
+      border-right: 0;
+      .select-menu {
+        top: 35px;
+      }
+    }
+
+    //my content section design
+    .my-content-section {
+      columns: 4;
+      width: 98%;
+      margin: auto;
+      padding: 0 20px;
+
+      @media (max-width: 1000px) {
+        columns: 3;
+      }
+
+      @media (max-width: 768px) {
+        columns: 2;
+      }
+
+      @media (max-width: 480px) {
+        columns: 1;
+      }
+    }
+
+    .my-content-scroll {
+      overflow: auto;
+    }
+  }
+
+  //right sidebar desgin for guidline rules
+  .right-sidebar {
+    // max-height: 530px;
+    // overflow-y: auto;
+
+    @media (max-width: 480px) {
+      display: none;
+    }
+
+    .guidline-rules {
+      ul {
+        margin-left: 36px;
+        margin-right: 10px;
+
+        li {
+          margin-bottom: 15px;
+
+          i {
+            margin-left: 10px;
+          }
+        }
+
+        p {
+          border-left: 1px solid #fff;
+          padding-left: 18px;
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  //same design
+  .left-sidebar,
+  .right-sidebar {
+    background-color: #191f2f;
+    // min-height: calc(100vh - 55px);
+    padding: 0;
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 85px;
+      border-bottom: 1px solid #fff;
+    }
+  }
+
+  //same design for file status section and download section
+  .file-status-list,
+  .download-list {
+    table {
+      min-width: 100%;
+    }
+    tr {
+      border-bottom: 1px solid #b0bdc6;
+
+      th,
+      td {
+        padding: 13px 20px;
+
+        .see-why-btn {
+          font-size: 11px;
+          font-weight: 600;
+          padding: 2px 10px;
+        }
+      }
+
+      .filter-menu {
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        width: 150px;
+        li {
+          font-weight: normal;
+          padding: 5px 0px;
+          border-radius: 20px;
+          text-align: center;
+          color: inherit;
+
+          &:hover {
+            background-color: #f3f4f5;
+            opacity: 1 !important;
+          }
+        }
+      }
+    }
+  }
+}

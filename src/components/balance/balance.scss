@@ -1,0 +1,32 @@
+.balance-list {
+  .balance-card {
+    gap: 30px;
+
+    .current-balance-card,
+    .total-earning-card {
+      border: 1px solid;
+      border-radius: 8px;
+      width: 210px;
+      height: 120px;
+
+      .header {
+        padding: 5px 15px;
+        padding-right: 0;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .count {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 71%;
+      }
+    }
+  }
+
+  .balance-chart {
+    a {
+      display: none !important;
+    }
+  }
+}

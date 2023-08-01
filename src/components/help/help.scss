@@ -1,0 +1,17 @@
+.help {
+  position: fixed;
+  z-index: 999;
+  right: 15px;
+  bottom: 20px;
+  color: #fff;
+  padding: 3px 9px;
+  cursor: pointer;
+  gap: 5px;
+
+  .get-help {
+    background-image: url("../../assets/icons/help.svg");
+    width: 1.3rem;
+    height: 1.3rem;
+    background-size: 18px;
+  }
+}

@@ -1,0 +1,108 @@
+.ContentContainer {
+  .container-fluid {
+    //fiter section design
+    .filter-section {
+      @media (max-width: 1000px) {
+        width: 23%;
+      }
+    }
+
+    .content-section {
+      @media (max-width: 1000px) {
+        width: 77%;
+        margin: auto;
+      }
+      @media (max-width: 768px) {
+        width: 90%;
+        margin: auto;
+      }
+      @media (max-width: 480px) {
+        width: 90%;
+        margin: auto;
+      }
+
+      //------------RELATED SEARCH SECTION------------
+      .related-search {
+        width: 90%;
+        @media (max-width: 480px) {
+          width: 100%;
+        }
+
+        .styles-module_sliderBase__swkx1 > [data-arrow="left"],
+        [data-arrow="right"] {
+          bottom: 0;
+          height: 42px;
+          margin-bottom: auto;
+          margin-top: auto;
+          width: 88px;
+          position: absolute;
+          top: 2px;
+          opacity: 1;
+          cursor: pointer;
+
+          @media (max-width: 480px) {
+            display: none;
+          }
+        }
+
+        .styles-module_sliderBase__swkx1 > [data-arrow="right"] {
+          background: linear-gradient(270deg, #fff 10%, hsla(0, 0%, 100%, 0));
+          right: 0;
+        }
+
+        .styles-module_sliderBase__swkx1 > [data-arrow="left"] {
+          background: linear-gradient(90deg, #fff 10%, hsla(0, 0%, 100%, 0));
+          left: 0;
+        }
+
+        .fa-chevron-right {
+          position: absolute;
+          right: 0;
+        }
+
+        li {
+          min-width: fit-content;
+          background-color: #f3f4f5;
+          color: #37495c;
+          display: inline-block;
+          padding: 5px 10px;
+          border: 1px solid #b0bdc6;
+          border-radius: 30px;
+          font-size: 14px;
+          margin-right: 12px;
+          cursor: pointer;
+          margin-bottom: 8px;
+
+          &:hover {
+            background-color: #fff;
+            opacity: 1;
+          }
+        }
+      }
+
+      .result-quary {
+        background-color: #fff;
+      }
+
+      .content-list-container {
+        .content-wraper {
+          columns: 4;
+          width: 98%;
+          margin: auto;
+
+          @media (max-width: 1000px) {
+            columns: 3;
+          }
+
+          @media (max-width: 768px) {
+            columns: 2;
+          }
+
+          @media (max-width: 480px) {
+            columns: 1;
+          }
+        }
+      }
+    }
+  }
+}

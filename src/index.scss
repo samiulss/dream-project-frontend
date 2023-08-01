@@ -1,0 +1,95 @@
+//variables
+$gradient: linear-gradient(-28deg, #be6ee5, #7728fe);
+$gradient: linear-gradient(-28deg, #be6ee5, #7728fe);
+$gradient-button: linear-gradient(to left, #be6ee5, #7728fe);
+$gradient-button-reverse: linear-gradient(to left, #be6ee5, #be6ee5);
+
+* {
+  font-family: "Montserrat", "Hind Siliguri", sans-serif;
+  font-synthesis: none;
+  box-sizing: border-box;
+  outline: none !important;
+}
+
+:root {
+  max-width: 1600px;
+  margin: auto;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.base-color-1 {
+  color: #7728fe;
+}
+.base-color-2 {
+  color: #be6ee5;
+}
+
+.base-bg-color-1 {
+  background-color: #7728fe;
+}
+.base-bg-color-2 {
+  background-color: #be6ee5;
+}
+
+.gradient-background {
+  background-image: $gradient;
+}
+
+.btn {
+  font-weight: 600;
+  font-size: 16px !important;
+
+  &:hover {
+    background-image: $gradient-button-reverse;
+    color: #fff;
+  }
+}
+
+.gradient-button {
+  background-image: $gradient-button;
+  color: #fff;
+
+  &:hover {
+    background-image: $gradient-button-reverse;
+    color: #fff;
+  }
+}
+
+ul {
+  padding: 0;
+  li {
+    list-style: none;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
+i {
+  color: #fff;
+}
+
+a {
+  text-decoration: none;
+}
+
+.svg-icon {
+  display: inline-block;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.custom-border-color {
+  border-color: #b0bdc6 !important;
+}
+
+.custom-bg-color {
+  background-color: #f3f4f5;
+}
