@@ -1,33 +1,70 @@
 /* eslint-disable react/prop-types */
+import axios from 'axios';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
+import { ContentState } from '../../../../context/StateContext';
 import './confirmModal.scss';
 
-function ConfirmModal({
-  content, setContentId, handleApprove, handleReject
-}) {
+function ConfirmModal({ content, fileState }) {
+  const { fetchAgain, setFetchAgain } = ContentState();
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [contentId, setContentId] = useState('');
 
-  const handleConfirm = () => {
+  const viewContent = () => {
     setContentId(content._id);
     handleShow();
   };
 
-  console.log(content.keywords);
+  // HANDLE APPROVE CONTENT
+  const handleApprove = async () => {
+    if (!contentId) {
+      return;
+    }
+    const config = {
+      'Content-type': 'application/json; charset=UTF-8',
+    };
+    try {
+      const { data } = await axios.post('http://localhost:5000/api/approve', { contentId }, config);
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // HANDLE REJECT CONTENT
+  const handleReject = async () => {
+    if (!contentId) {
+      return;
+    }
+    const config = {
+      'Content-type': 'application/json; charset=UTF-8',
+    };
+    try {
+      const { data } = await axios.post('http://localhost:5000/api/reject', { contentId }, config);
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
-      <button onClick={() => handleConfirm()} className="btn btn-primary border-0 rounded-4 me-4">View</button>
+      <button onClick={() => viewContent()} className="btn btn-primary border-0 rounded-4 me-4">View</button>
 
       <Modal show={show} onHide={handleClose} centered size="lg">
 
         {/* ----------MODAL CLOSE BUTTON---------- */}
         <div className="modal-header border-0 pb-0">
-          <button onClick={handleClose} className="btn-close shadow-none base-bg-color-1 rounded-5 text-white" />
+          <button onClick={handleClose} className="btn-close shadow-none base-bg-color-1 rounded-5 text-white mb-1" />
         </div>
 
         <Modal.Body>
@@ -62,7 +99,7 @@ function ConfirmModal({
                   <h6 className="fw-semibold mb-0 me-2">Keywords: </h6>
                   <ul className="mb-0">
                     {
-                      content.keywords.map((keyword, i) => <li key={i} className="text-dark">{keyword}</li>)
+                      content.keywords.map((keyword, i) => <span key={i} className="text-dark">{keyword}</span>)
                     }
                   </ul>
                 </div>
@@ -75,22 +112,34 @@ function ConfirmModal({
                   {' '}
                   {content.file.length}
                 </h6>
-                {
-                  content.file.map((fileName, i) => <li key={i}>{fileName}</li>)
+                <div className="d-flex added-files flex-column">
+                  {
+                  content.file.map((fileName, i) => (
+                    <div key={i}>
+                      <li>
+                        {fileName}
+                        {' '}
+                      </li>
+                      <Link to={`http://localhost:5000/api/downloadFile?id=${contentId}`} className="btn btn-primary rounded-5">Download</Link>
+                    </div>
+                  ))
                 }
+                </div>
               </div>
             </div>
           </div>
         </Modal.Body>
 
-        <Modal.Footer className="border-0">
-          <Button className="border-0 rounded-4" variant="danger" onClick={() => { handleReject(); handleClose(); }}>
-            Reject
-          </Button>
-          <Button className="border-0 rounded-4 w-25" variant="primary" onClick={() => { handleApprove(); handleClose(); }}>
-            Confirm
-          </Button>
-        </Modal.Footer>
+        {!fileState ? (
+          <Modal.Footer className="border-0">
+            <Button className="border-0 rounded-4" variant="danger" onClick={() => { handleReject(); handleClose(); }}>
+              Reject
+            </Button>
+            <Button className="border-0 rounded-4 w-25" variant="primary" onClick={() => { handleApprove(); handleClose(); }}>
+              Confirm
+            </Button>
+          </Modal.Footer>
+        ) : ''}
       </Modal>
     </>
   );

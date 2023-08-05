@@ -1,0 +1,16 @@
+.admin-dashboard {
+  .left-sidebar {
+    background-color: #2984ee !important;
+
+    .menu {
+      height: calc(100vh - 85px) !important;
+      li {
+        color: #fff;
+
+        &:hover {
+          color: #333 !important;
+        }
+      }
+    }
+  }
+}

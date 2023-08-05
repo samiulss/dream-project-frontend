@@ -9,4 +9,13 @@
       }
     }
   }
+
+  //right side
+  .right-side {
+    .added-files {
+      gap: 15px;
+      max-height: 355px;
+      overflow-y: auto;
+    }
+  }
 }

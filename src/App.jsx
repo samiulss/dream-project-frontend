@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import AdminHome from './adminPanel/pages/home/AdminHome';
@@ -32,6 +31,9 @@ function App() {
         <Route path="/my-content" element={<DashBoard />} />
       </Route>
       <Route path="/*" element={<NotFound />} />
+
+      {/* ---------------ADMIN ROUTE--------------- */}
+      <Route path="/admin-panel/pending" element={<AdminHome />} />
     </Routes>
   );
 }

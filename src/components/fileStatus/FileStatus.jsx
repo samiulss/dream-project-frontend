@@ -1,10 +1,31 @@
+import axios from 'axios';
 import moment from 'moment';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { config } from '../../../config/tokenVerify';
+import ConfirmModal from '../../adminPanel/components/modal/reviewContent/ConfirmModal';
+import { ContentState } from '../../context/StateContext';
 import Canvas from '../commons/offCanvas/Offcanvas';
 import './fileStatus.scss';
 
 function FileStatus({ content, index }) {
+  const { auth, fetchAgain, setFetchAgain } = ContentState();
   const { title, status, createdAt } = content;
+  const navigate = useNavigate();
+
+  // DELETE PENDING CONTENT
+  const cancelPending = async (id) => {
+    try {
+      const { data } = await axios.post('http://localhost:5000/api/deletePending', { contentId: id }, config(auth));
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
+    } catch (error) {
+      toast.error(error.message);
+      if (error.response.status === 401) {
+        navigate('/');
+      }
+    }
+  };
 
   return (
     <>
@@ -18,8 +39,28 @@ function FileStatus({ content, index }) {
             {moment(createdAt).format('LT')}
             <span />
           </td>
-          <td className={(status === 'Pending' && 'text-warning') || (status === 'Approved' && 'text-success') || (status === 'Rejected' && 'text-danger')}>{status}</td>
-          {status === 'Pending' && <td><i onClick={() => toast.success('Canceled')} title="Cancel" className="fa-solid fa-xmark text-danger" role="button" /></td>}
+          <td className={
+            (status === 'Pending' && 'text-warning')
+            || (status === 'Approved' && 'text-success')
+            || (status === 'Rejected' && 'text-danger')
+}
+          >
+            {status}
+          </td>
+          <td>
+            <ConfirmModal content={content} fileState />
+          </td>
+          {status === 'Pending'
+          && (
+          <td>
+            <i
+              onClick={() => cancelPending(content._id)}
+              title="Cancel"
+              className="fa-solid fa-xmark text-danger"
+              role="button"
+            />
+          </td>
+          )}
           {status === 'Rejected' && (
           <td>
             <Canvas />
@@ -27,7 +68,6 @@ function FileStatus({ content, index }) {
           )}
         </tr>
       </tbody>
-      <Toaster />
     </>
   );
 }

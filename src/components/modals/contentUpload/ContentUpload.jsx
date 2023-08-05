@@ -201,7 +201,7 @@ function ContentUpload() {
       >
         {/* ----------MODAL CLOSE BUTTON---------- */}
         <div className="modal-header border-0 pb-0">
-          <button onClick={handleClose} className="btn-close shadow-none base-bg-color-1 rounded-5 text-white" />
+          <button onClick={handleClose} className="btn-close shadow-none base-bg-color-1 rounded-5 text-white mb-1" />
         </div>
 
         <Modal.Body className="content-upload-modal">

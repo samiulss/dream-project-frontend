@@ -2,10 +2,13 @@ import axios from 'axios';
 import {
   lazy, Suspense, useEffect, useState
 } from 'react';
+import { Toaster } from 'react-hot-toast';
 import {
   Link, useLocation, useNavigate
 } from 'react-router-dom';
 import { config } from '../../../config/tokenVerify';
+import Filter from '../../components/commons/filter/Filter';
+import NextPage from '../../components/commons/nextPage/NextPage';
 import Spinner from '../../components/commons/spinner/Spinner';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
@@ -13,8 +16,6 @@ import ContentUpload from '../../components/modals/contentUpload/ContentUpload';
 import Profile from '../../components/profile/Profile';
 import { ContentState } from '../../context/StateContext';
 import './dashBoard.scss';
-import Filter from '../../components/commons/filter/Filter';
-import NextPage from '../../components/commons/nextPage/NextPage';
 
 const Message = lazy(() => import('../../components/message/Message'));
 const FileStatus = lazy(() => import('../../components/fileStatus/FileStatus'));
@@ -23,7 +24,7 @@ const DownloadList = lazy(() => import('../../components/downloadList/DownloadLi
 const ContentList = lazy(() => import('../../components/contentList/ContentList'));
 
 function DashBoard() {
-  const { auth } = ContentState();
+  const { auth, fetchAgain } = ContentState();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [contents, setcontents] = useState([]);
@@ -34,6 +35,7 @@ function DashBoard() {
   const fetchContentStatus = async () => {
     try {
       const { data } = await axios.get('http://localhost:5000/api/fileStatus', config(auth));
+      console.log(data);
       setcontents(data);
       setFilterContent(data);
     } catch (error) {
@@ -45,10 +47,8 @@ function DashBoard() {
   };
 
   useEffect(() => {
-    if (pathname === '/file-status') {
-      fetchContentStatus();
-    }
-  }, []);
+    fetchContentStatus();
+  }, [fetchAgain]);
 
   const filterWise = (staus) => {
     const doFilter = filterContent.filter((content) => content.status === staus);
@@ -157,40 +157,40 @@ function DashBoard() {
             <div className="file-status w-100">
               <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">File Status</h4>
               <div className="file-status-list position-relative">
-                <table className="w-100">
-                  {/* ----------TABLE HEADING---------- */}
-                  <thead>
-                    <tr>
-                      <th>No.</th>
-                      <th>Item Name</th>
-                      <th>Date</th>
-                      <th onClick={() => setFilterBox(!filterBox)} role="button" className="position-relative">
-                        Status
-                        <i className="fa-solid fa-caret-down text-dark ms-2" />
-                        { filterBox && (
-                        <div className="filter-menu rounded-3 p-1 position-absolute bg-white">
-                          <ul>
-                            <li onClick={() => filterWise('Approved')} className="text-success">Approved</li>
-                            <li onClick={() => filterWise('Pending')} className="text-warning">Pending</li>
-                            <li onClick={() => filterWise('Rejected')} className="text-danger">Rejected</li>
-                          </ul>
-                        </div>
-                        )}
-                      </th>
-                    </tr>
-                  </thead>
-                  <Suspense fallback={<Spinner />}>
-                    {
-                  contents.map((content, index) => (
-                    <FileStatus
-                      key={content._id}
-                      content={content}
-                      index={index}
-                    />
-                  ))
-                }
-                  </Suspense>
-                </table>
+                <div className="overflow-x-auto">
+                  <table className="w-100 overflow-x-auto">
+                    {/* ----------TABLE HEADING---------- */}
+                    <thead>
+                      <tr>
+                        <th className="serial-no">No.</th>
+                        <th className="name">Item Name</th>
+                        <th className="date">Date</th>
+                        <th onClick={() => setFilterBox(!filterBox)} role="button">
+                          Status
+                          <i className="fa-solid fa-caret-down text-dark ms-2" />
+                        </th>
+                      </tr>
+                    </thead>
+                    <Suspense fallback={<Spinner />}>
+                      {contents.map((content, index) => (
+                        <FileStatus
+                          key={content._id}
+                          content={content}
+                          index={index}
+                        />
+                      ))}
+                    </Suspense>
+                  </table>
+                </div>
+                { filterBox && (
+                <div className="filter-menu rounded-3 p-1 position-absolute bg-white">
+                  <ul>
+                    <li onClick={() => { filterWise('Approved'); setFilterBox(!filterBox); }} className="text-success">Approved</li>
+                    <li onClick={() => { filterWise('Pending'); setFilterBox(!filterBox); }} className="text-warning">Pending</li>
+                    <li onClick={() => { filterWise('Rejected'); setFilterBox(!filterBox); }} className="text-danger">Rejected</li>
+                  </ul>
+                </div>
+                )}
               </div>
             </div>
             )}
@@ -319,6 +319,7 @@ function DashBoard() {
 
       {/* -------------------GET HELP------------------- */}
       <Help />
+      <Toaster />
     </div>
   );
 }

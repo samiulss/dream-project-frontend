@@ -1,16 +1,14 @@
 import { ScrollingCarousel } from '@trendyol-js/react-carousel';
 import axios from 'axios';
-import {
-  lazy, Suspense, useEffect, useState
-} from 'react';
+import { useEffect, useState } from 'react';
 import Arrow from '../commons/arrow/Arrow';
 import NextPage from '../commons/nextPage/NextPage';
-import Spinner from '../commons/spinner/Spinner';
 import SearchBox from '../searchBox/SearchBox';
 import SearchFilter from '../searchFilter/SearchFilter';
 import './contentContainer.scss';
 
-const ContentList = lazy(() => import('../contentList/ContentList'));
+import Loadng from '../commons/loading/Loadng';
+import ContentList from '../contentList/ContentList';
 
 function ContentContainer() {
   const [contents, setContents] = useState([]);
@@ -85,23 +83,27 @@ function ContentContainer() {
             </div>
 
             {/* ------------ALL CONTENT------------ */}
-            <div className="content-list-container">
-              <Suspense fallback={<Spinner />}>
-                <div className="content-wraper">
-                  {
-                  contents.map((content) => (
-                    <ContentList
-                      key={content._id}
-                      content={content}
-                    />
-                  ))
-                }
+            {contents.length
+              ? (
+                <div className="content-list-container">
+                  <div className="content-wraper">
+                    {contents.map((content) => (
+                      <ContentList
+                        key={content._id}
+                        content={content}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </Suspense>
+              )
+              : (
+                <div className="d-flex align-items-center justify-content-center h-50">
+                  <Loadng />
+                </div>
+              )}
 
-              {/* ------------NEXT PAGE------------ */}
-              {contents.length > 10 && <NextPage />}
-            </div>
+            {/* ------------NEXT PAGE------------ */}
+            {contents.length > 10 && <NextPage />}
           </div>
         </div>
       </div>

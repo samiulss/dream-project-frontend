@@ -15,7 +15,7 @@ function StateContext({ children }) {
   const [loggedInUser, setLoggedInUser] = useState(decode);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [auth, setAuth] = useState(token);
-  const [fetchAgain, setFetchAgain] = useState({});
+  const [fetchAgain, setFetchAgain] = useState(false);
   return (
     <State.Provider value={{
       getContent,

@@ -5,7 +5,7 @@ function DownloadList() {
   const [filterStatus, setFilterStatus] = useState(false);
 
   return (
-    <div className="download-list">
+    <div className="download-list overflow-x-auto">
       <table className="w-100">
 
         {/* ----------TABLE HEADING---------- */}
