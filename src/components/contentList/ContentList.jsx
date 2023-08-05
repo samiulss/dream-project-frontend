@@ -36,7 +36,7 @@ function ContentList({ content, tooltip }) {
 
   const fetchSingleContent = async () => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/singleContent?id=${_id}`);
+      const { data } = await axios.get(`https://dream-project-backend.onrender.com/api/singleContent?id=${_id}`);
       setGetContent(data);
     } catch (error) {
       console.log(error.message);
@@ -48,7 +48,7 @@ function ContentList({ content, tooltip }) {
 
       {/* --------------ALL IMAGE LIST-------------- */}
       <Link to={`/download/${_id}`}>
-        <img onClick={fetchSingleContent} className="img-fluid content-img" id={_id} src={`http://localhost:5000/uploads/${thumbnail}`} alt="" />
+        <img onClick={fetchSingleContent} className="img-fluid content-img" id={_id} src={`https://dream-project-backend.onrender.com-backend.onrender.com/uploads/${thumbnail}`} alt="" />
       </Link>
 
       {/* --------------TOOLTIP-------------- */}

@@ -34,7 +34,7 @@ function DashBoard() {
   // FETCH FILE STATUS
   const fetchContentStatus = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/fileStatus', config(auth));
+      const { data } = await axios.get('https://dream-project-backend.onrender.com/api/fileStatus', config(auth));
       console.log(data);
       setcontents(data);
       setFilterContent(data);

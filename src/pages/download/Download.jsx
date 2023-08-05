@@ -30,7 +30,7 @@ function Download() {
 
   const fetchSingleContent = async () => {
     try {
-      const { data } = await axios.get(`http://localhost:5000/api/singleContent?id=${contentId}`);
+      const { data } = await axios.get(`https://dream-project-backend.onrender.com/api/singleContent?id=${contentId}`);
       setContent(data);
     } catch (error) {
       setNoContent(true);
@@ -69,7 +69,7 @@ function Download() {
 
                             {/* -----------CONTENT IMAGE----------- */}
                             <div className="content-image">
-                              <img className="img-fluid" src={`http://localhost:5000/uploads/${content?.thumbnail}`} alt="" />
+                              <img className="img-fluid" src={`https://dream-project-backend.onrender.com/uploads/${content?.thumbnail}`} alt="" />
                             </div>
 
                             {/* -----------CONTENT TITLE----------- */}
@@ -108,7 +108,7 @@ function Download() {
                             <div className="content-download">
                               <Link
                                 className="btn base-bg-color-1 text-white w-100 mb-3"
-                                to={`http://localhost:5000/api/downloadFile?id=${contentId}`}
+                                to={`https://dream-project-backend.onrender.com/api/downloadFile?id=${contentId}`}
                                 download="Vector-file"
                                 rel="noreferrer"
                               >

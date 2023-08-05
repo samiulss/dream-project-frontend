@@ -31,7 +31,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('http://localhost:5000/api/login', userData, config);
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/login', userData, config);
       handleClose();
       localStorage.setItem('token', data.token);
       // navigate('/content');
@@ -58,7 +58,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('http://localhost:5000/api/register', userData, config);
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/register', userData, config);
       handleClose();
       localStorage.setItem('token', data.token);
       navigate('/content');
@@ -82,7 +82,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('http://localhost:5000/api/forgetPassword', userData, config);
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/forgetPassword', userData, config);
       setOtpEmail(data);
       setBtn('verify');
       setLoading(false);
@@ -106,7 +106,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('http://localhost:5000/api/verifyOtp', userData, config);
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/verifyOtp', userData, config);
       console.log(data);
       setBtn('newPassword');
       setLoading(false);
@@ -130,7 +130,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('http://localhost:5000/api/resetPassword', userData, config);
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/resetPassword', userData, config);
       console.log(data);
       setBtn('login');
       setLoading(false);

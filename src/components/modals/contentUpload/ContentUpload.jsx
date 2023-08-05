@@ -74,7 +74,7 @@ function ContentUpload() {
     }
 
     try {
-      const { data } = await axios.post('http://localhost:5000/api/contentUpload', formData, configData(token));
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/contentUpload', formData, configData(token));
       const { message, success } = data;
       if (success) {
         setLoading(false);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  lazy, Suspense, useEffect, useState
+    lazy, Suspense, useEffect, useState
 } from 'react';
 import Spinner from '../../../components/commons/spinner/Spinner';
 import { ContentState } from '../../../context/StateContext';
@@ -17,7 +17,7 @@ function PendingContent() {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.get('http://localhost:5000/api/pendingContent', config);
+      const { data } = await axios.get('https://dream-project-backend.onrender.com/api/pendingContent', config);
       setContents(data);
     } catch (error) {
       console.log(error.message);

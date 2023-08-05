@@ -18,7 +18,7 @@ function ContentContainer() {
         'Content-type': 'application/json; charset=UTF-8',
       };
       try {
-        const { data } = await axios.get('http://localhost:5000/api/approvedContent', config);
+        const { data } = await axios.get('https://dream-project-backend.onrender.com/api/approvedContent', config);
         setContents(data);
       } catch (error) {
         console.log(error);

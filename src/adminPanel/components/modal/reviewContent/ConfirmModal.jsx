@@ -30,7 +30,7 @@ function ConfirmModal({ content, fileState }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('http://localhost:5000/api/approve', { contentId }, config);
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/approve', { contentId }, config);
       toast.success(data);
       setFetchAgain(!fetchAgain);
     } catch (error) {
@@ -47,7 +47,7 @@ function ConfirmModal({ content, fileState }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('http://localhost:5000/api/reject', { contentId }, config);
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/reject', { contentId }, config);
       toast.success(data);
       setFetchAgain(!fetchAgain);
     } catch (error) {
@@ -76,7 +76,7 @@ function ConfirmModal({ content, fileState }) {
 
                 {/* ----------THUMBNAIL---------- */}
                 <div className="thumbnail w-100">
-                  <img className="img-fluid w-100" src={`http://localhost:5000/uploads/${content.thumbnail}`} alt="" />
+                  <img className="img-fluid w-100" src={`https://dream-project-backend.onrender.com/uploads/${content.thumbnail}`} alt="" />
                 </div>
 
                 {/* ----------TITLE---------- */}
@@ -120,7 +120,7 @@ function ConfirmModal({ content, fileState }) {
                         {fileName}
                         {' '}
                       </li>
-                      <Link to={`http://localhost:5000/api/downloadFile?id=${contentId}`} className="btn btn-primary rounded-5">Download</Link>
+                      <Link to={`https://dream-project-backend.onrender.com/api/downloadFile?id=${contentId}`} className="btn btn-primary rounded-5">Download</Link>
                     </div>
                   ))
                 }

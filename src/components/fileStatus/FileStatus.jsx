@@ -16,7 +16,7 @@ function FileStatus({ content, index }) {
   // DELETE PENDING CONTENT
   const cancelPending = async (id) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/deletePending', { contentId: id }, config(auth));
+      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/deletePending', { contentId: id }, config(auth));
       toast.success(data);
       setFetchAgain(!fetchAgain);
     } catch (error) {
