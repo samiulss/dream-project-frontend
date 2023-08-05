@@ -10,13 +10,7 @@
 
   //nav right side design
   .nav-right {
-    gap: 30px;
-
-    li {
-      color: #37495c;
-      cursor: pointer;
-      margin: 0;
-    }
+    gap: 40px;
 
     .menu-icons {
       width: 1.3rem;
@@ -46,7 +40,6 @@
 
     //my account menu desgin
     .my-account {
-      padding: 4px 10px;
       cursor: pointer;
 
       .text-white {
@@ -55,95 +48,99 @@
       }
       .avater-icon {
         background-image: url("../../assets/icons/user-avater.svg");
-        background-size: 15px;
+        background-size: 19px;
       }
     }
+  }
+  //dropdown-box
+  .grid-dropdown-box,
+  .notification-dropdown-box,
+  .account-dropdown-box {
+    background-color: #fff;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    position: absolute;
+    z-index: 100;
+    top: 50px;
+    border-radius: 16px;
+    padding: 8px 12px;
+  }
+  li {
+    color: #37495c;
+    cursor: pointer;
+    margin: 0;
+  }
 
-    //dropdown-box
-    .grid-dropdown-box,
-    .notification-dropdown-box,
-    .account-dropdown-box {
-      background-color: #fff;
-      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-      position: absolute;
-      z-index: 100;
-      top: 50px;
-      border-radius: 16px;
-      padding: 8px 12px;
+  //grid dropdown-box
+  .grid-dropdown-box {
+    right: 10px;
+    width: 225px;
+
+    ul {
+      gap: 10px;
+      li {
+        border: 1px solid #b0bdc6;
+        border-radius: 5px;
+        width: 95px;
+        font-size: 14px;
+        padding: 5px;
+      }
     }
+  }
 
-    //grid dropdown-box
-    .grid-dropdown-box {
-      left: -99px;
-      width: 225px;
+  //notification dropdown-box
+  .notification-dropdown-box {
+    right: 10px;
+    width: 300px;
+
+    .notification-list {
+      max-height: 300px;
+      overflow-y: auto;
 
       ul {
-        gap: 10px;
         li {
-          border: 1px solid #b0bdc6;
-          border-radius: 5px;
-          width: 95px;
-          font-size: 14px;
-          padding: 5px;
-        }
-      }
-    }
-
-    //notification dropdown-box
-    .notification-dropdown-box {
-      left: -92px;
-      width: 300px;
-
-      .notification-list {
-        max-height: 300px;
-        overflow-y: auto;
-
-        ul {
-          li {
-            padding: 10px 5px;
-            border-radius: 6px;
-            width: 100%;
-            font-weight: normal;
-
-            &:hover {
-              background-color: #f3f4f5;
-            }
-          }
-        }
-      }
-    }
-
-    //my account dropdown-box
-    .account-dropdown-box {
-      left: 30px;
-      width: 200px;
-
-      .menu-list {
-        li {
-          padding: 6px 15px;
+          padding: 10px 5px;
+          border-radius: 6px;
+          width: 100%;
           font-weight: normal;
-          border-radius: 20px;
-          font-size: 16px;
-          display: flex;
-          align-items: center;
-          margin-bottom: 5px;
-          opacity: 1;
 
           &:hover {
             background-color: #f3f4f5;
           }
+        }
+      }
+    }
+  }
 
-          i {
-            color: #37495c;
-            margin-right: 8px;
-            font-size: 18px;
-          }
+  //my account dropdown-box
+  .account-dropdown-box {
+    right: 10px;
+    width: 200px;
+
+    .menu-list {
+      li {
+        padding: 6px 15px;
+        font-weight: normal;
+        border-radius: 20px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        opacity: 1;
+
+        &:hover {
+          background-color: #f3f4f5;
         }
 
-        .log-out-btn {
-          &:hover {
-            background-color: #fff;
-          }
+        i {
+          color: #37495c;
+          margin-right: 8px;
+          font-size: 18px;
+        }
+      }
+
+      .log-out-btn {
+        &:hover {
+          background-color: #fff;
         }
       }
     }

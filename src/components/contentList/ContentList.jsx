@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ContentState } from '../../context/StateContext';
 import './contentList.scss';
 
 function ContentList({ content, tooltip }) {
-  const { url, id } = content;
+  const { thumbnail, _id } = content;
 
   const { setGetContent } = ContentState();
 
@@ -33,12 +34,21 @@ function ContentList({ content, tooltip }) {
     };
   }, []);
 
+  const fetchSingleContent = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:5000/api/singleContent?id=${_id}`);
+      setGetContent(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className="content">
 
       {/* --------------ALL IMAGE LIST-------------- */}
-      <Link to={`/download/${id}`}>
-        <img onClick={() => setGetContent(url)} className="img-fluid content-img" id={id} src={url} alt="" />
+      <Link to={`/download/${_id}`}>
+        <img onClick={fetchSingleContent} className="img-fluid content-img" id={_id} src={`http://localhost:5000/uploads/${thumbnail}`} alt="" />
       </Link>
 
       {/* --------------TOOLTIP-------------- */}

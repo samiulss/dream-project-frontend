@@ -1,14 +1,20 @@
-import { lazy, Suspense } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import Filter from '../../components/commons/filter/Filter';
-import NextPage from '../../components/commons/nextPage/NextPage';
+import axios from 'axios';
+import {
+  lazy, Suspense, useEffect, useState
+} from 'react';
+import {
+  Link, useLocation, useNavigate
+} from 'react-router-dom';
+import { config } from '../../../config/tokenVerify';
 import Spinner from '../../components/commons/spinner/Spinner';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
 import ContentUpload from '../../components/modals/contentUpload/ContentUpload';
 import Profile from '../../components/profile/Profile';
-import { fakeData } from '../../fakeData';
+import { ContentState } from '../../context/StateContext';
 import './dashBoard.scss';
+import Filter from '../../components/commons/filter/Filter';
+import NextPage from '../../components/commons/nextPage/NextPage';
 
 const Message = lazy(() => import('../../components/message/Message'));
 const FileStatus = lazy(() => import('../../components/fileStatus/FileStatus'));
@@ -17,7 +23,37 @@ const DownloadList = lazy(() => import('../../components/downloadList/DownloadLi
 const ContentList = lazy(() => import('../../components/contentList/ContentList'));
 
 function DashBoard() {
+  const { auth } = ContentState();
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const [contents, setcontents] = useState([]);
+  const [filterContent, setFilterContent] = useState([]);
+  const [filterBox, setFilterBox] = useState(false);
+
+  // FETCH FILE STATUS
+  const fetchContentStatus = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/api/fileStatus', config(auth));
+      setcontents(data);
+      setFilterContent(data);
+    } catch (error) {
+      console.log(error.message);
+      if (error.response.status === 401) {
+        navigate('/');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (pathname === '/file-status') {
+      fetchContentStatus();
+    }
+  }, []);
+
+  const filterWise = (staus) => {
+    const doFilter = filterContent.filter((content) => content.status === staus);
+    setcontents(doFilter);
+  };
 
   return (
     <div className="dashboard">
@@ -56,7 +92,7 @@ function DashBoard() {
                   </Link>
 
                   <Link to="/file-status">
-                    <li className={`${pathname === '/file-status' && 'base-color-1'}`}>File Status</li>
+                    <li onClick={fetchContentStatus} className={`${pathname === '/file-status' && 'base-color-1'}`}>File Status</li>
                   </Link>
 
                   <Link to="/balance">
@@ -94,7 +130,7 @@ function DashBoard() {
 
             {/* ----------PROFILE SELTION---------- */}
             {pathname === '/profile' && (
-            <div className="profile-section">
+            <div className="profile-section w-100">
               <Suspense fallback={<Spinner />}>
                 <Profile />
               </Suspense>
@@ -103,13 +139,7 @@ function DashBoard() {
 
             {/* ----------CONTENT UPLOAD SELTION---------- */}
             {pathname === '/dashboard' && (
-            <>
-              <div className="upload-content rounded-5" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                <span className="svg-icon upload-logo" />
-                <span className="fw-semibold click-to-upload-text">Click to Upload</span>
-              </div>
-              <ContentUpload />
-            </>
+            <ContentUpload />
             )}
 
             {/* ----------MESSAGE SELTION---------- */}
@@ -126,9 +156,42 @@ function DashBoard() {
             {pathname === '/file-status' && (
             <div className="file-status w-100">
               <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">File Status</h4>
-              <Suspense fallback={<Spinner />}>
-                <FileStatus />
-              </Suspense>
+              <div className="file-status-list position-relative">
+                <table className="w-100">
+                  {/* ----------TABLE HEADING---------- */}
+                  <thead>
+                    <tr>
+                      <th>No.</th>
+                      <th>Item Name</th>
+                      <th>Date</th>
+                      <th onClick={() => setFilterBox(!filterBox)} role="button" className="position-relative">
+                        Status
+                        <i className="fa-solid fa-caret-down text-dark ms-2" />
+                        { filterBox && (
+                        <div className="filter-menu rounded-3 p-1 position-absolute bg-white">
+                          <ul>
+                            <li onClick={() => filterWise('Approved')} className="text-success">Approved</li>
+                            <li onClick={() => filterWise('Pending')} className="text-warning">Pending</li>
+                            <li onClick={() => filterWise('Rejected')} className="text-danger">Rejected</li>
+                          </ul>
+                        </div>
+                        )}
+                      </th>
+                    </tr>
+                  </thead>
+                  <Suspense fallback={<Spinner />}>
+                    {
+                  contents.map((content, index) => (
+                    <FileStatus
+                      key={content._id}
+                      content={content}
+                      index={index}
+                    />
+                  ))
+                }
+                  </Suspense>
+                </table>
+              </div>
             </div>
             )}
 
@@ -160,7 +223,7 @@ function DashBoard() {
                 </div>
                 <div className="my-content-scroll">
                   <div className="my-content-section w-100">
-                    {
+                    {/* {
                   fakeData.map((content) => (
                     <ContentList
                       key={content.id}
@@ -168,7 +231,7 @@ function DashBoard() {
                       tooltip="none"
                     />
                   ))
-                }
+                } */}
                   </div>
                 </div>
               </Suspense>

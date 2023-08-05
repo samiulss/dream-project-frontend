@@ -1,7 +1,32 @@
-ul li {
-  display: inline-block;
-  margin-right: 4rem;
-  font-size: 1.2rem;
-  color: #fff;
-  cursor: pointer;
+#drag-file-element {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+}
+
+.upload-container {
+  border: 1px dashed #7728fe;
+  background-color: #f3f4f5;
+
+  &:hover {
+    background-color: #fff;
+    cursor: pointer;
+  }
+
+  label {
+    cursor: pointer;
+    .upload-logo {
+      width: 90px;
+      height: 50px;
+      background-size: 50px;
+    }
+  }
+  .upload-logo {
+    background-image: url("../../../assets/icons/upload.svg");
+  }
 }

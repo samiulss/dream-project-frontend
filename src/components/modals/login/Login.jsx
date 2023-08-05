@@ -1,15 +1,22 @@
 import axios from 'axios';
 import { useState } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import { useNavigate } from 'react-router-dom';
 import googleIcon from '../../../assets/icons/google.svg';
+import { ContentState } from '../../../context/StateContext';
 import Loadng from '../../commons/loading/Loadng';
 import './login.scss';
 
-function Login() {
-  const [btn, setBtn] = useState('login');
+function Login({ btn, setBtn }) {
+  const { auth, showLoginModal, setShowLoginModal } = ContentState();
   const [showPass, setShowPass] = useState(false);
   const [err, setErr] = useState(null);
   const [loading, setLoading] = useState(false);
   const [otpEmail, setOtpEmail] = useState(null);
+  const navigate = useNavigate();
+
+  // modal control
+  const handleClose = () => setShowLoginModal(false);
 
   // HANDLE LOGIN
   const handleLogin = async (e) => {
@@ -24,8 +31,10 @@ function Login() {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/login', userData, config);
-      localStorage.setItem('user', JSON.stringify(data));
+      const { data } = await axios.post('http://localhost:5000/api/login', userData, config);
+      handleClose();
+      localStorage.setItem('token', data.token);
+      // navigate('/content');
       setLoading(false);
       window.location.reload();
     } catch (error) {
@@ -49,8 +58,10 @@ function Login() {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/register', userData, config);
-      localStorage.setItem('user', JSON.stringify(data));
+      const { data } = await axios.post('http://localhost:5000/api/register', userData, config);
+      handleClose();
+      localStorage.setItem('token', data.token);
+      navigate('/content');
       setLoading(false);
       window.location.reload();
     } catch (error) {
@@ -71,7 +82,7 @@ function Login() {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/forgetPassword', userData, config);
+      const { data } = await axios.post('http://localhost:5000/api/forgetPassword', userData, config);
       setOtpEmail(data);
       setBtn('verify');
       setLoading(false);
@@ -95,7 +106,7 @@ function Login() {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/verifyOtp', userData, config);
+      const { data } = await axios.post('http://localhost:5000/api/verifyOtp', userData, config);
       console.log(data);
       setBtn('newPassword');
       setLoading(false);
@@ -119,7 +130,7 @@ function Login() {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/resetPassword', userData, config);
+      const { data } = await axios.post('http://localhost:5000/api/resetPassword', userData, config);
       console.log(data);
       setBtn('login');
       setLoading(false);
@@ -132,21 +143,25 @@ function Login() {
 
   return (
     <>
-      {/* <!-- Button trigger modal --> */}
-      <button onClick={() => setBtn('login')} type="button" className="btn btn-login gradient-button border rounded-5" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Log In</button>
-      <button onClick={() => setBtn('signup')} type="button" className="btn btn-signup border rounded-5 text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Sign Up</button>
 
       {/* <!-- Modal --> */}
-      <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div className="modal-dialog modal-dialog-centered login-modal">
-          <div className="modal-content overflow-hidden">
+      <Modal
+        show={showLoginModal}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+        centered
+      >
+
+        <Modal.Body className="p-0 login-modal">
+          <div className="overflow-hidden">
             <div className="gradient-background">
 
-              <div style={{ gap: '30%', height: '70px' }} className="modal-header login-modal border-0 rounded-0 justify-content-around p-0">
-                <h1 onClick={() => setBtn('login')} className={`modal-title fs-5 text-white ${btn !== 'login' && 'opacity-50'}`} id="staticBackdropLabel">Log In</h1>
+              <div style={{ gap: '30%', height: '70px' }} className="modal-header border-0 rounded-0 justify-content-around p-0">
+                <h1 onClick={() => setBtn('login')} className={`modal-title fs-5 text-white ${btn !== 'login' && 'opacity-50'}`}>Log In</h1>
                 <h1 onClick={() => setBtn('signup')} className={`modal-title fs-5 text-white ${btn !== 'signup' && 'opacity-50'}`}>Sign Up</h1>
               </div>
-              <div title="Close" className="close-btn rounded-5 text-end" data-bs-dismiss="modal" aria-label="Close" />
+              <div onClick={handleClose} className="close-btn rounded-5 text-end" />
             </div>
             <div className="modal-body">
               <div className="terms-condition">
@@ -292,8 +307,8 @@ function Login() {
                 }
             </div>
           </div>
-        </div>
-      </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

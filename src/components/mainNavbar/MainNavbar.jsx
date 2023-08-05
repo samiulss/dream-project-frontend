@@ -1,14 +1,24 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/freeLogo.png';
+import { ContentState } from '../../context/StateContext';
+import Login from '../modals/login/Login';
 import './mainNavbar.scss';
 
 function MainNavbar() {
+  const { loggedInUser, setShowLoginModal } = ContentState();
   const [showGrid, setShowGrid] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showMyAccount, setShowMyAccount] = useState(false);
+  const [btn, setBtn] = useState('login');
 
   const { pathname } = useLocation();
+
+  // HANDLE LOGOUT
+  const logOut = () => {
+    localStorage.removeItem('token');
+    window.location.reload();
+  };
 
   return (
     <nav className={`${pathname !== '/content' ? 'navbar navbar-expand-lg base-bg-color-1 position-sticky' : 'navbar navbar-expand-lg base-bg-color-1'}`}>
@@ -22,7 +32,7 @@ function MainNavbar() {
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon" />
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <div className="collapse navbar-collapse position-relative" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <a className="nav-link active" aria-current="page" href="#">Font</a>
@@ -53,7 +63,7 @@ function MainNavbar() {
           </ul>
 
           {/* ---------------NAV RIGHT--------------- */}
-          <div className="nav-right d-flex position-relative align-items-center">
+          <div className="nav-right me-4 d-flex position-relative align-items-center">
 
             {/* ---------------GRID MENU--------------- */}
             <div onClick={() => setShowGrid(!showGrid, setShowNotification(false), setShowMyAccount(false))} className="grid-menu d-flex align-items-center">
@@ -71,13 +81,16 @@ function MainNavbar() {
             </div>
 
             {/* ---------------MY ACCOUNT MENU--------------- */}
-            <div onClick={() => setShowMyAccount(!showMyAccount, setShowGrid(false), setShowNotification(false))} className="my-account border rounded-4 d-flex align-itmes-center">
-              <span className="text-white">My Account</span>
-              <span className="svg-icon menu-icons avater-icon" />
+            <div onClick={() => setShowMyAccount(!showMyAccount, setShowGrid(false), setShowNotification(false))} className="my-account d-flex align-itmes-center">
+              { loggedInUser ? <span className="svg-icon menu-icons avater-icon" /> : <span onClick={() => setShowLoginModal(true)} className="text-white btn rounded-4">Log in</span>}
+
+              {/* ---------------IF NOT LOGGEDING--------------- */}
+              <Login btn={btn} setBtn={setBtn} />
             </div>
 
-            {/* ---------------GRID DROPDOWN MENU--------------- */}
-            {showGrid
+          </div>
+          {/* ---------------GRID DROPDOWN MENU--------------- */}
+          {showGrid
             && (
             <div className="grid-dropdown-box rounded-1">
               <ul className="d-flex flex-wrap align-items-center justify-content-center m-0">
@@ -89,8 +102,8 @@ function MainNavbar() {
             </div>
             )}
 
-            {/* ---------------NOTIFICATION DROPDOWN MENU--------------- */}
-            {showNotification
+          {/* ---------------NOTIFICATION DROPDOWN MENU--------------- */}
+          {showNotification
             && (
             <div className="notification-dropdown-box">
               <h5>Notification</h5>
@@ -103,8 +116,8 @@ function MainNavbar() {
             </div>
             )}
 
-            {/* ---------------MY ACCOUNT DROPDOWN MENU--------------- */}
-            {showMyAccount
+          {/* ---------------MY ACCOUNT DROPDOWN MENU--------------- */}
+          {loggedInUser && showMyAccount
             && (
             <div className="account-dropdown-box ps-1">
               <h5 className="ps-2">My Account</h5>
@@ -130,7 +143,7 @@ function MainNavbar() {
                     <i className="fa-solid fa-folder-plus" />
                     Collection
                   </li>
-                  <li className="justify-content-end pe-0 log-out-btn">
+                  <li onClick={logOut} className="justify-content-end pe-0 log-out-btn">
                     Log out
                     <i className="fa-solid fa-power-off ms-2" />
                   </li>
@@ -138,7 +151,6 @@ function MainNavbar() {
               </div>
             </div>
             )}
-          </div>
         </div>
       </div>
     </nav>

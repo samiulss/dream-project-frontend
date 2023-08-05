@@ -1,19 +1,53 @@
 import { Carousel } from '@trendyol-js/react-carousel';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import Arrow from '../../components/commons/arrow/Arrow';
 import Footer from '../../components/footer/Footer';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
 import SearchBox from '../../components/searchBox/SearchBox';
 import { ContentState } from '../../context/StateContext';
-import { fakeData } from '../../fakeData';
 import './download.scss';
 
 function Download() {
-  // const { contentId } = useParams();
-  const { getContent, setGetContent } = ContentState();
+  const { contentId } = useParams();
+  const { loggedInUser, setShowLoginModal } = ContentState();
+
+  const [content, setContent] = useState(null);
+  const [file, setFile] = useState();
 
   const mobileDevice = window.matchMedia('(max-width: 480px)');
+
+  const checkLogin = () => {
+    if (!loggedInUser) {
+      setShowLoginModal(true);
+    }
+  };
+
+  const fetchSingleContent = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:5000/api/singleContent?id=${contentId}`);
+      setContent(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const downloadFile = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:5000/api/downloadFile?id=${contentId}`);
+      setFile(data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchSingleContent();
+  }, []);
+
+  console.log(file);
 
   return (
     <div className="download-page">
@@ -33,12 +67,12 @@ function Download() {
 
             {/* -----------CONTENT IMAGE----------- */}
             <div className="content-image">
-              <img className="img-fluid" src={getContent} alt="" />
+              <img className="img-fluid" src={`http://localhost:5000/uploads/${content?.thumbnail}`} alt="" />
             </div>
 
             {/* -----------CONTENT TITLE----------- */}
             <div className="content-title text-center mb-3">
-              <h1 className="fs-4">Ramadan Karim</h1>
+              <h1 className="fs-4">{content?.title}</h1>
             </div>
 
             {/* -----------CONTENT AUTHOR----------- */}
@@ -52,13 +86,13 @@ function Download() {
 
                 {/* -----------AUTHOR NAME----------- */}
                 <div className="author-name">
-                  <h6 className="fw-semibold mb-0">Musab</h6>
+                  <h6 className="fw-semibold mb-0">{content?.author.name}</h6>
                   <span>301 Resources</span>
                 </div>
 
                 {/* -----------AUTHOR FOLLOW BUTTON----------- */}
                 <div className="author-follow-btn">
-                  <button type="button" className="btn base-bg-color-1 text-white">Follow</button>
+                  <button onClick={checkLogin} type="button" className="btn base-bg-color-1 text-white">Follow</button>
                 </div>
               </div>
             </div>
@@ -70,7 +104,14 @@ function Download() {
               Advertise
             </div>
             <div className="content-download">
-              <button type="button" className="btn base-bg-color-1 text-white w-100 mb-3">Download Free</button>
+              <Link
+                className="btn base-bg-color-1 text-white w-100 mb-3"
+                to={`http://localhost:5000/api/downloadFile?id=${contentId}`}
+                download="Vector-file"
+                rel="noreferrer"
+              >
+                Download Free
+              </Link>
             </div>
             <div className="action-buttons d-flex justify-content-between mb-4 flex-wrap">
               <div className="report-btn">
@@ -118,9 +159,9 @@ function Download() {
             rightArrow={<Arrow right="right" />}
             infinite={false}
           >
-            {
-                fakeData.map((content) => <Link to={`/download/${content.id}`} key={content.id}><img onClick={() => setGetContent(content.url)} key={content.id} src={content.url} alt="" /></Link>)
-            }
+            {/* {
+                fakeData.map((contents) => <Link to={`/download/${contents.id}`} key={contents.id}><img onClick={() => setGetContent(contents.url)} key={contents.id} src={contents.url} alt="" /></Link>)
+            } */}
           </Carousel>
         </div>
       </div>

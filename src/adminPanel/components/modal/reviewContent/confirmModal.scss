@@ -1,0 +1,12 @@
+.review-pending-content {
+  //left side
+  .left-side {
+    gap: 18px;
+    .thumbnail {
+      img {
+        height: 250px;
+        object-fit: contain;
+      }
+    }
+  }
+}

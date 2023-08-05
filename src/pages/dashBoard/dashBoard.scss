@@ -10,7 +10,7 @@
     }
 
     .menu {
-      height: 500px;
+      height: calc(100vh - 140px);
       overflow-y: auto;
 
       &::-webkit-scrollbar {
@@ -107,6 +107,8 @@
     }
 
     .guidline-rules {
+      height: calc(100vh - 140px);
+      overflow-y: auto;
       ul {
         margin-left: 36px;
         margin-right: 10px;

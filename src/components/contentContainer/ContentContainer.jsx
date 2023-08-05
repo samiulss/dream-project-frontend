@@ -1,6 +1,8 @@
 import { ScrollingCarousel } from '@trendyol-js/react-carousel';
-import { lazy, Suspense } from 'react';
-import { fakeData } from '../../fakeData';
+import axios from 'axios';
+import {
+  lazy, Suspense, useEffect, useState
+} from 'react';
 import Arrow from '../commons/arrow/Arrow';
 import NextPage from '../commons/nextPage/NextPage';
 import Spinner from '../commons/spinner/Spinner';
@@ -11,18 +13,21 @@ import './contentContainer.scss';
 const ContentList = lazy(() => import('../contentList/ContentList'));
 
 function ContentContainer() {
-  // const [contents, setContents] = useState([]);
-  // useEffect(() => {
-  //   const fetchContents = async () => {
-  //     try {
-  //       const { data } = await axios.get('/api/contents');
-  //       setContents(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchContents();
-  // }, []);
+  const [contents, setContents] = useState([]);
+  useEffect(() => {
+    const fetchContents = async () => {
+      const config = {
+        'Content-type': 'application/json; charset=UTF-8',
+      };
+      try {
+        const { data } = await axios.get('http://localhost:5000/api/approvedContent', config);
+        setContents(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchContents();
+  }, []);
 
   return (
     <main className="ContentContainer">
@@ -84,9 +89,9 @@ function ContentContainer() {
               <Suspense fallback={<Spinner />}>
                 <div className="content-wraper">
                   {
-                  fakeData.map((content) => (
+                  contents.map((content) => (
                     <ContentList
-                      key={content.id}
+                      key={content._id}
                       content={content}
                     />
                   ))
@@ -95,7 +100,7 @@ function ContentContainer() {
               </Suspense>
 
               {/* ------------NEXT PAGE------------ */}
-              <NextPage />
+              {contents.length > 10 && <NextPage />}
             </div>
           </div>
         </div>

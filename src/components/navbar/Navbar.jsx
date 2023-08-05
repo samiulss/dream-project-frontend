@@ -1,17 +1,25 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/freeLogo.png';
+import { ContentState } from '../../context/StateContext';
 import './navbar.scss';
 
 function Navbar() {
+  const { loggedInUser, setShowLoginModal } = ContentState();
+  const navigate = useNavigate();
+  const checkLogin = () => {
+    if (!loggedInUser) {
+      setShowLoginModal(true);
+    } else {
+      navigate('/profile');
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-lg mb-4 pt-4">
       <div className="container-fluid p-0">
         <Link to="/">
           <img className="site-logo me-4" title="Home" src={logo} alt="" />
         </Link>
-        <button className="navbar-toggler shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon" />
-        </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
             <li className="nav-item">
@@ -46,7 +54,7 @@ function Navbar() {
               <span className="svg-icon search" />
             </button>
           </form>
-          <div className="user-profile" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+          <div onClick={checkLogin} className="user-profile">
             <span className="svg-icon avater" />
           </div>
         </div>

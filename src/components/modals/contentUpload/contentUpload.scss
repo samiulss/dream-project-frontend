@@ -1,17 +1,26 @@
 .content-upload-modal {
-  max-width: 750px;
-
   .btn-close {
     background-image: url("../../../assets/icons/close.svg");
   }
 
   //left side design
   .left-side {
-    label {
-      max-width: 100%;
-      height: 250px;
-      border: 1px solid;
-      font-weight: 600;
+    gap: 23px;
+
+    .thumbnail {
+      width: 100%;
+
+      .thumbnail-label {
+        width: 100%;
+        height: 250px;
+        font-weight: 600;
+      }
+      .thumbnail-img {
+        height: 250px;
+        width: 100%;
+        height: 250px;
+        object-fit: contain;
+      }
     }
 
     .title {
@@ -29,57 +38,20 @@
         }
       }
     }
-  }
-
-  //center border design
-  .vertical-line {
-    border-top: 1px solid;
-    width: 509px;
-    transform: rotate(90deg);
-    left: 57px;
-    bottom: 186px;
-
-    @media (max-width: 767px) {
-      display: none;
-    }
-  }
-
-  //right side design
-  .right-side {
-    gap: 30px;
 
     //catagory list design
     .custom-select {
-      width: 40%;
+      width: 100%;
       border: 1px solid #b0bdc6 !important;
       border-radius: 5px;
       background-color: #f3f4f5;
     }
 
-    //upload file design
-    .upload-main-file {
-      gap: 12px;
-
-      .upload-container {
-        gap: 20px;
-
-        label {
-          border: 1px solid #7728fe;
-          .upload-logo {
-            width: 90px;
-            height: 50px;
-            background-size: 50px;
-          }
-        }
-      }
-
-      .files-name {
-        background-color: #f3f4f5;
-      }
-    }
-
     //keywords design
     .keywords-list {
+      @media (max-width: 991px) {
+        margin-bottom: 15px;
+      }
       .rti--container {
         background-color: #f3f4f5;
         border-color: #b0bdc6;
@@ -137,6 +109,75 @@
       p {
         font-size: 13px;
         margin-top: 2px;
+      }
+    }
+  }
+
+  //center border design
+  // .vertical-line {
+  //   border-top: 1px solid;
+  //   width: 509px;
+  //   transform: rotate(90deg);
+  //   left: 57px;
+  //   bottom: 186px;
+
+  //   @media (max-width: 767px) {
+  //     display: none;
+  //   }
+  // }
+
+  //right side design
+  .right-side {
+    gap: 30px;
+
+    //upload file design
+    .upload-main-file {
+      .upload-container {
+        border: 1px dashed #7728fe;
+        background-color: #f3f4f5;
+
+        &:hover {
+          background-color: #fff;
+          cursor: pointer;
+        }
+
+        #label-file-upload {
+          cursor: pointer;
+          .upload-logo {
+            width: 90px;
+            height: 50px;
+            background-size: 50px;
+          }
+        }
+        .upload-logo {
+          background-image: url("../../../assets/icons/upload.svg");
+        }
+
+        #drag-file-element {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          border-radius: 1rem;
+          top: 0px;
+          right: 0px;
+          bottom: 0px;
+          left: 0px;
+        }
+      }
+
+      .uploaded-file-list {
+        max-height: 355px;
+        overflow: auto;
+
+        @media (max-width: 991px) {
+          max-height: 200px;
+        }
+
+        .upload-file-name {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
       }
     }
   }
