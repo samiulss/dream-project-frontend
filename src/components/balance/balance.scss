@@ -2,6 +2,11 @@
   .balance-card {
     gap: 30px;
 
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+    }
+
     .current-balance-card,
     .total-earning-card {
       border: 1px solid;

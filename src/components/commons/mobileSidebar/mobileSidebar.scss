@@ -1,0 +1,27 @@
+.mobile-sidebar-menu {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 85px;
+    border-bottom: 1px solid #fff;
+  }
+
+  .menu {
+    li {
+      margin: 40px 0;
+      font-weight: 600;
+      opacity: 1 !important;
+
+      &:hover {
+        color: #7728fe;
+      }
+
+      .message-notification {
+        background-color: red;
+        font-size: 12px;
+        padding: 0 3px;
+      }
+    }
+  }
+}

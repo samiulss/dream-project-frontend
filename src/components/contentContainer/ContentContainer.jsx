@@ -1,6 +1,7 @@
 import { ScrollingCarousel } from '@trendyol-js/react-carousel';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import Arrow from '../commons/arrow/Arrow';
 import NextPage from '../commons/nextPage/NextPage';
 import SearchBox from '../searchBox/SearchBox';
@@ -12,6 +13,7 @@ import ContentList from '../contentList/ContentList';
 
 function ContentContainer() {
   const [contents, setContents] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchContents = async () => {
       const config = {
@@ -19,9 +21,11 @@ function ContentContainer() {
       };
       try {
         const { data } = await axios.get('https://dream-project-backend.onrender.com/api/approvedContent', config);
+        setLoading(false);
         setContents(data);
       } catch (error) {
-        console.log(error);
+        setLoading(false);
+        toast.error(error);
       }
     };
     fetchContents();
@@ -83,7 +87,7 @@ function ContentContainer() {
             </div>
 
             {/* ------------ALL CONTENT------------ */}
-            {contents.length
+            {contents.length > 0
               ? (
                 <div className="content-list-container">
                   <div className="content-wraper">
@@ -98,7 +102,9 @@ function ContentContainer() {
               )
               : (
                 <div className="d-flex align-items-center justify-content-center h-50">
-                  <Loadng />
+                  {
+                    loading ? <Loadng /> : <h5>No contents found</h5>
+                  }
                 </div>
               )}
 

@@ -186,7 +186,7 @@ function ContentUpload() {
   return (
     <>
       {/* ----------OPEN MODAL---------- */}
-      <div onClick={handleShow} className="upload-content rounded-5">
+      <div onClick={handleShow} className="upload-content-btn rounded-5">
         <span className="svg-icon upload-logo" />
         <span className="fw-semibold click-to-upload-text">Click to Upload</span>
       </div>
@@ -241,7 +241,6 @@ function ContentUpload() {
                       onChange={setkeywords}
                       name="keywords"
                       placeHolder="Add Keywords"
-                      separators=","
                       isEditOnRemove
                       beforeAddValidate={keywords.length > 14}
                     />

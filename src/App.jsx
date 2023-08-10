@@ -23,7 +23,7 @@ function App() {
       <Route path="/download/:contentId" element={<Download />} />
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<DashBoard />} />
-        <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/upload" element={<DashBoard />} />
         <Route path="/message" element={<DashBoard />} />
         <Route path="/file-status" element={<DashBoard />} />
         <Route path="/balance" element={<DashBoard />} />

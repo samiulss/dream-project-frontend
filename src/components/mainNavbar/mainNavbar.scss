@@ -2,15 +2,42 @@
   top: 0;
   z-index: 999;
 
-  .navbar-nav {
-    li {
-      font-size: 15px;
+  .navbar-toggler {
+    @media (min-width: 769px) {
+      display: none;
+    }
+  }
+
+  .icons-for-mobile-device {
+    display: none;
+    font-size: 28px;
+    position: absolute;
+    right: 7rem;
+
+    @media (max-width: 768px) {
+      display: flex;
+      gap: 18px;
+    }
+  }
+
+  .nav-menu {
+    @media (max-width: 768px) {
+      display: none;
+    }
+
+    ul {
+      gap: 25px;
     }
   }
 
   //nav right side design
   .nav-right {
+    display: flex;
     gap: 40px;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
 
     .menu-icons {
       width: 1.3rem;

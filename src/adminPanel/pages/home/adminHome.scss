@@ -1,9 +1,9 @@
 .admin-dashboard {
   .left-sidebar {
-    background-color: #2984ee !important;
-
     .menu {
-      height: calc(100vh - 85px) !important;
+      height: calc(100vh - 140px);
+      overflow-y: auto;
+
       li {
         color: #fff;
 

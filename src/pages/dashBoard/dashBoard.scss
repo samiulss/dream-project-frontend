@@ -1,10 +1,6 @@
 .dashboard {
   //left sidebar desgin
   .left-sidebar {
-    @media (max-width: 480px) {
-      display: none;
-    }
-
     .position-sticky {
       top: 56px;
     }
@@ -46,21 +42,25 @@
 
     //upload section design
     .upload-content {
-      border: 1px dashed #7728fe;
-      position: relative;
-      cursor: pointer;
+      min-height: calc(100vh - 57px);
 
-      .upload-logo {
-        width: 240px;
-        height: 240px;
-        background-size: 200px;
-      }
+      .upload-content-btn {
+        border: 1px dashed #7728fe;
+        position: relative;
+        cursor: pointer;
 
-      .click-to-upload-text {
-        position: absolute;
-        bottom: 40px;
-        right: 58px;
-        color: #be6ee5;
+        .upload-logo {
+          width: 240px;
+          height: 240px;
+          background-size: 200px;
+        }
+
+        .click-to-upload-text {
+          position: absolute;
+          bottom: 40px;
+          right: 58px;
+          color: #be6ee5;
+        }
       }
     }
 
@@ -99,13 +99,6 @@
 
   //right sidebar desgin for guidline rules
   .right-sidebar {
-    // max-height: 530px;
-    // overflow-y: auto;
-
-    @media (max-width: 480px) {
-      display: none;
-    }
-
     .guidline-rules {
       height: calc(100vh - 140px);
       overflow-y: auto;
@@ -135,6 +128,10 @@
   .right-sidebar {
     background-color: #191f2f;
     padding: 0;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
 
     .header {
       display: flex;

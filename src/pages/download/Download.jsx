@@ -41,8 +41,6 @@ function Download() {
     fetchSingleContent();
   }, []);
 
-  console.log(file);
-
   return (
     // eslint-disable-next-line react/jsx-no-useless-fragment
     <>

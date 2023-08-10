@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-    lazy, Suspense, useEffect, useState
+  lazy, Suspense, useEffect, useState
 } from 'react';
 import Spinner from '../../../components/commons/spinner/Spinner';
 import { ContentState } from '../../../context/StateContext';

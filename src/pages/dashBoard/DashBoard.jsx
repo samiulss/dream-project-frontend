@@ -3,11 +3,10 @@ import {
   lazy, Suspense, useEffect, useState
 } from 'react';
 import { Toaster } from 'react-hot-toast';
-import {
-  Link, useLocation, useNavigate
-} from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { config } from '../../../config/tokenVerify';
 import Filter from '../../components/commons/filter/Filter';
+// import MobileSidebar from '../../components/commons/mobileSidebar/MobileSidebar';
 import NextPage from '../../components/commons/nextPage/NextPage';
 import Spinner from '../../components/commons/spinner/Spinner';
 import Help from '../../components/help/Help';
@@ -35,7 +34,6 @@ function DashBoard() {
   const fetchContentStatus = async () => {
     try {
       const { data } = await axios.get('https://dream-project-backend.onrender.com/api/fileStatus', config(auth));
-      console.log(data);
       setcontents(data);
       setFilterContent(data);
     } catch (error) {
@@ -48,12 +46,14 @@ function DashBoard() {
 
   useEffect(() => {
     fetchContentStatus();
-  }, [fetchAgain]);
+  }, [pathname, fetchAgain]);
 
   const filterWise = (staus) => {
     const doFilter = filterContent.filter((content) => content.status === staus);
     setcontents(doFilter);
   };
+
+  const mobileDevice = window.matchMedia('(max-width: 768px)');
 
   return (
     <div className="dashboard">
@@ -64,7 +64,7 @@ function DashBoard() {
         <div className="row">
 
           {/* ------------LEFT SIDEBAR------------ */}
-          <div className="col-2 left-sidebar text-white">
+          <div className="col-2 left-sidebar pc-mode text-white">
             <div className="position-sticky">
               <div className="header">
                 <h3>Dashboard</h3>
@@ -78,7 +78,7 @@ function DashBoard() {
                     </li>
                   </Link>
 
-                  <Link to="/dashboard">
+                  <Link to="/upload">
                     <li className={`${pathname === '/dashboard' && 'base-color-1'}`}>
                       Upload
                     </li>
@@ -123,107 +123,111 @@ function DashBoard() {
                 </ul>
               </div>
             </div>
+            {/* <MobileSidebar fetchContentStatus={fetchContentStatus} /> */}
           </div>
 
           {/* ------------MAIN CONTENTR------------ */}
-          <div className={`${pathname === '/dashboard' ? 'col-7 main-content d-flex align-items-center justify-content-center' : 'col-10 main-content d-flex align-items-start justify-content-center p-0'}`}>
+          <div className={pathname === '/dashboard' ? 'col-7 main-content d-flex align-items-center justify-content-center' : `${mobileDevice.matches ? 'col-12' : 'col-10'} main-content d-flex align-items-start justify-content-center p-0`}>
+            <div className="w-100">
 
-            {/* ----------PROFILE SELTION---------- */}
-            {pathname === '/profile' && (
-            <div className="profile-section w-100">
-              <Suspense fallback={<Spinner />}>
-                <Profile />
-              </Suspense>
-            </div>
-            )}
-
-            {/* ----------CONTENT UPLOAD SELTION---------- */}
-            {pathname === '/dashboard' && (
-            <ContentUpload />
-            )}
-
-            {/* ----------MESSAGE SELTION---------- */}
-            {pathname === '/message' && (
-            <div className="message-section">
-              <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">Message</h4>
-              <Suspense fallback={<Spinner />}>
-                <Message />
-              </Suspense>
-            </div>
-            )}
-
-            {/* ----------FILE STATUS SELTION---------- */}
-            {pathname === '/file-status' && (
-            <div className="file-status w-100">
-              <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">File Status</h4>
-              <div className="file-status-list position-relative">
-                <div className="overflow-x-auto">
-                  <table className="w-100 overflow-x-auto">
-                    {/* ----------TABLE HEADING---------- */}
-                    <thead>
-                      <tr>
-                        <th className="serial-no">No.</th>
-                        <th className="name">Item Name</th>
-                        <th className="date">Date</th>
-                        <th onClick={() => setFilterBox(!filterBox)} role="button">
-                          Status
-                          <i className="fa-solid fa-caret-down text-dark ms-2" />
-                        </th>
-                      </tr>
-                    </thead>
-                    <Suspense fallback={<Spinner />}>
-                      {contents.map((content, index) => (
-                        <FileStatus
-                          key={content._id}
-                          content={content}
-                          index={index}
-                        />
-                      ))}
-                    </Suspense>
-                  </table>
-                </div>
-                { filterBox && (
-                <div className="filter-menu rounded-3 p-1 position-absolute bg-white">
-                  <ul>
-                    <li onClick={() => { filterWise('Approved'); setFilterBox(!filterBox); }} className="text-success">Approved</li>
-                    <li onClick={() => { filterWise('Pending'); setFilterBox(!filterBox); }} className="text-warning">Pending</li>
-                    <li onClick={() => { filterWise('Rejected'); setFilterBox(!filterBox); }} className="text-danger">Rejected</li>
-                  </ul>
-                </div>
-                )}
+              {/* ----------PROFILE SELTION---------- */}
+              {pathname === '/profile' && (
+              <div className="profile-section w-100">
+                <Suspense fallback={<Spinner />}>
+                  <Profile />
+                </Suspense>
               </div>
-            </div>
-            )}
+              )}
 
-            {/* ----------BALANCE SELTION---------- */}
-            {pathname === '/balance' && (
-            <div className="balance-section w-100 pb-4 p-5">
-              <Suspense fallback={<Spinner />}>
-                <Balance />
-              </Suspense>
-            </div>
-            )}
+              {/* ----------CONTENT UPLOAD SELTION---------- */}
+              {pathname === '/upload' && (
+              <div className="upload-content d-flex align-items-center justify-content-center">
+                <ContentUpload />
+              </div>
+              )}
 
-            {/* ----------DOWNLOAD SELTION---------- */}
-            {pathname === '/download-list' && (
-            <div className="download-section w-100">
-              <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">You have total 46 downloads in this week</h4>
-              <Suspense fallback={<Spinner />}>
-                <DownloadList />
-              </Suspense>
-            </div>
-            )}
+              {/* ----------MESSAGE SELTION---------- */}
+              {pathname === '/message' && (
+              <div className="message-section overflow-x-auto">
+                <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">Message</h4>
+                <Suspense fallback={<Spinner />}>
+                  <Message />
+                </Suspense>
+              </div>
+              )}
 
-            {/* ----------MY CONTENT SELTION---------- */}
-            {pathname === '/my-content' && (
-            <div>
-              <Suspense fallback={<Spinner />}>
-                <div className="d-flex justify-content-end pt-3 pb-1">
-                  <Filter />
+              {/* ----------FILE STATUS SELTION---------- */}
+              {pathname === '/file-status' && (
+              <div className="file-status w-100">
+                <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">File Status</h4>
+                <div className="file-status-list position-relative">
+                  <div className="overflow-x-auto">
+                    <table className="w-100 overflow-x-auto">
+                      {/* ----------TABLE HEADING---------- */}
+                      <thead>
+                        <tr>
+                          <th className="serial-no">No.</th>
+                          <th className="name">Item Name</th>
+                          <th className="date">Date</th>
+                          <th onClick={() => setFilterBox(!filterBox)} role="button">
+                            Status
+                            <i className="fa-solid fa-caret-down text-dark ms-2" />
+                          </th>
+                        </tr>
+                      </thead>
+                      <Suspense fallback={<Spinner />}>
+                        {contents.map((content, index) => (
+                          <FileStatus
+                            key={content._id}
+                            content={content}
+                            index={index}
+                          />
+                        ))}
+                      </Suspense>
+                    </table>
+                  </div>
+                  { filterBox && (
+                  <div className="filter-menu rounded-3 p-1 position-absolute bg-white">
+                    <ul>
+                      <li onClick={() => { filterWise('Approved'); setFilterBox(!filterBox); }} className="text-success">Approved</li>
+                      <li onClick={() => { filterWise('Pending'); setFilterBox(!filterBox); }} className="text-warning">Pending</li>
+                      <li onClick={() => { filterWise('Rejected'); setFilterBox(!filterBox); }} className="text-danger">Rejected</li>
+                    </ul>
+                  </div>
+                  )}
                 </div>
-                <div className="my-content-scroll">
-                  <div className="my-content-section w-100">
-                    {/* {
+              </div>
+              )}
+
+              {/* ----------BALANCE SELTION---------- */}
+              {pathname === '/balance' && (
+              <div className="balance-section w-100 overflow-x-auto p-3">
+                <Suspense fallback={<Spinner />}>
+                  <Balance />
+                </Suspense>
+              </div>
+              )}
+
+              {/* ----------DOWNLOAD SELTION---------- */}
+              {pathname === '/download-list' && (
+              <div className="download-section w-100">
+                <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">You have total 46 downloads in this week</h4>
+                <Suspense fallback={<Spinner />}>
+                  <DownloadList />
+                </Suspense>
+              </div>
+              )}
+
+              {/* ----------MY CONTENT SELTION---------- */}
+              {pathname === '/my-content' && (
+              <div>
+                <Suspense fallback={<Spinner />}>
+                  <div className="d-flex justify-content-end pt-3 pb-1">
+                    <Filter />
+                  </div>
+                  <div className="my-content-scroll">
+                    <div className="my-content-section w-100">
+                      {/* {
                   fakeData.map((content) => (
                     <ContentList
                       key={content.id}
@@ -232,12 +236,13 @@ function DashBoard() {
                     />
                   ))
                 } */}
+                    </div>
                   </div>
-                </div>
-              </Suspense>
-              <NextPage />
+                </Suspense>
+                <NextPage />
+              </div>
+              )}
             </div>
-            )}
           </div>
 
           {/* ------------RIGHT SIDEBAR FOR UPLOADING GUIDLINE------------ */}

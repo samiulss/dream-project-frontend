@@ -1,5 +1,7 @@
 import { Toaster } from 'react-hot-toast';
 import { Link, useLocation } from 'react-router-dom';
+import AdminDashboard from '../../components/adminDashboard/AdminDashboard';
+import NavbarAdmin from '../../components/navbarAdmin/NavbarAdmin';
 import PendingContent from '../pendingContent/PendingContent';
 import './adminHome.scss';
 
@@ -8,11 +10,15 @@ function AdminHome() {
 
   return (
     <div className="dashboard admin-dashboard">
+
+      {/* ------------NAVBAR------------ */}
+      <NavbarAdmin />
+
       <main className="container-fluid">
         <div className="row">
 
           {/* ------------LEFT SIDEBAR------------ */}
-          <div className="col-2 left-sidebar text-white">
+          <div className="col-2 left-sidebar text-white bg-secondary bg-gradient">
             <div className="position-sticky">
               <div className="header">
                 <Link to="/admin-panel">
@@ -23,25 +29,25 @@ function AdminHome() {
               <div className="menu d-flex flex-column align-items-center">
                 <ul>
                   <Link to="/admin-panel/pending">
-                    <li className="base-color-1">
+                    <li className={`${pathname === '/admin-panel/pending' && 'text-dark'}`}>
                       Pending
                     </li>
                   </Link>
 
-                  <li className="base-color-1">
+                  <li>
                     Reports
                     <span className="ms-5 d-inline-block rounded-5 text-white message-notification">01</span>
                   </li>
 
-                  <li className="base-color-1">User</li>
+                  <li>User</li>
 
-                  <li className="base-color-1">Money</li>
+                  <li>Money</li>
 
-                  <li className="base-color-1">
+                  <li>
                     Download
                   </li>
 
-                  <li className="base-color-1">All Content</li>
+                  <li>All Content</li>
                 </ul>
               </div>
             </div>
@@ -54,6 +60,12 @@ function AdminHome() {
             {pathname === '/admin-panel/pending' && (
             <PendingContent />
             )}
+
+            {/* ----------MAIN DASHBOARD---------- */}
+            {pathname === '/admin-panel' && (
+            <AdminDashboard />
+            )}
+
           </div>
         </div>
       </main>

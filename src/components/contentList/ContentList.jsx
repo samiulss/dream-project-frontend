@@ -48,7 +48,7 @@ function ContentList({ content, tooltip }) {
 
       {/* --------------ALL IMAGE LIST-------------- */}
       <Link to={`/download/${_id}`}>
-        <img onClick={fetchSingleContent} className="img-fluid content-img" id={_id} src={`https://dream-project-backend.onrender.com-backend.onrender.com/uploads/${thumbnail}`} alt="" />
+        <img onClick={fetchSingleContent} className="img-fluid content-img" id={_id} src={`https://dream-project-backend.onrender.com/uploads/${thumbnail}`} alt="" />
       </Link>
 
       {/* --------------TOOLTIP-------------- */}

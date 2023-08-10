@@ -27,7 +27,7 @@ function Balance() {
       </div>
 
       {/* -----------BALANCE BY CHART----------- */}
-      <div className="balance-chart mt-3">
+      <div className="balance-chart mt-3 w-100 overflow-x-auto">
         <h4 className="text-center">Earning This Month</h4>
         <Chart />
       </div>

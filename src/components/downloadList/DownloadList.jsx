@@ -6,7 +6,7 @@ function DownloadList() {
 
   return (
     <div className="download-list overflow-x-auto">
-      <table className="w-100">
+      <table className="w-100 overflow-x-auto">
 
         {/* ----------TABLE HEADING---------- */}
         <thead>

@@ -4,8 +4,8 @@ import './message.scss';
 
 function Message() {
   return (
-    <div className="message-list w-100">
-      <table>
+    <>
+      <table className="message-list w-100">
         <tbody>
           <tr data-bs-toggle="modal" data-bs-target="#exampleModal">
             <td>{moment().subtract(10, 'days').calendar()}</td>
@@ -76,7 +76,7 @@ function Message() {
         </tbody>
       </table>
       <MessageModal />
-    </div>
+    </>
   );
 }
 
