@@ -1,0 +1,23 @@
+.m-portlet__body {
+  gap: 20px;
+  margin-bottom: 1rem;
+
+  @media (max-width: 480px) {
+    gap: 10px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .m-widget4__img {
+    img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: contain;
+    }
+  }
+
+  .m-widget4__info {
+    width: 40%;
+  }
+}

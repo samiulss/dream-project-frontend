@@ -29,6 +29,8 @@ function App() {
         <Route path="/balance" element={<DashBoard />} />
         <Route path="/download-list" element={<DashBoard />} />
         <Route path="/my-content" element={<DashBoard />} />
+        <Route path="/following" element={<DashBoard />} />
+        <Route path="/favourite" element={<DashBoard />} />
       </Route>
       <Route path="/*" element={<NotFound />} />
 

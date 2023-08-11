@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import toast, { Toaster } from 'react-hot-toast';
 import { TagsInput } from 'react-tag-input-component';
+import { rootUrl } from '../../../../config/backendUrl';
 import { configData } from '../../../../config/tokenVerify';
 import { ContentState } from '../../../context/StateContext';
 import Filter from '../../commons/filter/Filter';
@@ -74,7 +75,7 @@ function ContentUpload() {
     }
 
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/contentUpload', formData, configData(token));
+      const { data } = await axios.post(`${rootUrl}/api/contentUpload`, formData, configData(token));
       const { message, success } = data;
       if (success) {
         setLoading(false);
@@ -230,7 +231,6 @@ function ContentUpload() {
 
                   {/* ----------CATAGORY LIST---------- */}
                   <div className="catagory-list">
-                    {/* <h6 className="fw-semibold">Catagory</h6> */}
                     <Filter catagory={catagory} setCatagory={setCatagory} />
                   </div>
 

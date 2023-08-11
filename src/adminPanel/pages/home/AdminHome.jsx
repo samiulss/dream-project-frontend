@@ -22,11 +22,11 @@ function AdminHome() {
             <div className="position-sticky">
               <div className="header">
                 <Link to="/admin-panel">
-                  <h3 className="text-white">Dashboard</h3>
+                  <h3 className="text-white ms-3">Dashboard</h3>
                 </Link>
               </div>
 
-              <div className="menu d-flex flex-column align-items-center">
+              <div className="menu d-flex flex-column ms-3">
                 <ul>
                   <Link to="/admin-panel/pending">
                     <li className={`${pathname === '/admin-panel/pending' && 'text-dark'}`}>

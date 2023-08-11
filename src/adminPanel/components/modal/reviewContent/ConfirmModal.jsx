@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import { rootUrl } from '../../../../../config/backendUrl';
 import { ContentState } from '../../../../context/StateContext';
 import './confirmModal.scss';
 
@@ -30,7 +31,7 @@ function ConfirmModal({ content, fileState }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/approve', { contentId }, config);
+      const { data } = await axios.post(`${rootUrl}/api/approve`, { contentId }, config);
       toast.success(data);
       setFetchAgain(!fetchAgain);
     } catch (error) {
@@ -47,7 +48,7 @@ function ConfirmModal({ content, fileState }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/reject', { contentId }, config);
+      const { data } = await axios.post(`${rootUrl}/api/reject`, { contentId }, config);
       toast.success(data);
       setFetchAgain(!fetchAgain);
     } catch (error) {
@@ -76,7 +77,7 @@ function ConfirmModal({ content, fileState }) {
 
                 {/* ----------THUMBNAIL---------- */}
                 <div className="thumbnail w-100">
-                  <img className="img-fluid w-100" src={`https://dream-project-backend.onrender.com/uploads/${content.thumbnail}`} alt="" />
+                  <img className="img-fluid w-100" src={`${rootUrl}/uploads/${content.thumbnail}`} alt="" />
                 </div>
 
                 {/* ----------TITLE---------- */}
@@ -120,7 +121,7 @@ function ConfirmModal({ content, fileState }) {
                         {fileName}
                         {' '}
                       </li>
-                      <Link to={`https://dream-project-backend.onrender.com/api/downloadFile?id=${contentId}`} className="btn btn-primary rounded-5">Download</Link>
+                      <Link to={`${rootUrl}/api/downloadFile?id=${contentId}`} className="btn btn-primary rounded-5">Download</Link>
                     </div>
                   ))
                 }

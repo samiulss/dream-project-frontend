@@ -11,13 +11,9 @@
     background-color: #fff;
     padding: 9px 11px;
     position: absolute;
-    top: 58px;
+    top: 50px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     z-index: 99;
-
-    @media (max-width: 480px) {
-      left: -20px;
-    }
 
     li {
       cursor: pointer;

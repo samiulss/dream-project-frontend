@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import logo from '../../assets/freeLogo.png';
 import './footer.scss';
 
@@ -49,7 +50,9 @@ function Footer() {
           <div className="follow-us d-flex mb-5">
             <span className="base-color-1 fs-5 fw-semibold">Folow Us</span>
             <div className="icons d-flex">
-              <i className="fa-brands fa-facebook" />
+              <Link to="https://www.facebook.com/noxakar" target="_blank">
+                <i className="fa-brands fa-facebook" />
+              </Link>
               <i className="fa-brands fa-instagram" />
               <i className="fa-brands fa-behance" />
               <i className="fa-brands fa-dribbble" />

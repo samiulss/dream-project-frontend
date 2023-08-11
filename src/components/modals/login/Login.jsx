@@ -2,13 +2,14 @@ import axios from 'axios';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import { useNavigate } from 'react-router-dom';
+import { rootUrl } from '../../../../config/backendUrl';
 import googleIcon from '../../../assets/icons/google.svg';
 import { ContentState } from '../../../context/StateContext';
 import Loadng from '../../commons/loading/Loadng';
 import './login.scss';
 
 function Login({ btn, setBtn }) {
-  const { auth, showLoginModal, setShowLoginModal } = ContentState();
+  const { showLoginModal, setShowLoginModal } = ContentState();
   const [showPass, setShowPass] = useState(false);
   const [err, setErr] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -31,7 +32,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/login', userData, config);
+      const { data } = await axios.post(`${rootUrl}/api/login`, userData, config);
       handleClose();
       localStorage.setItem('token', data.token);
       // navigate('/content');
@@ -58,7 +59,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/register', userData, config);
+      const { data } = await axios.post(`${rootUrl}/api/register`, userData, config);
       handleClose();
       localStorage.setItem('token', data.token);
       navigate('/content');
@@ -82,7 +83,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/forgetPassword', userData, config);
+      const { data } = await axios.post(`${rootUrl}/api/forgetPassword`, userData, config);
       setOtpEmail(data);
       setBtn('verify');
       setLoading(false);
@@ -106,7 +107,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/verifyOtp', userData, config);
+      const { data } = await axios.post(`${rootUrl}/api/verifyOtp`, userData, config);
       console.log(data);
       setBtn('newPassword');
       setLoading(false);
@@ -130,7 +131,7 @@ function Login({ btn, setBtn }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/resetPassword', userData, config);
+      const { data } = await axios.post(`${rootUrl}/api/resetPassword`, userData, config);
       console.log(data);
       setBtn('login');
       setLoading(false);

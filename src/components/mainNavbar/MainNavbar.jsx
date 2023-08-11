@@ -40,6 +40,8 @@ function MainNavbar() {
     '/balance',
     '/download-list',
     '/my-content',
+    '/following',
+    '/favourite',
   ];
 
   const menu = [
@@ -76,7 +78,15 @@ function MainNavbar() {
         </div>
 
         {/* ---------------toggle mobile sidebar--------------- */}
-        <MobileSidebar menu={menu} bgColor="#191f2f" linkColor="base-color-1" />
+        {loggedInUser && (
+        <div className="mobile-sidebar">
+          <MobileSidebar
+            menu={menu}
+            bgColor="#191f2f"
+            linkColor="base-color-1"
+          />
+        </div>
+        )}
 
         <div className="nav-menu position-relative">
           <ul className="d-flex align-items-center me-auto mb-0 mb-lg-0">
@@ -105,7 +115,7 @@ function MainNavbar() {
               >
                 More
               </a>
-              <ul className="dropdown-menu">
+              <ul className="dropdown-menu bg-info">
                 <li>
                   <a className="dropdown-item" href="#">
                     Action
@@ -135,60 +145,58 @@ function MainNavbar() {
         </div>
 
         {/* ---------------NAV RIGHT--------------- */}
-        <div className="nav-right me-4 position-relative align-items-center">
-          {/* ---------------GRID MENU--------------- */}
-          <div
-            onClick={() => setShowGrid(
-              !showGrid,
-              setShowNotification(false),
-              setShowMyAccount(false)
-            )}
-            className="grid-menu d-flex align-items-center"
-          >
-            <span className="svg-icon menu-icons grid-icon" />
-          </div>
+        {loggedInUser ? (
+          <div className="nav-right me-4 position-relative align-items-center">
+            {/* ---------------GRID MENU--------------- */}
+            <div
+              onClick={() => setShowGrid(
+                !showGrid,
+                setShowNotification(false),
+                setShowMyAccount(false)
+              )}
+              className="grid-menu d-flex align-items-center"
+            >
+              <span className="svg-icon menu-icons grid-icon" />
+            </div>
 
-          {/* ---------------NOTIFICATION MENU--------------- */}
-          <div
-            onClick={() => setShowNotification(
-              !showNotification,
-              setShowGrid(false),
-              setShowMyAccount(false)
-            )}
-            className="notification d-flex align-items-center"
-          >
-            <div className="position-relative mt-2">
-              <span className="svg-icon menu-icons notification-icon" />
-              <span className="position-absolute start-100 translate-middle badge d-flex justify-content-center rounded-circle">
-                01
-              </span>
+            {/* ---------------NOTIFICATION MENU--------------- */}
+            <div
+              onClick={() => setShowNotification(
+                !showNotification,
+                setShowGrid(false),
+                setShowMyAccount(false)
+              )}
+              className="notification d-flex align-items-center"
+            >
+              <div className="position-relative mt-2">
+                <span className="svg-icon menu-icons notification-icon" />
+                <span className="position-absolute start-100 translate-middle badge d-flex justify-content-center rounded-circle">
+                  01
+                </span>
+              </div>
+            </div>
+
+            {/* ---------------MY ACCOUNT MENU--------------- */}
+            <div
+              onClick={() => setShowMyAccount(
+                !showMyAccount,
+                setShowGrid(false),
+                setShowNotification(false)
+              )}
+              className="my-account d-flex align-itmes-center"
+            >
+              <span className="svg-icon menu-icons avater-icon" />
             </div>
           </div>
-
-          {/* ---------------MY ACCOUNT MENU--------------- */}
-          <div
-            onClick={() => setShowMyAccount(
-              !showMyAccount,
-              setShowGrid(false),
-              setShowNotification(false)
-            )}
-            className="my-account d-flex align-itmes-center"
+        ) : (
+          <span
+            onClick={() => setShowLoginModal(true)}
+            className="text-white btn rounded-4"
           >
-            {loggedInUser ? (
-              <span className="svg-icon menu-icons avater-icon" />
-            ) : (
-              <span
-                onClick={() => setShowLoginModal(true)}
-                className="text-white btn rounded-4"
-              >
-                Log in
-              </span>
-            )}
-
-            {/* ---------------IF NOT LOGGEDING--------------- */}
-            <Login btn={btn} setBtn={setBtn} />
-          </div>
-        </div>
+            Log in
+          </span>
+        )}
+        <Login btn={btn} setBtn={setBtn} />
 
         {/* ---------------GRID DROPDOWN MENU--------------- */}
         {showGrid && (
@@ -216,7 +224,7 @@ function MainNavbar() {
         )}
 
         {/* ---------------MY ACCOUNT DROPDOWN MENU--------------- */}
-        {loggedInUser && showMyAccount && (
+        {showMyAccount && (
           <div className="account-dropdown-box ps-1">
             <h5 className="ps-2">My Account</h5>
             <div className="menu-list">
@@ -233,10 +241,12 @@ function MainNavbar() {
                     Download
                   </li>
                 </Link>
-                <li>
-                  <i className="fa-regular fa-heart" />
-                  Favourite
-                </li>
+                <Link to="/favourite">
+                  <li>
+                    <i className="fa-regular fa-heart" />
+                    Favourite
+                  </li>
+                </Link>
                 <li>
                   <i className="fa-solid fa-folder-plus" />
                   Collection

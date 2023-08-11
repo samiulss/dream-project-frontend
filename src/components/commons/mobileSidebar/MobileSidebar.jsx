@@ -11,6 +11,7 @@ function MobileSidebar({ menu, bgColor, linkColor }) {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   useEffect(() => {
     handleClose();
   }, [pathname]);
@@ -23,23 +24,20 @@ function MobileSidebar({ menu, bgColor, linkColor }) {
 
   return (
     <>
-      {loggedInUser
-        ? (
-          <>
-            <button onClick={handleShow} className="navbar-toggler shadow-none" type="button">
-              <span className="navbar-toggler-icon" />
-            </button>
+      <button onClick={handleShow} className="navbar-toggler shadow-none" type="button">
+        <span className="navbar-toggler-icon" />
+      </button>
 
-            <Offcanvas style={{ backgroundColor: bgColor }} show={show} onHide={handleClose} placement="start" className="w-50 mobile-sidebar-menu">
-              <Offcanvas.Body>
-                <div className="position-sticky">
-                  <div className="header text-white">
-                    <h3>Dashboard</h3>
-                  </div>
+      <Offcanvas style={{ backgroundColor: bgColor }} show={show} onHide={handleClose} placement="start" className="w-50 mobile-sidebar-menu">
+        <Offcanvas.Body className="p-0">
+          <div className="position-sticky">
+            <div className="header text-white">
+              <h3 className="ms-3">Dashboard</h3>
+            </div>
 
-                  <div className="menu d-flex flex-column align-items-center">
-                    <ul>
-                      {
+            <div className="menu d-flex flex-column ms-3">
+              <ul>
+                {
                     menu[0].menuNames.map((m, i) => (
                       <Link key={i} to={menu[0].pathnames[i]}>
                         <li className={`${pathname === menu[0].pathnames[i] && linkColor}`}>
@@ -49,20 +47,17 @@ function MobileSidebar({ menu, bgColor, linkColor }) {
                     ))
                   }
 
-                      {/* ---------------log out button--------------- */}
-                      <li onClick={logOut} className="justify-content-end pe-0 log-out-btn">
-                        Log out
-                        <i className="fa-solid fa-power-off ms-2" />
-                      </li>
+                {/* ---------------log out button--------------- */}
+                <li onClick={logOut} className="justify-content-end pe-0 log-out-btn">
+                  Log out
+                  <i className="fa-solid fa-power-off ms-2" />
+                </li>
 
-                    </ul>
-                  </div>
-                </div>
-              </Offcanvas.Body>
-            </Offcanvas>
-          </>
-        )
-        : <span onClick={() => setShowLoginModal(true)} className="text-white btn rounded-4">Log in</span>}
+              </ul>
+            </div>
+          </div>
+        </Offcanvas.Body>
+      </Offcanvas>
     </>
   );
 }

@@ -20,6 +20,13 @@
     }
   }
 
+  .mobile-sidebar {
+    display: none;
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
   .nav-menu {
     @media (max-width: 768px) {
       display: none;

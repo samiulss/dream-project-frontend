@@ -2,6 +2,7 @@ import axios from 'axios';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import ConfirmModal from '../../adminPanel/components/modal/reviewContent/ConfirmModal';
 import { ContentState } from '../../context/StateContext';
@@ -16,7 +17,7 @@ function FileStatus({ content, index }) {
   // DELETE PENDING CONTENT
   const cancelPending = async (id) => {
     try {
-      const { data } = await axios.post('https://dream-project-backend.onrender.com/api/deletePending', { contentId: id }, config(auth));
+      const { data } = await axios.post(`${rootUrl}/api/deletePending`, { contentId: id }, config(auth));
       toast.success(data);
       setFetchAgain(!fetchAgain);
     } catch (error) {
