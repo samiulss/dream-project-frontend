@@ -100,7 +100,7 @@ function ContentList({ content, tooltip, favourites }) {
           className="img-fluid content-img"
           id={_id}
           src={`${rootUrl}/uploads/${thumbnail}`}
-          alt=""
+          alt={content.title}
         />
       </Link>
 
@@ -131,7 +131,18 @@ function ContentList({ content, tooltip, favourites }) {
                   Favourite
                 </span>
               )}
-              <span className="svg-icon love-icon" />
+
+              {favourites.find((favourite) => favourite._id === content._id) ? (
+                <span
+                  onClick={() => handleUnfavourite(content._id)}
+                  className="svg-icon fa-solid fa-heart d-flex align-items-center justify-content-center"
+                />
+              ) : (
+                <span
+                  onClick={() => handleFavourite(content._id)}
+                  className="svg-icon love-icon"
+                />
+              )}
             </div>
           </div>
         </div>

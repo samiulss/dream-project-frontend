@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/freeLogo.png';
 import { ContentState } from '../../context/StateContext';
@@ -20,6 +20,12 @@ function MainNavbar() {
     localStorage.removeItem('token');
     window.location.reload();
   };
+
+  useEffect(() => {
+    setShowMyAccount(false);
+    setShowNotification(false);
+    setShowGrid(false);
+  }, [pathname]);
 
   const menuNames = [
     'Profile',

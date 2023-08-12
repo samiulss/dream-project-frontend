@@ -6,7 +6,7 @@
   padding: 7px 0;
   padding-bottom: 0;
 
-  form {
+  .search-from {
     width: 83%;
     height: 50px;
     border: 1px solid;
@@ -38,5 +38,17 @@
         height: 22px;
       }
     }
+  }
+
+  .search-list-container {
+    left: 20.3%;
+    width: 67%;
+    max-height: 250px;
+    overflow: auto;
+    background-color: #fff;
+    z-index: 10;
+    padding: 0 10px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 0 0 10px 10px;
   }
 }

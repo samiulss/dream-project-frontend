@@ -18,12 +18,14 @@ function ContentContainer() {
   const { auth, loggedInUser, fetchAgain } = ContentState();
 
   const [contents, setContents] = useState([]);
+  const [topSearch, setTopSearch] = useState([]);
   const [filterContents, setFilterContents] = useState([]);
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [catagory, setCatagory] = useState(null);
   const [sortByTime, setsortByTime] = useState(null);
   const [sortByLicence, setsortByLicence] = useState(null);
+  const [resultFor, setResultFor] = useState('');
 
   // FETCH ALL CONTENTS
   const fetchContents = async () => {
@@ -37,6 +39,7 @@ function ContentContainer() {
       );
       setLoading(false);
       setContents(data);
+      setTopSearch(data);
     } catch (error) {
       setLoading(false);
       toast.error(error.message);
@@ -54,6 +57,12 @@ function ContentContainer() {
     } catch (error) {
       toast.error(error.message);
     }
+  };
+
+  // handle top search
+  const handleTopSearch = (title) => {
+    const selectTop = topSearch.filter((top) => top.title === title);
+    setContents(selectTop);
   };
 
   useEffect(() => {
@@ -113,7 +122,7 @@ function ContentContainer() {
   return (
     <main className="ContentContainer">
       {/* ------------SEARCH SECTION------------ */}
-      <SearchBox />
+      <SearchBox setContents={setContents} setResultFor={setResultFor} />
 
       <div className="container-fluid mt-3">
         <div className="row">
@@ -134,42 +143,28 @@ function ContentContainer() {
                   rightIcon={<Arrow right="right" />}
                   leftIcon={<Arrow />}
                 >
-                  <li>Ramadan Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Calender Vector</li>
-                  <li>Siam Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Ramadan Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Calender Vector</li>
-                  <li>Siam Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Ramadan Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Calender Vector</li>
-                  <li>Siam Vector</li>
-                  <li>Salat Vector</li>
-                  <li>Eid Vector</li>
-                  <li>Salat Vector</li>
+                  {topSearch.map((top) => (
+                    <li
+                      key={top._id}
+                      onClick={() => handleTopSearch(top.title)}
+                    >
+                      {top.title}
+                    </li>
+                  ))}
                 </ScrollingCarousel>
               </ul>
             </div>
 
             {/* ------------SEARCH RESULT FOR SECTION------------ */}
-            <div className="result-quary">
-              <p className="fs-5 text-center fw-semibold">
-                Result for : Ramadan Vector
-              </p>
-            </div>
+            {resultFor && (
+              <div className="result-quary">
+                <p className="fs-5 text-center fw-semibold">
+                  Result for :
+                  {' '}
+                  {resultFor}
+                </p>
+              </div>
+            )}
 
             {/* ------------ALL CONTENT------------ */}
             {contents.length ? (
