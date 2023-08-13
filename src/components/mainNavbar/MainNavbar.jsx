@@ -97,19 +97,20 @@ function MainNavbar() {
         <div className="nav-menu position-relative">
           <ul className="d-flex align-items-center me-auto mb-0 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
+              <Link to="/content">
                 Font
-              </a>
+              </Link>
+
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="#">
+              <Link to="/content">
                 Vector
-              </a>
+              </Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#">
-                Template
-              </a>
+              <Link to="/content">
+                Image
+              </Link>
             </li>
             <li className="nav-item dropdown">
               <a
@@ -235,22 +236,22 @@ function MainNavbar() {
             <h5 className="ps-2">My Account</h5>
             <div className="menu-list">
               <ul className="mb-0">
-                <Link to="/upload">
+                <Link to="/profile">
                   <li>
-                    <i className="fa-solid fa-border-all" />
-                    DashBoard
-                  </li>
-                </Link>
-                <Link to="/download-list">
-                  <li>
-                    <i className="fa-regular fa-circle-down" />
-                    Download
+                    <i className="fa-solid fa-user" />
+                    Profile
                   </li>
                 </Link>
                 <Link to="/favourite">
                   <li>
-                    <i className="fa-regular fa-heart" />
+                    <i className="fa-solid fa-heart" />
                     Favourite
+                  </li>
+                </Link>
+                <Link to="/following">
+                  <li>
+                    <i className="fa-solid fa-users" />
+                    Following
                   </li>
                 </Link>
                 <li>

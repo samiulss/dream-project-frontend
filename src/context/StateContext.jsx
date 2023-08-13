@@ -16,6 +16,8 @@ function StateContext({ children }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [auth, setAuth] = useState(token);
   const [fetchAgain, setFetchAgain] = useState(false);
+  const [popUpModal, setPopUpModal] = useState(false);
+  const [menuCatagory, setMenuCatagory] = useState(null);
   return (
     <State.Provider value={{
       getContent,
@@ -27,7 +29,11 @@ function StateContext({ children }) {
       showLoginModal,
       setShowLoginModal,
       fetchAgain,
-      setFetchAgain
+      setFetchAgain,
+      popUpModal,
+      setPopUpModal,
+      menuCatagory,
+      setMenuCatagory
     }}
     >
       {children}

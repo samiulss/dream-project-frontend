@@ -1,11 +1,20 @@
 import { useState } from 'react';
 import { ContentState } from '../../context/StateContext';
 import Login from '../modals/login/Login';
+import PopUpModal from '../modals/popUpModal/PopUpModal';
 import './joinButtons.scss';
 
 function JoinButtons() {
-  const { loggedInUser, setShowLoginModal } = ContentState();
+  const { loggedInUser, setShowLoginModal, setPopUpModal } = ContentState();
   const [btn, setBtn] = useState('login');
+
+  const beSellarBtn = () => {
+    if (!loggedInUser) {
+      setShowLoginModal(true);
+    } else {
+      setPopUpModal(true);
+    }
+  };
   return (
     <>
       {!loggedInUser && (
@@ -16,8 +25,9 @@ function JoinButtons() {
       </div>
       )}
       <div className="be-a-seller">
-        <button type="button" className="btn seller-btn gradient-button border rounded-5">Become a seller</button>
+        {(loggedInUser?.role === 'user' || !loggedInUser) && <button onClick={beSellarBtn} type="button" className="btn seller-btn gradient-button border rounded-5">Become a seller</button>}
       </div>
+      <PopUpModal beSellear />
     </>
   );
 }

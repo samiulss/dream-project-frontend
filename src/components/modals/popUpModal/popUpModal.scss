@@ -1,0 +1,21 @@
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 11px;
+  z-index: 99;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-image: url("../../../assets/icons/modal-close.svg");
+  background-size: 25px;
+}
+.modal-container {
+  padding: 35px 10px 10px 10px;
+}
+
+// .modal-backdrop.fade.show{
+//   display:none;
+// }

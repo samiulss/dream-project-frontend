@@ -13,6 +13,7 @@ import FollowingList from '../../components/followingList/FollowingList';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
 import ContentUpload from '../../components/modals/contentUpload/ContentUpload';
+import PopUpModal from '../../components/modals/popUpModal/PopUpModal';
 import Profile from '../../components/profile/Profile';
 import { ContentState } from '../../context/StateContext';
 import './dashBoard.scss';
@@ -25,7 +26,9 @@ const FavouriteList = lazy(() => import('../../components/favouriteList/Favourit
 const ContentList = lazy(() => import('../../components/contentList/ContentList'));
 
 function DashBoard() {
-  const { auth, fetchAgain } = ContentState();
+  const {
+    auth, loggedInUser, fetchAgain, setPopUpModal
+  } = ContentState();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [contents, setcontents] = useState([]);
@@ -95,7 +98,6 @@ function DashBoard() {
 
       <main className="container-fluid">
         <div className="row">
-
           {/* ------------LEFT SIDEBAR------------ */}
           <div className="col-2 left-sidebar pc-mode text-white">
             <div className="position-sticky">
@@ -113,61 +115,13 @@ function DashBoard() {
                     </li>
                   </Link>
 
-                  <Link to="/upload">
-                    <li
-                      className={`${pathname === '/upload' && 'base-color-1'}`}
-                    >
-                      Upload
-                    </li>
-                  </Link>
-
-                  <Link to="/message">
-                    <li
-                      className={`${pathname === '/message' && 'base-color-1'}`}
-                    >
-                      Message
-                      <span className="ms-5 d-inline-block rounded-5 text-white message-notification">
-                        01
-                      </span>
-                    </li>
-                  </Link>
-
-                  <Link to="/file-status">
-                    <li
-                      onClick={fetchContentStatus}
-                      className={`${
-                        pathname === '/file-status' && 'base-color-1'
-                      }`}
-                    >
-                      File Status
-                    </li>
-                  </Link>
-
-                  <Link to="/balance">
-                    <li
-                      className={`${pathname === '/balance' && 'base-color-1'}`}
-                    >
-                      Balance
-                    </li>
-                  </Link>
-
-                  <Link to="/download-list">
+                  <Link to="/favourite">
                     <li
                       className={`${
-                        pathname === '/download-list' && 'base-color-1'
+                        pathname === '/favourite' && 'base-color-1'
                       }`}
                     >
-                      Download
-                    </li>
-                  </Link>
-
-                  <Link to="/my-content">
-                    <li
-                      className={`${
-                        pathname === '/my-content' && 'base-color-1'
-                      }`}
-                    >
-                      My Content
+                      Favourite
                     </li>
                   </Link>
 
@@ -181,16 +135,84 @@ function DashBoard() {
                     </li>
                   </Link>
 
-                  <Link to="/favourite">
-                    <li
-                      className={`${
-                        pathname === '/favourite' && 'base-color-1'
-                      }`}
-                    >
-                      Favourite
-                    </li>
-                  </Link>
+                  {loggedInUser?.role === 'seller' && (
+                    <>
+                      <Link to="/upload">
+                        <li
+                          className={`${
+                            pathname === '/upload' && 'base-color-1'
+                          }`}
+                        >
+                          Upload
+                        </li>
+                      </Link>
+
+                      <Link to="/message">
+                        <li
+                          className={`${
+                            pathname === '/message' && 'base-color-1'
+                          }`}
+                        >
+                          Message
+                          <span className="ms-5 d-inline-block rounded-5 text-white message-notification">
+                            01
+                          </span>
+                        </li>
+                      </Link>
+
+                      <Link to="/file-status">
+                        <li
+                          onClick={fetchContentStatus}
+                          className={`${
+                            pathname === '/file-status' && 'base-color-1'
+                          }`}
+                        >
+                          File Status
+                        </li>
+                      </Link>
+
+                      <Link to="/balance">
+                        <li
+                          className={`${
+                            pathname === '/balance' && 'base-color-1'
+                          }`}
+                        >
+                          Balance
+                        </li>
+                      </Link>
+
+                      <Link to="/download-list">
+                        <li
+                          className={`${
+                            pathname === '/download-list' && 'base-color-1'
+                          }`}
+                        >
+                          Download
+                        </li>
+                      </Link>
+
+                      <Link to="/my-content">
+                        <li
+                          className={`${
+                            pathname === '/my-content' && 'base-color-1'
+                          }`}
+                        >
+                          My Content
+                        </li>
+                      </Link>
+                    </>
+                  )}
                 </ul>
+                {loggedInUser.role === 'user' && (
+                  <div className="be-seller-btn">
+                    <button
+                      onClick={() => setPopUpModal(true)}
+                      className="btn base-bg-color-1 text-white"
+                    >
+                      Be a Seller
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             {/* <MobileSidebar fetchContentStatus={fetchContentStatus} /> */}
@@ -211,8 +233,48 @@ function DashBoard() {
               {pathname === '/profile' && (
                 <div className="profile-section w-100">
                   <Suspense fallback={<Spinner />}>
-                    <Profile />
+                    <Profile fullDetails />
                   </Suspense>
+                </div>
+              )}
+
+              {/* ----------FOLLOWING SELTION---------- */}
+              {pathname === '/following' && (
+                <div className="w-100 overflow-x-auto p-3">
+                  <Suspense fallback={<Spinner />}>
+                    <div className="m-portlet__head-title">
+                      <h4 className="text-center base-color-1 fw-semibold mb-4">
+                        Following:
+                        {' '}
+                        {followList.length}
+                      </h4>
+                    </div>
+
+                    {followList.map((follow) => (
+                      <FollowingList
+                        key={follow._id}
+                        followingSeller={follow}
+                      />
+                    ))}
+                  </Suspense>
+                  {/* <NextPage /> */}
+                </div>
+              )}
+
+              {/* ----------FAVOURITE SELTION---------- */}
+              {pathname === '/favourite' && (
+                <div>
+                  <div className="d-flex justify-content-end pt-3 pb-1">
+                    <Filter setCatagory={setCatagory} catagory={catagory} />
+                  </div>
+                  <Suspense fallback={<Spinner />}>
+                    <div className="my-content-scroll">
+                      <div className="my-content-section w-100">
+                        <FavouriteList catagory={catagory} />
+                      </div>
+                    </div>
+                  </Suspense>
+                  {/* <NextPage /> */}
                 </div>
               )}
 
@@ -358,44 +420,6 @@ function DashBoard() {
                   {contents.length > 10 && <NextPage />}
                 </div>
               )}
-
-              {pathname === '/following' && (
-                <div className="w-100 overflow-x-auto p-3">
-                  <Suspense fallback={<Spinner />}>
-                    <div className="m-portlet__head-title">
-                      <h4 className="text-center base-color-1 fw-semibold mb-4">
-                        Following:
-                        {' '}
-                        {followList.length}
-                      </h4>
-                    </div>
-
-                    {followList.map((follow) => (
-                      <FollowingList
-                        key={follow._id}
-                        followingSeller={follow}
-                      />
-                    ))}
-                  </Suspense>
-                  {/* <NextPage /> */}
-                </div>
-              )}
-
-              {pathname === '/favourite' && (
-                <div>
-                  <div className="d-flex justify-content-end pt-3 pb-1">
-                    <Filter setCatagory={setCatagory} catagory={catagory} />
-                  </div>
-                  <Suspense fallback={<Spinner />}>
-                    <div className="my-content-scroll">
-                      <div className="my-content-section w-100">
-                        <FavouriteList catagory={catagory} />
-                      </div>
-                    </div>
-                  </Suspense>
-                  {/* <NextPage /> */}
-                </div>
-              )}
             </div>
           </div>
 
@@ -497,6 +521,7 @@ function DashBoard() {
       {/* -------------------GET HELP------------------- */}
       <Help />
       <Toaster />
+      <PopUpModal beSellear />
     </div>
   );
 }

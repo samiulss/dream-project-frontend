@@ -26,6 +26,7 @@ function ContentContainer() {
   const [sortByTime, setsortByTime] = useState(null);
   const [sortByLicence, setsortByLicence] = useState(null);
   const [resultFor, setResultFor] = useState('');
+  const [searchkeywords, setSearchkeywords] = useState('');
 
   // FETCH ALL CONTENTS
   const fetchContents = async () => {
@@ -48,6 +49,9 @@ function ContentContainer() {
 
   // FETCH FAVOURITE CONTENT
   const favouriteContents = async () => {
+    if (!loggedInUser) {
+      return;
+    }
     try {
       const { data } = await axios.get(
         `${rootUrl}/api/favouriteList`,
@@ -63,6 +67,7 @@ function ContentContainer() {
   const handleTopSearch = (title) => {
     const selectTop = topSearch.filter((top) => top.title === title);
     setContents(selectTop);
+    setSearchkeywords(title);
   };
 
   useEffect(() => {
@@ -122,13 +127,19 @@ function ContentContainer() {
   return (
     <main className="ContentContainer">
       {/* ------------SEARCH SECTION------------ */}
-      <SearchBox setContents={setContents} setResultFor={setResultFor} />
+      <SearchBox
+        setContents={setContents}
+        setResultFor={setResultFor}
+        searchkeywords={searchkeywords}
+        setSearchkeywords={setSearchkeywords}
+      />
 
       <div className="container-fluid mt-3">
         <div className="row">
           {/* ------------FILTER SEARCH SECTION------------ */}
           <div className="col-2 filter-section p-0">
             <SearchFilter
+              catagory={catagory}
               setCatagory={setCatagory}
               setsortByTime={setsortByTime}
               setsortByLicence={setsortByLicence}

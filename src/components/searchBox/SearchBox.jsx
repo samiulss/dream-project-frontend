@@ -1,14 +1,20 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
+import { ContentState } from '../../context/StateContext';
 import Filter from '../commons/filter/Filter';
 import './searchBox.scss';
 
-function SearchBox({ setContents, setResultFor }) {
+function SearchBox({
+  setContents, setResultFor, searchkeywords, setSearchkeywords
+}) {
+  const { menuCatagory } = ContentState();
+
+  const { pathname } = useLocation();
   const [catagory, setCatagory] = useState(null);
   const [searchResult, setSearchResult] = useState([]);
   const [searchBox, setSearchBox] = useState(false);
-  const [searchkeywords, setSearchkeywords] = useState('');
   const [searchItem, setSearchItem] = useState(0);
   const [resultId, setResultId] = useState('');
 
@@ -71,6 +77,10 @@ function SearchBox({ setContents, setResultFor }) {
     setContents(searchResult);
     setResultFor(searchkeywords);
   };
+
+  useEffect(() => {
+    setCatagory(menuCatagory);
+  }, [pathname]);
 
   return (
     <div className="searchBox mt-2 position-relative">

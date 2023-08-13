@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import AdminHome from './adminPanel/pages/home/AdminHome';
+import SellerContentProfile from './components/sellerContentsProfile/SellerContentProfile';
 import Content from './pages/content/Content';
 import DashBoard from './pages/dashBoard/DashBoard';
 import Download from './pages/download/Download';
@@ -20,6 +21,7 @@ function App() {
       <Route index element={<Home />} />
       <Route path="/admin-panel" element={<AdminHome />} />
       <Route path="/content" element={<Content />} />
+      <Route path="/seller/:sellerId" element={<SellerContentProfile />} />
       <Route path="/download/:contentId" element={<Download />} />
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<DashBoard />} />

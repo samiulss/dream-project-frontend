@@ -9,6 +9,7 @@ import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
 // import SearchBox from '../../components/searchBox/SearchBox';
 import { config } from '../../../config/tokenVerify';
+import PopUpModal from '../../components/modals/popUpModal/PopUpModal';
 import { ContentState } from '../../context/StateContext';
 import NotFound from '../notFound/NotFound';
 import './download.scss';
@@ -16,14 +17,15 @@ import './download.scss';
 function Download() {
   const { contentId } = useParams();
   const {
-    auth, loggedInUser, fetchAgain, setFetchAgain
+    auth, loggedInUser, fetchAgain, setFetchAgain, setPopUpModal
   } = ContentState();
 
   const [content, setContent] = useState(null);
   const [noContent, setNoContent] = useState(false);
   const [followingSeller, setFollowingSeller] = useState([]);
+  const [favourites, setFavourites] = useState([]);
 
-  const mobileDevice = window.matchMedia('(max-width: 480px)');
+  // const mobileDevice = window.matchMedia('(max-width: 480px)');
 
   // HANDLE FOLLOW SELLER
   const handleFollow = async () => {
@@ -90,9 +92,74 @@ function Download() {
     }
   };
 
+  // FETCH FAVOURITE CONTENT
+  const favouriteContents = async () => {
+    if (!loggedInUser) {
+      return;
+    }
+    try {
+      const { data } = await axios.get(
+        `${rootUrl}/api/favouriteList`,
+        config(auth)
+      );
+      setFavourites(data[0].favourite);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // // HANDLE FAVOURITE
+  const handleFavourite = async (id) => {
+    if (!loggedInUser) {
+      toast.error('Please log in first');
+      return;
+    }
+    const selectContent = {
+      contentId: id,
+    };
+    try {
+      const { data } = await axios.post(
+        `${rootUrl}/api/addFevourite`,
+        selectContent,
+        config(auth)
+      );
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // // HANDLE UNFAVOURITE
+  const handleUnfavourite = async (id) => {
+    const selectContent = {
+      contentId: id,
+    };
+    try {
+      const { data } = await axios.post(
+        `${rootUrl}/api/removeFevourite`,
+        selectContent,
+        config(auth)
+      );
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleReport = () => {
+    if (!loggedInUser) {
+      toast.error('Please log in first');
+      return;
+    }
+    setPopUpModal(true);
+  };
+
   useEffect(() => {
     fetchSingleContent();
     checkFollower();
+    favouriteContents();
   }, [fetchAgain]);
 
   return (
@@ -140,9 +207,11 @@ function Download() {
 
                         {/* -----------AUTHOR NAME----------- */}
                         <div className="author-name">
-                          <h6 className="fw-semibold mb-0">
-                            {content?.author.name}
-                          </h6>
+                          <Link to={`/seller/${content.author._id}`}>
+                            <h6 className="fw-semibold mb-0" type="button">
+                              {content?.author.name}
+                            </h6>
+                          </Link>
                           <span>301 Resources</span>
                         </div>
 
@@ -193,6 +262,7 @@ function Download() {
                       <div className="report-btn">
                         <button
                           type="button"
+                          onClick={handleReport}
                           className="btn-light custom-border-color"
                         >
                           <i className="fa-solid fa-flag" />
@@ -201,14 +271,29 @@ function Download() {
                         </button>
                       </div>
                       <div className="favourite-btn">
-                        <button
-                          type="button"
-                          className="btn-light custom-border-color"
-                        >
-                          <i className="fa-solid fa-heart" />
-                          <br />
-                          Favourite
-                        </button>
+                        {favourites.find(
+                          (favourite) => favourite._id === content._id
+                        ) ? (
+                          <button
+                            type="button"
+                            onClick={() => handleUnfavourite(content._id)}
+                            className="btn-light custom-border-color w-100"
+                          >
+                            <i className="fa-solid fa-heart text-danger" />
+                            <br />
+                            Unfavourite
+                          </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => handleFavourite(content._id)}
+                              className="btn-light custom-border-color"
+                            >
+                              <i className="fa-solid fa-heart" />
+                              <br />
+                              Favourite
+                            </button>
+                          )}
                       </div>
                       <div className="share-btn">
                         <button
@@ -278,6 +363,7 @@ function Download() {
       ) : (
         <NotFound />
       )}
+      <PopUpModal report />
     </>
   );
 }

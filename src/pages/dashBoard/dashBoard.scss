@@ -29,6 +29,14 @@
         }
       }
     }
+
+    .be-seller-btn {
+      button {
+        &:hover {
+          background-color: #7728fe;
+        }
+      }
+    }
   }
 
   //main content desgin

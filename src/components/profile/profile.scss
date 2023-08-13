@@ -1,0 +1,23 @@
+//my content section design
+.my-content-section {
+  columns: 3;
+  width: 98%;
+  margin: auto;
+  padding: 0 20px;
+
+  @media (max-width: 1000px) {
+    columns: 2;
+  }
+
+  @media (max-width: 768px) {
+    columns: 2;
+  }
+
+  @media (max-width: 480px) {
+    columns: 1;
+  }
+}
+
+.my-content-scroll {
+  overflow: auto;
+}
