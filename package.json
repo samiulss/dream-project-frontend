@@ -21,7 +21,9 @@
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "6",
+    "react-share-social": "^0.1.55",
     "react-tag-input-component": "^2.0.2",
+    "react-whatsapp-widget": "^2.2.0",
     "recharts": "^2.6.2",
     "sass": "^1.62.1"
   },

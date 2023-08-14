@@ -2,9 +2,12 @@ import Modal from 'react-bootstrap/Modal';
 import { ContentState } from '../../../context/StateContext';
 import ReportCauseList from '../../reportCauseList/ReportCauseList';
 import SellerAgreement from '../../sellerAgreement/SellerAgreement';
+import ShareContentLink from '../../shareContentLink/ShareContentLink';
 import './popUpModal.scss';
 
-function PopUpModal({ beSellear, report }) {
+function PopUpModal({
+  beSellear, report, shareLink, path
+}) {
   const { popUpModal, setPopUpModal } = ContentState();
 
   const handleClose = () => setPopUpModal(false);
@@ -13,7 +16,7 @@ function PopUpModal({ beSellear, report }) {
     <Modal
       show={popUpModal}
       onHide={handleClose}
-      backdrop="static"
+      // backdrop="static"
       keyboard={false}
       centered
     >
@@ -22,6 +25,7 @@ function PopUpModal({ beSellear, report }) {
         <div className="modal-container">
           {report && <ReportCauseList />}
           {beSellear && <SellerAgreement />}
+          {shareLink && <ShareContentLink path={path} />}
         </div>
       </Modal.Body>
     </Modal>

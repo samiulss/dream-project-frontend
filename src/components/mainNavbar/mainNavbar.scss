@@ -35,6 +35,18 @@
     ul {
       gap: 25px;
     }
+
+    .dropdown {
+      .dropdown-menu {
+        .dropdown-item {
+          color: #333 !important;
+          &:hover {
+            background-color: #7728fe;
+            color: #fff !important;
+          }
+        }
+      }
+    }
   }
 
   //nav right side design
@@ -95,7 +107,7 @@
     position: absolute;
     z-index: 100;
     top: 50px;
-    border-radius: 16px;
+    border-radius: 11px;
     padding: 8px 12px;
   }
   li {
@@ -125,6 +137,7 @@
   .notification-dropdown-box {
     right: 10px;
     width: 300px;
+    min-height: 300px;
 
     .notification-list {
       max-height: 300px;

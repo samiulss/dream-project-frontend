@@ -3,11 +3,17 @@
     li {
       color: #333;
       opacity: 1 !important;
-      margin-bottom: 5px;
-    }
-    .fa-regular,
-    .fa-solid {
-      color: #333;
+      margin-bottom: 8px;
+      padding: 5px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      label {
+        margin-left: 8px;
+        cursor: pointer;
+      }
     }
   }
 }

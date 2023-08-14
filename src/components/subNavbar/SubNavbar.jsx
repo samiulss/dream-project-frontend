@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './subNavbar.scss';
 import { ContentState } from '../../context/StateContext';
+import './subNavbar.scss';
 
 function SubNavbar() {
   const { setMenuCatagory } = ContentState();
@@ -9,22 +9,22 @@ function SubNavbar() {
   return (
     <div className="sub-navbar border border-1 rounded-pill mb-4 position-relative">
       <ul className="sub-navbar-list">
-        <Link className="nav-link" to="/content">
+        <Link className="nav-link" to="/contents">
           <li onClick={() => setMenuCatagory('Font')}>Font</li>
         </Link>
-        <Link className="nav-link" to="/content">
+        <Link className="nav-link" to="/contents">
           <li onClick={() => setMenuCatagory('Vector')}>Vector</li>
         </Link>
-        <Link className="nav-link mini-device" to="/content">
-          <li onClick={() => setMenuCatagory('Web Template')}>Web Template</li>
+        <Link className="nav-link mini-device" to="/contents">
+          <li onClick={() => setMenuCatagory('Web Design')}>Web Design</li>
         </Link>
-        <Link className="nav-link dropdown-for-mobile" to="/content">
+        <Link className="nav-link dropdown-for-mobile" to="/contents">
           <li onClick={() => setMenuCatagory('PSD')}>PSD</li>
         </Link>
-        <Link className="nav-link dropdown-for-mobile" to="/content">
+        <Link className="nav-link dropdown-for-mobile" to="/contents">
           <li onClick={() => setMenuCatagory('Image')}>Image</li>
         </Link>
-        <Link className="nav-link dropdown-for-mobile" to="/content">
+        <Link className="nav-link dropdown-for-mobile" to="/contents">
           <li onClick={() => setMenuCatagory('Wallpaper')}>Wallpaper</li>
         </Link>
         <li

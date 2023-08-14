@@ -7,6 +7,9 @@
   }
 
   .menu {
+    height: calc(100vh - 85px);
+    overflow-y: auto;
+
     li {
       margin: 40px 0;
       font-weight: 600;

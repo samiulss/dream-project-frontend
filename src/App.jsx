@@ -8,6 +8,7 @@ import Download from './pages/download/Download';
 import Home from './pages/home/Home';
 import NotFound from './pages/notFound/NotFound';
 import PrivateRoute from './privateRoute/PrivateRoute';
+import SellerProtection from './privateRoute/SellerProtection';
 
 function App() {
   const { pathname } = useLocation();
@@ -20,19 +21,21 @@ function App() {
     <Routes>
       <Route index element={<Home />} />
       <Route path="/admin-panel" element={<AdminHome />} />
-      <Route path="/content" element={<Content />} />
+      <Route path="/contents" element={<Content />} />
       <Route path="/seller/:sellerId" element={<SellerContentProfile />} />
       <Route path="/download/:contentId" element={<Download />} />
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<DashBoard />} />
+        <Route path="/following" element={<DashBoard />} />
+        <Route path="/favourite" element={<DashBoard />} />
+      </Route>
+      <Route element={<SellerProtection />}>
         <Route path="/upload" element={<DashBoard />} />
         <Route path="/message" element={<DashBoard />} />
         <Route path="/file-status" element={<DashBoard />} />
         <Route path="/balance" element={<DashBoard />} />
         <Route path="/download-list" element={<DashBoard />} />
         <Route path="/my-content" element={<DashBoard />} />
-        <Route path="/following" element={<DashBoard />} />
-        <Route path="/favourite" element={<DashBoard />} />
       </Route>
       <Route path="/*" element={<NotFound />} />
 

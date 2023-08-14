@@ -7,7 +7,7 @@ import Login from '../modals/login/Login';
 import './mainNavbar.scss';
 
 function MainNavbar() {
-  const { loggedInUser, setShowLoginModal } = ContentState();
+  const { loggedInUser, setShowLoginModal, setMenuCatagory } = ContentState();
   const [showGrid, setShowGrid] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showMyAccount, setShowMyAccount] = useState(false);
@@ -27,28 +27,45 @@ function MainNavbar() {
     setShowGrid(false);
   }, [pathname]);
 
-  const menuNames = [
-    'Profile',
-    'Upload',
-    'Message',
-    'File status',
-    'Balance',
-    'Download',
-    'My Content',
-    'Following',
-    'Fovourite',
-  ];
-  const pathnames = [
-    '/profile',
-    '/upload',
-    '/message',
-    '/file-status',
-    '/balance',
-    '/download-list',
-    '/my-content',
-    '/following',
-    '/favourite',
-  ];
+  let menuNames = [];
+  let pathnames = [];
+
+  if (loggedInUser?.role === 'user') {
+    menuNames = [
+      'Profile',
+      'Fovourite',
+      'Following',
+    ];
+    pathnames = [
+      '/profile',
+      '/favourite',
+      '/following',
+    ];
+  }
+  if (loggedInUser?.role === 'seller') {
+    menuNames = [
+      'Profile',
+      'Fovourite',
+      'Following',
+      'Upload',
+      'Message',
+      'File status',
+      'Balance',
+      'Download',
+      'My Content',
+    ];
+    pathnames = [
+      '/profile',
+      '/favourite',
+      '/following',
+      '/upload',
+      '/message',
+      '/file-status',
+      '/message',
+      'download-list',
+      '/my-content',
+    ];
+  }
 
   const menu = [
     {
@@ -96,19 +113,18 @@ function MainNavbar() {
 
         <div className="nav-menu position-relative">
           <ul className="d-flex align-items-center me-auto mb-0 mb-lg-0">
-            <li className="nav-item">
-              <Link to="/content">
+            <li onClick={() => setMenuCatagory('Font')} className="nav-item">
+              <Link to="/contents">
                 Font
               </Link>
-
             </li>
-            <li className="nav-item">
-              <Link to="/content">
+            <li onClick={() => setMenuCatagory('Vector')} className="nav-item">
+              <Link to="/contents">
                 Vector
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/content">
+            <li onClick={() => setMenuCatagory('Image')} className="nav-item">
+              <Link to="/contents">
                 Image
               </Link>
             </li>
@@ -122,24 +138,21 @@ function MainNavbar() {
               >
                 More
               </a>
-              <ul className="dropdown-menu bg-info">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Action
-                  </a>
+              <ul className="dropdown-menu mt-3 bg-white">
+                <li onClick={() => setMenuCatagory('PSD')}>
+                  <Link className="dropdown-item">
+                    PSD
+                  </Link>
                 </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Another action
-                  </a>
+                <li onClick={() => setMenuCatagory('Walpaper')}>
+                  <Link className="dropdown-item">
+                    Wallpaper
+                  </Link>
                 </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Something else here
-                  </a>
+                <li onClick={() => setMenuCatagory('Ai Image')}>
+                  <Link className="dropdown-item">
+                    Ai Image
+                  </Link>
                 </li>
               </ul>
             </li>
@@ -224,7 +237,10 @@ function MainNavbar() {
             <div className="notification-list d-flex align-items-center justify-content-center">
               <ul className="w-100">
                 <li>Business Web Template was approved</li>
+                <hr className="mt-0 mb-0" />
                 <li>Illustration of Bird was rejected</li>
+                <hr className="mt-0 mb-0" />
+                <li>Wallpaper of Bird was approved</li>
               </ul>
             </div>
           </div>

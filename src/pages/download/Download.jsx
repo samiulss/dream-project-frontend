@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
 import Loadng from '../../components/commons/loading/Loadng';
 import Footer from '../../components/footer/Footer';
@@ -21,9 +21,14 @@ function Download() {
   } = ContentState();
 
   const [content, setContent] = useState(null);
+  const [totalContent, setTotalContent] = useState('');
   const [noContent, setNoContent] = useState(false);
   const [followingSeller, setFollowingSeller] = useState([]);
   const [favourites, setFavourites] = useState([]);
+  const [report, setReport] = useState(false);
+  const [shareLink, setShareLink] = useState(false);
+
+  const { pathname } = useLocation();
 
   // const mobileDevice = window.matchMedia('(max-width: 480px)');
 
@@ -67,20 +72,25 @@ function Download() {
     }
   };
 
-  //
+  // FETCH DOWNLOAD CONTENT
   const fetchSingleContent = async () => {
     try {
       const { data } = await axios.get(
         `${rootUrl}/api/singleContent?id=${contentId}`
       );
-      setContent(data);
+      setContent(data.content);
+      setTotalContent(data.total);
     } catch (error) {
       setNoContent(true);
     }
   };
 
-  //
+  // SELLER FOLLOWING OR NOT
   const checkFollower = async () => {
+    if (!loggedInUser) {
+      toast.error('Please log in first');
+      return;
+    }
     try {
       const { data } = await axios.get(
         `${rootUrl}/api/followingList`,
@@ -130,7 +140,7 @@ function Download() {
     }
   };
 
-  // // HANDLE UNFAVOURITE
+  // HANDLE UNFAVOURITE
   const handleUnfavourite = async (id) => {
     const selectContent = {
       contentId: id,
@@ -148,18 +158,34 @@ function Download() {
     }
   };
 
+  // HANDLE REPORT
   const handleReport = () => {
     if (!loggedInUser) {
       toast.error('Please log in first');
       return;
     }
+    setReport(true);
+    setShareLink(false);
+    setPopUpModal(true);
+  };
+
+  // HANDLE SHARE LINK
+  const handleShareLink = () => {
+    if (!loggedInUser) {
+      toast.error('Please log in first');
+      return;
+    }
+    setShareLink(true);
+    setReport(false);
     setPopUpModal(true);
   };
 
   useEffect(() => {
     fetchSingleContent();
-    checkFollower();
     favouriteContents();
+    if (loggedInUser) {
+      checkFollower();
+    }
   }, [fetchAgain]);
 
   return (
@@ -212,7 +238,11 @@ function Download() {
                               {content?.author.name}
                             </h6>
                           </Link>
-                          <span>301 Resources</span>
+                          <span>
+                            {totalContent}
+                            {' '}
+                            Resources
+                          </span>
                         </div>
 
                         {/* -----------AUTHOR FOLLOW BUTTON----------- */}
@@ -298,6 +328,7 @@ function Download() {
                       <div className="share-btn">
                         <button
                           type="button"
+                          onClick={handleShareLink}
                           className="btn-light custom-border-color"
                         >
                           <i className="fa-solid fa-share-nodes" />
@@ -315,7 +346,9 @@ function Download() {
                       </div>
                       <div className="file-license">
                         <span className="me-4 fw-semibold file-title">
-                          File License : Free
+                          File License :
+                          {' '}
+                          {content.licence}
                         </span>
                         <span className="how">What is this?</span>
                       </div>
@@ -363,7 +396,7 @@ function Download() {
       ) : (
         <NotFound />
       )}
-      <PopUpModal report />
+      <PopUpModal report={report} shareLink={shareLink} path={pathname} />
     </>
   );
 }

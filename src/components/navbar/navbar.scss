@@ -81,6 +81,27 @@ nav {
         height: 22px;
       }
     }
+
+    .search-list-container {
+      left: 67.1%;
+      top: 65px;
+      width: 28%;
+      max-height: 250px;
+      overflow: auto;
+      background-color: #fff;
+      z-index: 10;
+      padding: 0 10px;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      border-radius: 10px;
+
+      li {
+        border-radius: 5px;
+        &:hover {
+          background-color: #be6ee5;
+          color: #fff !important;
+        }
+      }
+    }
   }
 
   .user-profile {

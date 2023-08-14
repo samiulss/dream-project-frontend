@@ -15,32 +15,36 @@ import Loadng from '../commons/loading/Loadng';
 import ContentList from '../contentList/ContentList';
 
 function ContentContainer() {
-  const { auth, loggedInUser, fetchAgain } = ContentState();
+  const {
+    auth, loggedInUser, contents, setContents, fetchAgain, menuCatagory, homeSearch
+  } = ContentState();
 
-  const [contents, setContents] = useState([]);
   const [topSearch, setTopSearch] = useState([]);
   const [filterContents, setFilterContents] = useState([]);
   const [favourites, setFavourites] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [catagory, setCatagory] = useState(null);
   const [sortByTime, setsortByTime] = useState(null);
   const [sortByLicence, setsortByLicence] = useState(null);
   const [resultFor, setResultFor] = useState('');
+  const [filterOn, setFilterOn] = useState(false);
   const [searchkeywords, setSearchkeywords] = useState('');
 
   // FETCH ALL CONTENTS
   const fetchContents = async () => {
+    setLoading(true);
     const headers = {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
       const { data } = await axios.get(
-        `${rootUrl}/api/approvedContent`,
+        `${rootUrl}/api/contents?catagory=${menuCatagory}`,
         headers
       );
-      setLoading(false);
       setContents(data);
       setTopSearch(data);
+      setLoading(false);
+      setFilterOn(false);
     } catch (error) {
       setLoading(false);
       toast.error(error.message);
@@ -70,12 +74,20 @@ function ContentContainer() {
     setSearchkeywords(title);
   };
 
+  // useEffect(() => {
+  //   if (catagory) {
+  //     setMenuCatagory(null);
+  //   }
+  // }, [catagory]);
+
   useEffect(() => {
-    fetchContents();
+    if (!homeSearch) {
+      fetchContents();
+    }
     if (loggedInUser) {
       favouriteContents();
     }
-  }, [fetchAgain]);
+  }, [fetchAgain, catagory, menuCatagory]);
 
   // FILTER BY CATAGORY
   useEffect(() => {
@@ -94,44 +106,45 @@ function ContentContainer() {
     }
 
     // condition for catagory
-    if (catagory) {
+    if (catagory && !sortByLicence) {
       const sortCatagory = contents.filter(
         (content) => content.catagory === catagory
       );
       setFilterContents(sortCatagory);
-
-      if (sortByLicence) {
-        const sort = filterContents.filter(
-          (content) => content.licence === sortByLicence
-        );
-        setFilterContents(sort);
-      }
     }
 
     // condition for licence
-    if (sortByLicence) {
+    if (sortByLicence && !catagory) {
       const sortLicence = contents.filter(
         (content) => content.licence === sortByLicence
       );
       setFilterContents(sortLicence);
+    }
 
-      if (catagory) {
-        const sort = contents.filter(
-          (content) => content.catagory === catagory
-        );
-        setFilterContents(sort);
-      }
+    // condition for catagory & licence
+    if (sortByLicence && catagory) {
+      const result = contents.filter(
+        (content) => content.licence === sortByLicence && content.catagory === catagory
+      );
+      setFilterContents(result);
     }
   }, [catagory, sortByTime, sortByLicence]);
+
+  // console.log(contents);
+  // console.log(filterContents);
 
   return (
     <main className="ContentContainer">
       {/* ------------SEARCH SECTION------------ */}
       <SearchBox
-        setContents={setContents}
+        setLoading={setLoading}
+        catagory={catagory}
+        setCatagory={setCatagory}
         setResultFor={setResultFor}
         searchkeywords={searchkeywords}
         setSearchkeywords={setSearchkeywords}
+        setFilterContents={setFilterContents}
+        setFilterOn={setFilterOn}
       />
 
       <div className="container-fluid mt-3">
@@ -143,6 +156,9 @@ function ContentContainer() {
               setCatagory={setCatagory}
               setsortByTime={setsortByTime}
               setsortByLicence={setsortByLicence}
+              setFilterOn={setFilterOn}
+              sortByTime={sortByTime}
+              sortLicence={sortByLicence}
             />
           </div>
 
@@ -178,27 +194,33 @@ function ContentContainer() {
             )}
 
             {/* ------------ALL CONTENT------------ */}
-            {contents.length ? (
+            {filterOn ? (
               <div className="content-list-container">
                 <div className="content-wraper">
-                  {filterContents.length || sortByLicence || catagory
-                    ? filterContents.map((content) => (
-                      <ContentList
-                        key={content._id}
-                        content={content}
-                        favourites={favourites}
-                      />
-                    ))
-                    : contents.map((content) => (
-                      <ContentList
-                        key={content._id}
-                        content={content}
-                        favourites={favourites}
-                      />
-                    ))}
+                  {filterContents.map((content) => (
+                    <ContentList
+                      key={content._id}
+                      content={content}
+                      favourites={favourites}
+                    />
+                  ))}
                 </div>
               </div>
             ) : (
+              <div className="content-list-container">
+                <div className="content-wraper">
+                  {contents.map((content) => (
+                    <ContentList
+                      key={content._id}
+                      content={content}
+                      favourites={favourites}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {contents.length === 0 && filterContents.length === 0 && (
               <div className="d-flex align-items-center justify-content-center h-50">
                 {loading ? <Loadng /> : <h5>No contents found</h5>}
               </div>

@@ -15,9 +15,11 @@ function StateContext({ children }) {
   const [loggedInUser, setLoggedInUser] = useState(decode);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [auth, setAuth] = useState(token);
+  const [contents, setContents] = useState([]);
   const [fetchAgain, setFetchAgain] = useState(false);
   const [popUpModal, setPopUpModal] = useState(false);
   const [menuCatagory, setMenuCatagory] = useState(null);
+  const [homeSearch, setHomeSearch] = useState(false);
   return (
     <State.Provider value={{
       getContent,
@@ -28,6 +30,10 @@ function StateContext({ children }) {
       setAuth,
       showLoginModal,
       setShowLoginModal,
+      contents,
+      setContents,
+      homeSearch,
+      setHomeSearch,
       fetchAgain,
       setFetchAgain,
       popUpModal,

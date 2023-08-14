@@ -15,7 +15,7 @@ function SellerContentProfile() {
 
   const [contents, setContents] = useState([]);
 
-  //
+  // FETCH SELLER PROFILE AND CONTENTS
   const fetchSellerProfile = async () => {
     try {
       const { data } = await axios.get(

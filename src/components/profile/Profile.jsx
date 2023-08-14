@@ -111,7 +111,7 @@ function Profile({ fullDetails, contents }) {
                 </h5>
                 <p className="text-muted mb-1">Graphic Designer</p>
                 <p className="text-muted mb-4">Dinajpur Sadar, Dinajpur, BD</p>
-                {!fullDetails && (
+                {(!fullDetails && loggedInUser?.id !== contents[0]?.author._id) && (
                 <div className="d-flex justify-content-center mb-2">
                   {followingSeller.find(
                     (seller) => seller._id === contents[0]?.author._id

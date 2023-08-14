@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
 import { ContentState } from '../../context/StateContext';
@@ -7,22 +8,28 @@ import Filter from '../commons/filter/Filter';
 import './searchBox.scss';
 
 function SearchBox({
-  setContents, setResultFor, searchkeywords, setSearchkeywords
+  setLoading,
+  setResultFor,
+  searchkeywords,
+  setSearchkeywords,
+  setFilterContents,
+  catagory,
+  setCatagory,
+  setFilterOn
 }) {
-  const { menuCatagory } = ContentState();
+  const { menuCatagory, setContents } = ContentState();
 
   const { pathname } = useLocation();
-  const [catagory, setCatagory] = useState(null);
-  const [searchResult, setSearchResult] = useState([]);
   const [searchBox, setSearchBox] = useState(false);
   const [searchItem, setSearchItem] = useState(0);
   const [resultId, setResultId] = useState('');
+  const [showResult, setShowResult] = useState([]);
 
   // handle search
   const handleSearch = async (e) => {
     setSearchkeywords(e.target.value);
     if (e.target.value === '') {
-      setSearchResult([]);
+      setShowResult([]);
       setSearchBox(false);
       setSearchItem(0);
       return;
@@ -36,12 +43,20 @@ function SearchBox({
         headers
       );
       if (catagory) {
-        data = data.filter((d) => d.catagory === catagory);
         setSearchBox(true);
-        setSearchResult(data);
+        data = data.filter((d) => d.catagory === catagory);
+        const key = 'title';
+        const unique = [
+          ...new Map(data.map((item) => [item[key], item])).values(),
+        ];
+        setShowResult(unique);
       } else {
         setSearchBox(true);
-        setSearchResult(data);
+        const key = 'title';
+        const unique = [
+          ...new Map(data.map((item) => [item[key], item])).values(),
+        ];
+        setShowResult(unique);
       }
     } catch (error) {
       console.log(error.message);
@@ -52,13 +67,13 @@ function SearchBox({
   const handleArrowKey = (e) => {
     if (e.keyCode === 38 && searchItem > -1) {
       setSearchItem((prev) => prev - 1);
-      setSearchkeywords(searchResult[searchItem]?.title);
-      setResultId(searchResult[searchItem]?._id);
+      setSearchkeywords(showResult[searchItem]?.title);
+      setResultId(showResult[searchItem]?._id);
     }
-    if (e.keyCode === 40 && searchItem !== searchResult.length) {
+    if (e.keyCode === 40 && searchItem !== showResult.length) {
       setSearchItem((prev) => prev + 1);
-      setSearchkeywords(searchResult[searchItem]?.title);
-      setResultId(searchResult[searchItem]?._id);
+      setSearchkeywords(showResult[searchItem]?.title);
+      setResultId(showResult[searchItem]?._id);
     }
   };
 
@@ -71,16 +86,40 @@ function SearchBox({
   };
 
   // handle search submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSearchBox(false);
-    setContents(searchResult);
-    setResultFor(searchkeywords);
+    if (e.target[0].value === '') {
+      toast.error('Plese type something');
+      return;
+    }
+    setLoading(true);
+    setFilterContents([]);
+    setContents([]);
+    setFilterOn(false);
+    const headers = {
+      'Content-type': 'application/json; charset=UTF-8',
+    };
+    const selectCatagory = {
+      catagoryName: catagory,
+    };
+    try {
+      const { data } = await axios.post(
+        `${rootUrl}/api/searchContents?keyword=${e.target[0].value}`,
+        selectCatagory,
+        headers
+      );
+      setSearchBox(false);
+      setContents(data);
+      setResultFor(searchkeywords);
+      setLoading(false);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   useEffect(() => {
     setCatagory(menuCatagory);
-  }, [pathname]);
+  }, [pathname, menuCatagory]);
 
   return (
     <div className="searchBox mt-2 position-relative">
@@ -97,35 +136,30 @@ function SearchBox({
             // name="search"
             onKeyDown={handleArrowKey}
           />
-          <button className="btn pb-0" type="button">
+          <button type="sumbit" className="btn pb-0">
             <span className="svg-icon search" />
           </button>
         </div>
-        {searchBox && (
+        {searchBox && showResult.length > 0 && (
           <div className="search-list-container position-absolute pt-2">
-            {searchResult.length > 0 ? (
-              <ul>
-                {searchResult.map((result) => (
-                  <li
-                    key={result._id}
-                    onClick={() => selectSearch(result)}
-                    className={
-                      resultId === result._id
-                        ? 'p-2 base-bg-color-2 text-white rounded-2'
-                        : 'p-2 text-dark'
-                    }
-                  >
-                    {result.title}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-center">No contents found</p>
-            )}
+            <ul>
+              {showResult.map((result) => (
+                <li
+                  key={result._id}
+                  onClick={() => selectSearch(result)}
+                  className={
+                    resultId === result._id
+                      ? 'p-2 base-bg-color-2 text-white rounded-2'
+                      : 'p-2 text-dark'
+                  }
+                >
+                  {result.title}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </form>
-      {/* <Navbar /> */}
     </div>
   );
 }

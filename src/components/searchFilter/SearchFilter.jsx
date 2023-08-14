@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { ContentState } from '../../context/StateContext';
 import './searchFilter.scss';
 
-function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
-  const [filterOn, setFilterOn] = useState(false);
+function SearchFilter({
+  setCatagory, setsortByTime, setsortByLicence, setFilterOn, sortByTime, sortLicence
+}) {
+  const {
+    menuCatagory, setMenuCatagory
+  } = ContentState();
 
   // FILTER BY CATAGORY
   const filterCatagory = (e) => {
     const catagory = e.target.value;
     setCatagory(catagory);
+    setMenuCatagory(catagory);
     setFilterOn(true);
   };
 
@@ -25,6 +31,12 @@ function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
     setFilterOn(true);
   };
 
+  useEffect(() => {
+    if (menuCatagory) {
+      setFilterOn(true);
+    }
+  }, []);
+
   return (
     <div className="filter-content custom-border-color">
       {/* -------------HEADER------------- */}
@@ -37,7 +49,7 @@ function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
         </div>
       </div>
       <div className="container p-0">
-        {filterOn && (
+        {(menuCatagory || sortByTime || sortLicence) && (
           <small
             onClick={() => window.location.reload()}
             className="m-0 d-block text-end me-2"
@@ -86,6 +98,7 @@ function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
                 id="font"
                 name="catagory"
                 value="Font"
+                checked={menuCatagory === 'Font'}
               />
               <label htmlFor="font">Font</label>
             </div>
@@ -96,6 +109,7 @@ function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
                 id="vector"
                 name="catagory"
                 value="Vector"
+                checked={menuCatagory === 'Vector'}
               />
               <label htmlFor="vector">Vector</label>
             </div>
@@ -106,8 +120,9 @@ function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
                 id="web-design"
                 name="catagory"
                 value="Web Design"
+                checked={menuCatagory === 'Web Design'}
               />
-              <label htmlFor="web-design">Web Design</label>
+              <label onClick={() => setFilterOn(true)} htmlFor="web-design">Web Design</label>
             </div>
             <div>
               <input
@@ -116,6 +131,7 @@ function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
                 id="image"
                 name="catagory"
                 value="Image"
+                checked={menuCatagory === 'Image'}
               />
               <label htmlFor="image">Image</label>
             </div>
@@ -140,7 +156,7 @@ function SearchFilter({ setCatagory, setsortByTime, setsortByLicence }) {
                 onChange={sortByLicence}
                 name="licence"
                 id="premium"
-                value="premium"
+                value="Premium"
               />
               <label htmlFor="premium">Premium</label>
             </div>
