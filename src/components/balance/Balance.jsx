@@ -10,7 +10,7 @@ function Balance() {
         <div className="current-balance">
           <div className="current-balance-card custom-border-color">
             <div className="header base-bg-color-1 text-white">Current Balance</div>
-            <div className="count"><span className="fw-bold fs-5">5023 TK</span></div>
+            <div className="count"><span className="fw-bold fs-5">0.00 TK</span></div>
           </div>
 
           {/* -----------WITHDRAW BUTTON----------- */}
@@ -22,7 +22,7 @@ function Balance() {
         {/* -----------TOTAL EARNING----------- */}
         <div className="total-earning-card custom-border-color">
           <div className="header base-bg-color-1 text-white">Total Earnings</div>
-          <div className="count"><span className="fw-bold fs-5">9023 TK</span></div>
+          <div className="count"><span className="fw-bold fs-5">0.00 TK</span></div>
         </div>
       </div>
 

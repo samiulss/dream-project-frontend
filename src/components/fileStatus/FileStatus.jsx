@@ -17,7 +17,11 @@ function FileStatus({ content, index }) {
   // DELETE PENDING CONTENT
   const cancelPending = async (id) => {
     try {
-      const { data } = await axios.post(`${rootUrl}/api/deletePending`, { contentId: id }, config(auth));
+      const { data } = await axios.post(
+        `${rootUrl}/api/deletePending`,
+        { contentId: id },
+        config(auth)
+      );
       toast.success(data);
       setFetchAgain(!fetchAgain);
     } catch (error) {
@@ -29,30 +33,28 @@ function FileStatus({ content, index }) {
   };
 
   return (
-    <>
-      {/* ----------TABLE DATA---------- */}
-      <tbody>
-        <tr>
-          <td>{index + 1}</td>
-          <td>{title}</td>
-          <td>
-            <span className="me-2">{moment(createdAt).format('L')}</span>
-            {moment(createdAt).format('LT')}
-            <span />
-          </td>
-          <td className={
+    <tbody>
+      <tr>
+        <td>{index + 1}</td>
+        <td>{title}</td>
+        <td>
+          <span className="me-2">{moment(createdAt).format('L')}</span>
+          {moment(createdAt).format('LT')}
+          <span />
+        </td>
+        <td
+          className={
             (status === 'Pending' && 'text-warning')
             || (status === 'Approved' && 'text-success')
             || (status === 'Rejected' && 'text-danger')
-}
-          >
-            {status}
-          </td>
-          <td>
-            <ConfirmModal content={content} fileState />
-          </td>
-          {status === 'Pending'
-          && (
+          }
+        >
+          {status}
+        </td>
+        <td>
+          <ConfirmModal content={content} fileState />
+        </td>
+        {status === 'Pending' && (
           <td>
             <i
               onClick={() => cancelPending(content._id)}
@@ -61,15 +63,14 @@ function FileStatus({ content, index }) {
               role="button"
             />
           </td>
-          )}
-          {status === 'Rejected' && (
+        )}
+        {status === 'Rejected' && (
           <td>
-            <Canvas />
+            <Canvas rejectCause={content.rejectCause} />
           </td>
-          )}
-        </tr>
-      </tbody>
-    </>
+        )}
+      </tr>
+    </tbody>
   );
 }
 

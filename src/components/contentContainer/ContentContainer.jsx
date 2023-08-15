@@ -16,17 +16,22 @@ import ContentList from '../contentList/ContentList';
 
 function ContentContainer() {
   const {
-    auth, loggedInUser, contents, setContents, fetchAgain, menuCatagory, homeSearch
+    auth,
+    loggedInUser,
+    contents,
+    setContents,
+    catagory,
+    fetchAgain,
+    homeSearch,
+    resultFor,
   } = ContentState();
 
   const [topSearch, setTopSearch] = useState([]);
   const [filterContents, setFilterContents] = useState([]);
   const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [catagory, setCatagory] = useState(null);
   const [sortByTime, setsortByTime] = useState(null);
   const [sortByLicence, setsortByLicence] = useState(null);
-  const [resultFor, setResultFor] = useState('');
   const [filterOn, setFilterOn] = useState(false);
   const [searchkeywords, setSearchkeywords] = useState('');
 
@@ -38,7 +43,7 @@ function ContentContainer() {
     };
     try {
       const { data } = await axios.get(
-        `${rootUrl}/api/contents?catagory=${menuCatagory}`,
+        `${rootUrl}/api/contents?catagory=${catagory}`,
         headers
       );
       setContents(data);
@@ -74,25 +79,22 @@ function ContentContainer() {
     setSearchkeywords(title);
   };
 
-  // useEffect(() => {
-  //   if (catagory) {
-  //     setMenuCatagory(null);
-  //   }
-  // }, [catagory]);
-
   useEffect(() => {
-    if (!homeSearch) {
+    if (!contents.length) {
+      fetchContents();
+    }
+    if (homeSearch) {
       fetchContents();
     }
     if (loggedInUser) {
       favouriteContents();
     }
-  }, [fetchAgain, catagory, menuCatagory]);
+  }, [fetchAgain]);
 
   // FILTER BY CATAGORY
   useEffect(() => {
     // condition for date and time
-    if (sortByTime === 'Newest') {
+    if (sortByTime === 'Newest' && contents.length > 1) {
       const newest = [...contents].reverse();
       setContents(newest);
 
@@ -138,9 +140,6 @@ function ContentContainer() {
       {/* ------------SEARCH SECTION------------ */}
       <SearchBox
         setLoading={setLoading}
-        catagory={catagory}
-        setCatagory={setCatagory}
-        setResultFor={setResultFor}
         searchkeywords={searchkeywords}
         setSearchkeywords={setSearchkeywords}
         setFilterContents={setFilterContents}
@@ -152,8 +151,6 @@ function ContentContainer() {
           {/* ------------FILTER SEARCH SECTION------------ */}
           <div className="col-2 filter-section p-0">
             <SearchFilter
-              catagory={catagory}
-              setCatagory={setCatagory}
               setsortByTime={setsortByTime}
               setsortByLicence={setsortByLicence}
               setFilterOn={setFilterOn}
@@ -221,8 +218,16 @@ function ContentContainer() {
             )}
 
             {contents.length === 0 && filterContents.length === 0 && (
-              <div className="d-flex align-items-center justify-content-center h-50">
-                {loading ? <Loadng /> : <h5>No contents found</h5>}
+              <div className="d-flex flex-column align-items-center justify-content-center h-50">
+                {loading ? (
+                  <Loadng />
+                ) : (
+                  <>
+                    <i className="fa-solid fa-face-frown fs-1 text-warning fa-2xl" />
+                    <br />
+                    <h5>No contents found</h5>
+                  </>
+                )}
               </div>
             )}
 

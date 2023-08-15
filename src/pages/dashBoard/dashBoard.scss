@@ -183,8 +183,8 @@
     .filter-menu {
       box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
       width: 150px;
-      top: 50px;
-      right: 22%;
+
+      background-color: #7728fe;
 
       li {
         font-weight: normal;
@@ -198,6 +198,14 @@
           opacity: 1 !important;
         }
       }
+    }
+    .filter-menu-file-status {
+      top: 50px;
+      left: 63%;
+    }
+    .filter-menu-download {
+      top: 108px;
+      left: 46%;
     }
   }
 }

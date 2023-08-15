@@ -1,14 +1,15 @@
+import { Carousel } from '@trendyol-js/react-carousel';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
+import { config } from '../../../config/tokenVerify';
+import Arrow from '../../components/commons/arrow/Arrow';
 import Loadng from '../../components/commons/loading/Loadng';
 import Footer from '../../components/footer/Footer';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
-// import SearchBox from '../../components/searchBox/SearchBox';
-import { config } from '../../../config/tokenVerify';
 import PopUpModal from '../../components/modals/popUpModal/PopUpModal';
 import { ContentState } from '../../context/StateContext';
 import NotFound from '../notFound/NotFound';
@@ -17,20 +18,26 @@ import './download.scss';
 function Download() {
   const { contentId } = useParams();
   const {
-    auth, loggedInUser, fetchAgain, setFetchAgain, setPopUpModal
+    auth,
+    loggedInUser,
+    fetchAgain,
+    setFetchAgain,
+    setPopUpModal,
   } = ContentState();
 
   const [content, setContent] = useState(null);
   const [totalContent, setTotalContent] = useState('');
+  const [relatedContents, setRelatedContents] = useState([]);
   const [noContent, setNoContent] = useState(false);
   const [followingSeller, setFollowingSeller] = useState([]);
   const [favourites, setFavourites] = useState([]);
   const [report, setReport] = useState(false);
   const [shareLink, setShareLink] = useState(false);
+  const [relatedContentUrl, setRelatedContentUrl] = useState('');
 
   const { pathname } = useLocation();
 
-  // const mobileDevice = window.matchMedia('(max-width: 480px)');
+  const mobileDevice = window.matchMedia('(max-width: 480px)');
 
   // HANDLE FOLLOW SELLER
   const handleFollow = async () => {
@@ -73,15 +80,30 @@ function Download() {
   };
 
   // FETCH DOWNLOAD CONTENT
-  const fetchSingleContent = async () => {
+  const fetchDownloadingContent = async () => {
+    setRelatedContents([]);
     try {
       const { data } = await axios.get(
-        `${rootUrl}/api/singleContent?id=${contentId}`
+        `${rootUrl}/api/singleContent?id=${contentId || relatedContentUrl}`
       );
       setContent(data.content);
       setTotalContent(data.total);
+      const relatedData = data.relatedContents.filter(
+        (item) => item._id !== data.content._id
+      );
+      setRelatedContents(relatedData);
     } catch (error) {
       setNoContent(true);
+    }
+  };
+
+  const handleDownloadCount = async () => {
+    try {
+      await axios.post(
+        `${rootUrl}/api/downloadCount?id=${contentId || relatedContentUrl}`
+      );
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -180,13 +202,19 @@ function Download() {
     setPopUpModal(true);
   };
 
+  // RELATED CONTENT URL
+  const rContentUrl = (url) => {
+    setContent(null);
+    setRelatedContentUrl(url);
+  };
+
   useEffect(() => {
-    fetchSingleContent();
+    fetchDownloadingContent();
     favouriteContents();
     if (loggedInUser) {
       checkFollower();
     }
-  }, [fetchAgain]);
+  }, [fetchAgain, relatedContentUrl, pathname]);
 
   return (
     <>
@@ -195,10 +223,7 @@ function Download() {
           {/* --------------NAVBER-------------- */}
           <MainNavbar />
 
-          {/* --------------SEARCHBOX-------------- */}
-          {/* <SearchBox /> */}
-
-          {/* --------------JSDHJA-------------- */}
+          {/* --------------CONTENT DETAILS-------------- */}
           {content ? (
             <>
               <div className="container-fluid">
@@ -206,12 +231,16 @@ function Download() {
                   {/* -----------IMAGE CONTAINER SECTION----------- */}
                   <div className="col-md-8 border-end custom-border-color p-0">
                     {/* -----------CONTENT IMAGE----------- */}
-                    <div className="content-image">
-                      <img
-                        className="img-fluid"
-                        src={`${rootUrl}/uploads/${content?.thumbnail}`}
-                        alt=""
-                      />
+                    <div className="content-image d-flex align-items-center justify-content-center">
+                      <>
+                        {content && (
+                          <img
+                            className="img-fluid"
+                            src={`${rootUrl}/uploads/${content?.thumbnail}`}
+                            alt=""
+                          />
+                        )}
+                      </>
                     </div>
 
                     {/* -----------CONTENT TITLE----------- */}
@@ -278,16 +307,40 @@ function Download() {
                     <div className="advertise border d-flex align-items-center justify-content-center mb-4">
                       Advertise
                     </div>
-                    <div className="content-download">
-                      <Link
-                        className="btn base-bg-color-1 text-white w-100 mb-3"
-                        to={`${rootUrl}/api/downloadFile?id=${contentId}`}
-                        download="Vector-file"
-                        rel="noreferrer"
-                      >
-                        Download Free
-                      </Link>
-                    </div>
+                    {content.licence === 'Free' ? (
+                      <div className="content-download">
+                        <Link
+                          onClick={handleDownloadCount}
+                          className="btn base-bg-color-1 text-white w-100 mb-3"
+                          to={`${rootUrl}/api/downloadFile?id=${
+                            contentId || relatedContentUrl
+                          }`}
+                          download={content.title}
+                          rel="noreferrer"
+                        >
+                          Download Free
+                        </Link>
+                      </div>
+                    ) : (
+                      <div className="content-download">
+                        <Link
+                          onClick={handleDownloadCount}
+                          className="btn base-bg-color-1 text-white w-100 mb-3"
+                          to={`${rootUrl}/api/downloadFile?id=${
+                            contentId || relatedContentUrl
+                          }`}
+                          download={content.title}
+                          rel="noreferrer"
+                        >
+                          Premium Download
+                          {' '}
+                          (
+                          {content.price}
+                          {' '}
+                          BDT)
+                        </Link>
+                      </div>
+                    )}
                     <div className="action-buttons d-flex justify-content-between mb-4 flex-wrap">
                       <div className="report-btn">
                         <button
@@ -357,28 +410,30 @@ function Download() {
                 </div>
 
                 {/* -------------------related-content------------------- */}
-                <div className="related-content mt-4 mb-5">
-                  <h5 className="ms-2 mb-3">Related Content</h5>
-                  {/* <Carousel
-                    show={mobileDevice.matches ? 2 : 4}
-                    slide={mobileDevice.matches ? 1.5 : 3.5}
-                    swiping
-                    leftArrow={<Arrow />}
-                    rightArrow={<Arrow right="right" />}
-                    infinite={false}
-                  >
-                    {content.map((contents) => (
-                      <Link to={`/download/${contents.id}`} key={contents.id}>
-                        <img
-                          onClick={() => setGetContent(contents.url)}
-                          key={contents.id}
-                          src={contents.url}
-                          alt=""
-                        />
-                      </Link>
-                    ))}
-                  </Carousel> */}
-                </div>
+                {relatedContents.length > 0 && (
+                  <div className="related-content mt-4 mb-5">
+                    <h5 className="ms-2 mb-3">Related Content</h5>
+                    <Carousel
+                      show={mobileDevice.matches ? 2 : 4}
+                      slide={mobileDevice.matches ? 1.5 : 3.5}
+                      swiping
+                      leftArrow={<Arrow />}
+                      rightArrow={<Arrow right="right" />}
+                      infinite={false}
+                    >
+                      {relatedContents.map((item) => (
+                        <Link to={`/download/${item._id}`} key={item._id}>
+                          <img
+                            onClick={() => rContentUrl(item._id)}
+                            key={item.id}
+                            src={`${rootUrl}/uploads/${item.thumbnail}`}
+                            alt={item.title}
+                          />
+                        </Link>
+                      ))}
+                    </Carousel>
+                  </div>
+                )}
               </div>
 
               {/* -------------------GET HELP------------------- */}

@@ -4,7 +4,6 @@
   }
   //content image title and author sectio
   .content-image {
-    width: 95%;
     margin: 0 auto;
     padding: 20px 0;
 
@@ -55,6 +54,7 @@
 
     //action button design
     .action-buttons {
+      gap: 10px;
       button {
         border: 1px solid;
         height: 60px;

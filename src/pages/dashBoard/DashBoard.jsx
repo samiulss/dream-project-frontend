@@ -13,6 +13,7 @@ import FollowingList from '../../components/followingList/FollowingList';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
 import ContentUpload from '../../components/modals/contentUpload/ContentUpload';
+import MessageModal from '../../components/modals/messageModal/MessageModal';
 import PopUpModal from '../../components/modals/popUpModal/PopUpModal';
 import Profile from '../../components/profile/Profile';
 import { ContentState } from '../../context/StateContext';
@@ -36,6 +37,8 @@ function DashBoard() {
   const [filterBox, setFilterBox] = useState(false);
   const [followList, setFollowList] = useState([]);
   const [catagory, setCatagory] = useState(null);
+  const [downloads, setDownloads] = useState([]);
+  const [messages, setMessages] = useState([1]);
 
   // FETCH FILE STATUS
   const fetchContentStatus = async () => {
@@ -46,6 +49,8 @@ function DashBoard() {
       );
       setcontents(data);
       setFilterContent(data);
+      const downloadedFiles = data.filter((item) => item.downloadCount > 0);
+      setDownloads(downloadedFiles);
     } catch (error) {
       console.log(error.message);
       if (error.response.status === 401) {
@@ -154,7 +159,7 @@ function DashBoard() {
                           }`}
                         >
                           Message
-                          <span className="ms-5 d-inline-block rounded-5 text-white message-notification">
+                          <span className="ms-1 d-inline-block rounded-5 text-white message-notification">
                             01
                           </span>
                         </li>
@@ -287,12 +292,25 @@ function DashBoard() {
 
               {/* ----------MESSAGE SELTION---------- */}
               {pathname === '/message' && (
-                <div className="message-section overflow-x-auto">
-                  <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">
-                    Message
+                <div className="message-section overflow-x-auto pt-3">
+                  <h4 className="text-center base-color-1 fw-semibold mb-4">
+                    Messages
                   </h4>
                   <Suspense fallback={<Spinner />}>
-                    <Message />
+                    <table className="message-list w-100">
+                      <thead>
+                        <tr className="border-0">
+                          <th>Date</th>
+                          <th>Time</th>
+                          <th>Subject</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      {messages.map((msg) => (
+                        <Message />
+                      ))}
+                    </table>
+                    <MessageModal />
                   </Suspense>
                 </div>
               )}
@@ -301,7 +319,9 @@ function DashBoard() {
               {pathname === '/file-status' && (
                 <div className="file-status pt-3">
                   <h4 className="text-center base-color-1 fw-semibold">
-                    File Status
+                    Uploaded files:
+                    {' '}
+                    {contents.length}
                   </h4>
                   <div className="file-status-list position-relative">
                     <Suspense fallback={<Spinner />}>
@@ -333,31 +353,22 @@ function DashBoard() {
                       </div>
                     </Suspense>
                     {filterBox && (
-                      <div className="filter-menu rounded-3 p-1 position-absolute bg-white">
-                        <ul>
+                      <div className="filter-menu filter-menu-file-status rounded-3 p-1 position-absolute bg-white">
+                        <ul onClick={() => setFilterBox(!filterBox)}>
                           <li
-                            onClick={() => {
-                              filterWise('Approved');
-                              setFilterBox(!filterBox);
-                            }}
+                            onClick={() => filterWise('Approved')}
                             className="text-success"
                           >
                             Approved
                           </li>
                           <li
-                            onClick={() => {
-                              filterWise('Pending');
-                              setFilterBox(!filterBox);
-                            }}
+                            onClick={() => filterWise('Pending')}
                             className="text-warning"
                           >
                             Pending
                           </li>
                           <li
-                            onClick={() => {
-                              filterWise('Rejected');
-                              setFilterBox(!filterBox);
-                            }}
+                            onClick={() => filterWise('Rejected')}
                             className="text-danger"
                           >
                             Rejected
@@ -380,13 +391,54 @@ function DashBoard() {
 
               {/* ----------DOWNLOAD SELTION---------- */}
               {pathname === '/download-list' && (
-                <div className="download-section w-100">
-                  <h4 className="text-center base-color-1 fw-semibold mb-4 mt-4">
-                    You have total 46 downloads in this week
+                <div className="download-section download-list w-100 p-3 position-relative">
+                  <h4 className="text-center base-color-1 fw-semibold mb-4">
+                    Downloaded files:
+                    {' '}
+                    {downloads.length}
                   </h4>
                   <Suspense fallback={<Spinner />}>
-                    <DownloadList />
+                    <div className="w-100 overflow-x-auto">
+                      <table>
+                        {/* ----------TABLE HEADING---------- */}
+                        <thead>
+                          <tr>
+                            <th className="serial-no">NO.</th>
+                            <th className="name">Item Name</th>
+                            <th
+                              onClick={() => setFilterBox(!filterBox)}
+                              role="button"
+                              className="position-relative"
+                            >
+                              Download count
+                              <i className="fa-solid fa-caret-down text-dark ms-2" />
+                            </th>
+                            <th>Price</th>
+                          </tr>
+                        </thead>
+                        {downloads.map((file, index) => (
+                          <DownloadList
+                            key={file._id}
+                            file={file}
+                            index={index}
+                            downloads={downloads}
+                          />
+                        ))}
+                      </table>
+                    </div>
                   </Suspense>
+                  {filterBox && (
+                    <div className="filter-menu filter-menu-download rounded-3 p-1 position-absolute bg-white">
+                      <ul onClick={() => setFilterBox(!filterBox)}>
+                        <li className="text-dark">This Week</li>
+                        <li className="text-dark">This Month</li>
+                        <li className="text-dark">In April</li>
+                        <li className="text-dark">In May</li>
+                        <li className="text-dark">In June</li>
+                        <li className="text-dark">In July</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
 

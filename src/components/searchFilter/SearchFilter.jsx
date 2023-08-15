@@ -3,17 +3,17 @@ import { ContentState } from '../../context/StateContext';
 import './searchFilter.scss';
 
 function SearchFilter({
-  setCatagory, setsortByTime, setsortByLicence, setFilterOn, sortByTime, sortLicence
+  setsortByTime, setsortByLicence, setFilterOn, sortByTime, sortLicence
 }) {
   const {
-    menuCatagory, setMenuCatagory
+    catagory, setCatagory
   } = ContentState();
 
   // FILTER BY CATAGORY
   const filterCatagory = (e) => {
-    const catagory = e.target.value;
-    setCatagory(catagory);
-    setMenuCatagory(catagory);
+    const getCatagory = e.target.value;
+    setCatagory(getCatagory);
+    setCatagory(getCatagory);
     setFilterOn(true);
   };
 
@@ -21,7 +21,6 @@ function SearchFilter({
   const handleSortBy = (e) => {
     const byTime = e.target.value;
     setsortByTime(byTime);
-    setFilterOn(true);
   };
 
   // FILTER BY LICENCE
@@ -32,7 +31,7 @@ function SearchFilter({
   };
 
   useEffect(() => {
-    if (menuCatagory) {
+    if (catagory) {
       setFilterOn(true);
     }
   }, []);
@@ -49,7 +48,7 @@ function SearchFilter({
         </div>
       </div>
       <div className="container p-0">
-        {(menuCatagory || sortByTime || sortLicence) && (
+        {(catagory || sortByTime || sortLicence) && (
           <small
             onClick={() => window.location.reload()}
             className="m-0 d-block text-end me-2"
@@ -61,8 +60,8 @@ function SearchFilter({
         <div className="row flex-column me-0">
           {/* -------------SORT BY------------- */}
           <div className="col-4 custom-border-color">
-            <h6>Sort by</h6>
-            <div>
+            <h6 className="sort-title">Sort by</h6>
+            <div className="set-times">
               <input
                 type="radio"
                 onChange={handleSortBy}
@@ -76,7 +75,7 @@ function SearchFilter({
               <input type="radio" onChange={handleSortBy} id="oldest" name="sort" value="Oldest" />
               <label htmlFor="oldest">Oldest</label>
             </div> */}
-            <div>
+            <div className="set-times">
               <input
                 type="radio"
                 onChange={handleSortBy}
@@ -90,48 +89,48 @@ function SearchFilter({
 
           {/* -------------CONTENT------------- */}
           <div className="col-4 custom-border-color">
-            <h6>Catagory</h6>
-            <div>
+            <h6 className="sort-title">Catagory</h6>
+            <div className="set-catagory">
               <input
                 type="radio"
                 onChange={filterCatagory}
                 id="font"
                 name="catagory"
                 value="Font"
-                checked={menuCatagory === 'Font'}
+                checked={catagory === 'Font'}
               />
               <label htmlFor="font">Font</label>
             </div>
-            <div>
+            <div className="set-catagory">
               <input
                 type="radio"
                 onChange={filterCatagory}
                 id="vector"
                 name="catagory"
                 value="Vector"
-                checked={menuCatagory === 'Vector'}
+                checked={catagory === 'Vector'}
               />
               <label htmlFor="vector">Vector</label>
             </div>
-            <div>
+            <div className="set-catagory">
               <input
                 type="radio"
                 onChange={filterCatagory}
                 id="web-design"
                 name="catagory"
                 value="Web Design"
-                checked={menuCatagory === 'Web Design'}
+                checked={catagory === 'Web Design'}
               />
               <label onClick={() => setFilterOn(true)} htmlFor="web-design">Web Design</label>
             </div>
-            <div>
+            <div className="set-catagory">
               <input
                 type="radio"
                 onChange={filterCatagory}
                 id="image"
                 name="catagory"
                 value="Image"
-                checked={menuCatagory === 'Image'}
+                checked={catagory === 'Image'}
               />
               <label htmlFor="image">Image</label>
             </div>
@@ -139,18 +138,18 @@ function SearchFilter({
 
           {/* -------------Licence------------- */}
           <div className="col-4 border-0">
-            <h6>Licence Type</h6>
-            <div>
+            <h6 className="sort-title">Licence Type</h6>
+            <div className="set-licence">
               <input
                 type="radio"
                 onChange={sortByLicence}
                 name="licence"
                 id="free"
-                value="free"
+                value="Free"
               />
               <label htmlFor="free">Free</label>
             </div>
-            <div>
+            <div className="set-licence">
               <input
                 type="radio"
                 onChange={sortByLicence}

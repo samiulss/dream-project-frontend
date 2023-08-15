@@ -109,30 +109,36 @@ function Profile({ fullDetails, contents }) {
                 <h5 className="my-3">
                   {fullDetails ? loggedInUser.name : contents[0]?.author.name}
                 </h5>
+                <p>
+                  Resources(
+                  {contents?.length}
+                  )
+                </p>
                 <p className="text-muted mb-1">Graphic Designer</p>
                 <p className="text-muted mb-4">Dinajpur Sadar, Dinajpur, BD</p>
-                {(!fullDetails && loggedInUser?.id !== contents[0]?.author._id) && (
-                <div className="d-flex justify-content-center mb-2">
-                  {followingSeller.find(
-                    (seller) => seller._id === contents[0]?.author._id
-                  ) ? (
-                    <button
-                      onClick={handleUnfollow}
-                      type="button"
-                      className="btn btn-primary"
-                    >
-                      Unfollow
-                    </button>
-                    ) : (
-                      <button
-                        onClick={handleFollow}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Follow
-                      </button>
-                    )}
-                </div>
+                {!fullDetails
+                  && loggedInUser?.id !== contents[0]?.author._id && (
+                    <div className="d-flex justify-content-center mb-2">
+                      {followingSeller.find(
+                        (seller) => seller._id === contents[0]?.author._id
+                      ) ? (
+                        <button
+                          onClick={handleUnfollow}
+                          type="button"
+                          className="btn btn-primary"
+                        >
+                          Unfollow
+                        </button>
+                        ) : (
+                          <button
+                            onClick={handleFollow}
+                            type="button"
+                            className="btn btn-primary"
+                          >
+                            Follow
+                          </button>
+                        )}
+                    </div>
                 )}
               </div>
             </div>

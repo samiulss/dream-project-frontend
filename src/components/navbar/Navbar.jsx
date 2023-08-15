@@ -10,13 +10,19 @@ import './navbar.scss';
 
 function Navbar() {
   const {
-    loggedInUser, setShowLoginModal, setContents, setHomeSearch
+    loggedInUser,
+    setShowLoginModal,
+    setContents,
+    setHomeSearch,
+    setCatagory,
+    setResultFor,
   } = ContentState();
   const navigate = useNavigate();
   const [searchBox, setSearchBox] = useState(false);
   const [showResult, setShowResult] = useState([]);
   const [resultId, setResultId] = useState('');
   const [searchItem, setSearchItem] = useState(0);
+  const [searchkeywords, setSearchkeywords] = useState('');
 
   const checkLogin = () => {
     if (!loggedInUser) {
@@ -28,13 +34,17 @@ function Navbar() {
 
   // handle search result
   const handleSearch = async (e) => {
+    setSearchkeywords(e.target.value);
     if (e.target.value === '') {
       setShowResult([]);
       setSearchBox(false);
       setSearchItem(0);
       return;
     }
+    setCatagory(null);
+    setCatagory(null);
     setHomeSearch(true);
+    setResultFor(e.target.value);
     const headers = {
       'Content-type': 'application/json; charset=UTF-8',
     };
@@ -60,10 +70,14 @@ function Navbar() {
     if (e.keyCode === 38 && searchItem > -1) {
       setSearchItem((prev) => prev - 1);
       setResultId(showResult[searchItem]?._id);
+      setSearchkeywords(showResult[searchItem]?.title);
+      setResultFor(showResult[searchItem]?.title);
     }
     if (e.keyCode === 40 && searchItem !== showResult.length) {
       setSearchItem((prev) => prev + 1);
       setResultId(showResult[searchItem]?._id);
+      setSearchkeywords(showResult[searchItem]?.title);
+      setResultFor(showResult[searchItem]?.title);
     }
   };
 
@@ -74,6 +88,7 @@ function Navbar() {
       toast.error('Plese type something');
       return;
     }
+    setHomeSearch(false);
     const headers = {
       'Content-type': 'application/json; charset=UTF-8',
     };
@@ -94,20 +109,19 @@ function Navbar() {
     }
   };
 
+  // select search result
+  const selectSearch = (queary) => {
+    setSearchBox(false);
+    setContents([queary]);
+    navigate('/contents');
+  };
+
   let menuNames = [];
   let pathnames = [];
 
   if (loggedInUser?.role === 'user') {
-    menuNames = [
-      'Profile',
-      'Fovourite',
-      'Following',
-    ];
-    pathnames = [
-      '/profile',
-      '/favourite',
-      '/following',
-    ];
+    menuNames = ['Profile', 'Fovourite', 'Following'];
+    pathnames = ['/profile', '/favourite', '/following'];
   }
   if (loggedInUser?.role === 'seller') {
     menuNames = [
@@ -128,8 +142,8 @@ function Navbar() {
       '/upload',
       '/message',
       '/file-status',
-      '/message',
-      'download-list',
+      '/balance',
+      '/download-list',
       '/my-content',
     ];
   }
@@ -144,8 +158,15 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg mb-4 pt-4">
       <div className="container-fluid p-0">
+        {/* ---------------home logo--------------- */}
         <Link to="/">
-          <img className="site-logo me-4" title="Home" src={logo} alt="" />
+          <img
+            onClick={() => window.location.reload()}
+            className="site-logo me-4"
+            title="Home"
+            src={logo}
+            alt=""
+          />
         </Link>
 
         {/* ---------------toggle mobile sidebar--------------- */}
@@ -195,36 +216,41 @@ function Navbar() {
           </ul>
 
           {/* ------------------SEARCH BOX DESIGN------------------ */}
-          <form onSubmit={handleSubmit} className="d-flex border rounded-pill" role="search">
+          <form
+            onSubmit={handleSubmit}
+            className="d-flex border rounded-pill"
+            role="search"
+          >
             <input
               onChange={handleSearch}
               className="form-control shadow-none bg-transparent text-white border border-0 border-end rounded-0"
               type="search"
-              placeholder="Search..."
+              placeholder="search someting..."
               aria-label="Search"
               onKeyDown={handleArrowKey}
+              value={searchkeywords}
             />
             <button className="btn pb-0" type="submit">
               <span className="svg-icon search" />
             </button>
-            {searchBox && showResult.length && (
-            <div className="search-list-container position-absolute pt-2">
-              <ul>
-                {showResult.map((result) => (
-                  <li
-                    key={result._id}
-                    onClick={() => setSearchBox(false)}
-                    className={
+            {searchBox && showResult.length > 0 && (
+              <div className="search-list-container position-absolute pt-2">
+                <ul>
+                  {showResult.map((result) => (
+                    <li
+                      key={result._id}
+                      onClick={() => selectSearch(result)}
+                      className={
                         resultId === result._id
                           ? 'p-2 base-bg-color-2 text-white'
                           : 'p-2 text-dark'
                       }
-                  >
-                    {result.title}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    >
+                      {result.title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
           </form>
           <div onClick={checkLogin} className="user-profile">

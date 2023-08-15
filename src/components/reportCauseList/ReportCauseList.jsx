@@ -20,6 +20,7 @@ function ReportCauseList() {
     setPopUpModal(false);
     toast.success('Report submited');
   };
+
   return (
     <div className="report-cause">
       <ul>

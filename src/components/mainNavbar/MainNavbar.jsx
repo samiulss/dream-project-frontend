@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../../assets/freeLogo.png';
 import { ContentState } from '../../context/StateContext';
 import MobileSidebar from '../commons/mobileSidebar/MobileSidebar';
@@ -7,7 +7,17 @@ import Login from '../modals/login/Login';
 import './mainNavbar.scss';
 
 function MainNavbar() {
-  const { loggedInUser, setShowLoginModal, setMenuCatagory } = ContentState();
+  const {
+    loggedInUser,
+    setShowLoginModal,
+    setCatagory,
+    setResultFor,
+    setHomeSearch,
+    setContents,
+    fetchAgain,
+    setFetchAgain,
+  } = ContentState();
+  const navigate = useNavigate();
   const [showGrid, setShowGrid] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showMyAccount, setShowMyAccount] = useState(false);
@@ -21,6 +31,14 @@ function MainNavbar() {
     window.location.reload();
   };
 
+  const fetchContentByMenu = (menu) => {
+    setFetchAgain(!fetchAgain);
+    setHomeSearch(true);
+    setCatagory(menu);
+    setContents([]);
+    setResultFor('');
+  };
+
   useEffect(() => {
     setShowMyAccount(false);
     setShowNotification(false);
@@ -31,16 +49,8 @@ function MainNavbar() {
   let pathnames = [];
 
   if (loggedInUser?.role === 'user') {
-    menuNames = [
-      'Profile',
-      'Fovourite',
-      'Following',
-    ];
-    pathnames = [
-      '/profile',
-      '/favourite',
-      '/following',
-    ];
+    menuNames = ['Profile', 'Fovourite', 'Following'];
+    pathnames = ['/profile', '/favourite', '/following'];
   }
   if (loggedInUser?.role === 'seller') {
     menuNames = [
@@ -61,8 +71,8 @@ function MainNavbar() {
       '/upload',
       '/message',
       '/file-status',
-      '/message',
-      'download-list',
+      '/balance',
+      '/download-list',
       '/my-content',
     ];
   }
@@ -73,6 +83,12 @@ function MainNavbar() {
       pathnames,
     },
   ];
+
+  const goHome = () => {
+    setCatagory(null);
+    setResultFor('');
+    setContents([]);
+  };
 
   return (
     <nav
@@ -85,7 +101,13 @@ function MainNavbar() {
       <div className="container-fluid">
         {/* ---------------NAV LEFT--------------- */}
         <Link to="/">
-          <img className="site-logo me-4" title="Home" src={logo} alt="" />
+          <img
+            onClick={goHome}
+            className="site-logo me-4"
+            title="Home"
+            src={logo}
+            alt="Home"
+          />
         </Link>
 
         <div className="icons-for-mobile-device">
@@ -102,31 +124,40 @@ function MainNavbar() {
 
         {/* ---------------toggle mobile sidebar--------------- */}
         {loggedInUser && (
-        <div className="mobile-sidebar">
-          <MobileSidebar
-            menu={menu}
-            bgColor="#191f2f"
-            linkColor="base-color-1"
-          />
-        </div>
+          <div className="mobile-sidebar">
+            <MobileSidebar
+              menu={menu}
+              bgColor="#191f2f"
+              linkColor="base-color-1"
+            />
+          </div>
         )}
 
         <div className="nav-menu position-relative">
           <ul className="d-flex align-items-center me-auto mb-0 mb-lg-0">
-            <li onClick={() => setMenuCatagory('Font')} className="nav-item">
-              <Link to="/contents">
-                Font
-              </Link>
+            <li
+              onClick={() => {
+                fetchContentByMenu('Font');
+              }}
+              className="nav-item"
+            >
+              <Link to="/contents">Font</Link>
             </li>
-            <li onClick={() => setMenuCatagory('Vector')} className="nav-item">
-              <Link to="/contents">
-                Vector
-              </Link>
+            <li
+              onClick={() => {
+                fetchContentByMenu('Vector');
+              }}
+              className="nav-item"
+            >
+              <Link to="/contents">Vector</Link>
             </li>
-            <li onClick={() => setMenuCatagory('Image')} className="nav-item">
-              <Link to="/contents">
-                Image
-              </Link>
+            <li
+              onClick={() => {
+                fetchContentByMenu('Image');
+              }}
+              className="nav-item"
+            >
+              <Link to="/contents">Image</Link>
             </li>
             <li className="nav-item dropdown">
               <a
@@ -139,20 +170,14 @@ function MainNavbar() {
                 More
               </a>
               <ul className="dropdown-menu mt-3 bg-white">
-                <li onClick={() => setMenuCatagory('PSD')}>
-                  <Link className="dropdown-item">
-                    PSD
-                  </Link>
+                <li onClick={() => fetchContentByMenu('PSD')}>
+                  <Link className="dropdown-item">PSD</Link>
                 </li>
-                <li onClick={() => setMenuCatagory('Walpaper')}>
-                  <Link className="dropdown-item">
-                    Wallpaper
-                  </Link>
+                <li onClick={() => fetchContentByMenu('Wallpaper')}>
+                  <Link className="dropdown-item">Wallpaper</Link>
                 </li>
-                <li onClick={() => setMenuCatagory('Ai Image')}>
-                  <Link className="dropdown-item">
-                    Ai Image
-                  </Link>
+                <li onClick={() => fetchContentByMenu('Ai Image')}>
+                  <Link className="dropdown-item">Ai Image</Link>
                 </li>
               </ul>
             </li>

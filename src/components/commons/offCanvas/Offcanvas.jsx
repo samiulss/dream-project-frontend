@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 
-function Canvas() {
+function Canvas({ rejectCause }) {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -16,8 +16,7 @@ function Canvas() {
           <Offcanvas.Title>Reasone</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          Some text as placeholder. In real life you can have the elements you
-          have chosen. Like, text, images, lists, etc.
+          {rejectCause}
         </Offcanvas.Body>
       </Offcanvas>
     </>

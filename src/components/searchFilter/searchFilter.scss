@@ -32,17 +32,23 @@
     padding: 30px 15px;
     padding-right: 0;
 
-    h6 {
+    .sort-title {
       font-weight: 600;
       margin-left: 6%;
       margin-bottom: 18px;
     }
 
-    div {
+    .set-catagory,
+    .set-times,
+    .set-licence {
       padding-left: 24%;
 
       input {
         margin-right: 5px;
+        cursor: pointer;
+      }
+      label {
+        cursor: pointer;
       }
     }
   }

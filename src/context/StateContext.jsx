@@ -6,7 +6,6 @@ import { createContext, useContext, useState } from 'react';
 const State = createContext();
 
 function StateContext({ children }) {
-  const [getContent, setGetContent] = useState(null);
   const token = localStorage.getItem('token');
   let decode;
   if (token) {
@@ -16,14 +15,13 @@ function StateContext({ children }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [auth, setAuth] = useState(token);
   const [contents, setContents] = useState([]);
+  const [catagory, setCatagory] = useState(null);
+  const [resultFor, setResultFor] = useState('');
   const [fetchAgain, setFetchAgain] = useState(false);
   const [popUpModal, setPopUpModal] = useState(false);
-  const [menuCatagory, setMenuCatagory] = useState(null);
   const [homeSearch, setHomeSearch] = useState(false);
   return (
     <State.Provider value={{
-      getContent,
-      setGetContent,
       loggedInUser,
       setLoggedInUser,
       auth,
@@ -32,14 +30,16 @@ function StateContext({ children }) {
       setShowLoginModal,
       contents,
       setContents,
+      catagory,
+      setCatagory,
       homeSearch,
       setHomeSearch,
+      resultFor,
+      setResultFor,
       fetchAgain,
       setFetchAgain,
       popUpModal,
       setPopUpModal,
-      menuCatagory,
-      setMenuCatagory
     }}
     >
       {children}

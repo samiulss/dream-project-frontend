@@ -8,6 +8,22 @@
         object-fit: contain;
       }
     }
+
+    .keywords-list {
+      .tags-list {
+        max-height: 110px;
+        li {
+          width: fit-content;
+          height: 30px;
+          padding: 5px 10px;
+          padding-top: 3px;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
+      }
+    }
   }
 
   //right side

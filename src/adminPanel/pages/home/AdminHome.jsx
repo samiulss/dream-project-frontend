@@ -36,7 +36,7 @@ function AdminHome() {
 
                   <li>
                     Reports
-                    <span className="ms-5 d-inline-block rounded-5 text-white message-notification">01</span>
+                    <span className="ms-1 d-inline-block rounded-5 text-white message-notification">01</span>
                   </li>
 
                   <li>User</li>

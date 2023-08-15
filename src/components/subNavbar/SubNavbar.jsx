@@ -4,28 +4,28 @@ import { ContentState } from '../../context/StateContext';
 import './subNavbar.scss';
 
 function SubNavbar() {
-  const { setMenuCatagory } = ContentState();
+  const { setCatagory, setHomeSearch } = ContentState();
   const [dropdown, setDropDown] = useState(false);
   return (
     <div className="sub-navbar border border-1 rounded-pill mb-4 position-relative">
-      <ul className="sub-navbar-list">
+      <ul onClick={() => setHomeSearch(true)} className="sub-navbar-list">
         <Link className="nav-link" to="/contents">
-          <li onClick={() => setMenuCatagory('Font')}>Font</li>
+          <li onClick={() => setCatagory('Font')}>Font</li>
         </Link>
         <Link className="nav-link" to="/contents">
-          <li onClick={() => setMenuCatagory('Vector')}>Vector</li>
+          <li onClick={() => setCatagory('Vector')}>Vector</li>
         </Link>
         <Link className="nav-link mini-device" to="/contents">
-          <li onClick={() => setMenuCatagory('Web Design')}>Web Design</li>
+          <li onClick={() => setCatagory('Web Design')}>Web Design</li>
         </Link>
         <Link className="nav-link dropdown-for-mobile" to="/contents">
-          <li onClick={() => setMenuCatagory('PSD')}>PSD</li>
+          <li onClick={() => setCatagory('PSD')}>PSD</li>
         </Link>
         <Link className="nav-link dropdown-for-mobile" to="/contents">
-          <li onClick={() => setMenuCatagory('Image')}>Image</li>
+          <li onClick={() => setCatagory('Image')}>Image</li>
         </Link>
         <Link className="nav-link dropdown-for-mobile" to="/contents">
-          <li onClick={() => setMenuCatagory('Wallpaper')}>Wallpaper</li>
+          <li onClick={() => setCatagory('Wallpaper')}>Wallpaper</li>
         </Link>
         <li
           onClick={() => setDropDown(!dropdown)}

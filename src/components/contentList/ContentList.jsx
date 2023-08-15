@@ -80,7 +80,7 @@ function ContentList({ content, tooltip, favourites }) {
   }, []);
 
   //
-  const fetchSingleContent = async () => {
+  const fetchDownloadingContent = async () => {
     try {
       const { data } = await axios.get(
         `${rootUrl}/api/singleContent?id=${_id}`
@@ -96,7 +96,7 @@ function ContentList({ content, tooltip, favourites }) {
       {/* --------------ALL IMAGE LIST-------------- */}
       <Link to={`/download/${_id}`}>
         <img
-          onClick={fetchSingleContent}
+          onClick={fetchDownloadingContent}
           className="img-fluid content-img"
           id={_id}
           src={`${rootUrl}/uploads/${thumbnail}`}

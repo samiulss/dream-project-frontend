@@ -9,15 +9,14 @@ import './searchBox.scss';
 
 function SearchBox({
   setLoading,
-  setResultFor,
   searchkeywords,
   setSearchkeywords,
   setFilterContents,
-  catagory,
-  setCatagory,
   setFilterOn
 }) {
-  const { menuCatagory, setContents } = ContentState();
+  const {
+    catagory, setContents, setCatagory, setResultFor
+  } = ContentState();
 
   const { pathname } = useLocation();
   const [searchBox, setSearchBox] = useState(false);
@@ -118,8 +117,8 @@ function SearchBox({
   };
 
   useEffect(() => {
-    setCatagory(menuCatagory);
-  }, [pathname, menuCatagory]);
+    setCatagory(catagory);
+  }, [pathname, catagory]);
 
   return (
     <div className="searchBox mt-2 position-relative">

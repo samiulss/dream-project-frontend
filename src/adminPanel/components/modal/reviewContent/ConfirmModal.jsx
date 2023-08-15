@@ -1,83 +1,102 @@
 /* eslint-disable react/prop-types */
-import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { rootUrl } from '../../../../../config/backendUrl';
+import PopUpModal from '../../../../components/modals/popUpModal/PopUpModal';
 import { ContentState } from '../../../../context/StateContext';
 import './confirmModal.scss';
 
 function ConfirmModal({ content, fileState }) {
-  const { fetchAgain, setFetchAgain } = ContentState();
+  const { fetchAgain, setFetchAgain, setPopUpModal } = ContentState();
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   const [contentId, setContentId] = useState('');
+  const [tags, setTags] = useState([]);
+  const [selectCause, setSelectCause] = useState(null);
+  const [approve, setApprove] = useState(false);
+  const [reject, setReject] = useState(false);
 
   const viewContent = () => {
     setContentId(content._id);
     handleShow();
   };
 
-  // HANDLE APPROVE CONTENT
-  const handleApprove = async () => {
-    if (!contentId) {
-      return;
-    }
-    const config = {
-      'Content-type': 'application/json; charset=UTF-8',
-    };
-    try {
-      const { data } = await axios.post(`${rootUrl}/api/approve`, { contentId }, config);
-      toast.success(data);
-      setFetchAgain(!fetchAgain);
-    } catch (error) {
-      toast.error(error.message);
-    }
+  const approveButton = () => {
+    setApprove(true);
+    setReject(false);
+    setPopUpModal(true);
+  };
+  const rejecteButton = () => {
+    setReject(true);
+    setApprove(false);
+    setPopUpModal(true);
   };
 
   // HANDLE REJECT CONTENT
   const handleReject = async () => {
-    if (!contentId) {
-      return;
+    if (!selectCause) {
+      toast.error('Please select a reasone');
     }
-    const config = {
-      'Content-type': 'application/json; charset=UTF-8',
-    };
-    try {
-      const { data } = await axios.post(`${rootUrl}/api/reject`, { contentId }, config);
-      toast.success(data);
-      setFetchAgain(!fetchAgain);
-    } catch (error) {
-      console.log(error);
-      toast.error(error.message);
-    }
+
+    // const config = {
+    //   'Content-type': 'application/json; charset=UTF-8',
+    // };
+    // try {
+    //   const { data } = await axios.post(
+    //     `${rootUrl}/api/reject`,
+    //     { contentId, selectCause },
+    //     config
+    //   );
+    //   toast.success(data);
+    //   setPopUpModal(false);
+    //   setFetchAgain(!fetchAgain);
+    //   handleClose();
+    // } catch (error) {
+    //   console.log(error);
+    //   toast.error(error.message);
+    // }
   };
+
+  useEffect(() => {
+    const tagList = content.keywords[0].split(',');
+    setTags(tagList);
+  }, []);
 
   return (
     <>
-      <button onClick={() => viewContent()} className="btn btn-primary border-0 rounded-4 me-4">View</button>
+      <button
+        onClick={() => viewContent()}
+        className="btn btn-primary border-0 rounded-4 me-4"
+      >
+        View
+      </button>
 
       <Modal show={show} onHide={handleClose} centered size="lg">
-
         {/* ----------MODAL CLOSE BUTTON---------- */}
         <div className="modal-header border-0 pb-0">
-          <button onClick={handleClose} className="btn-close shadow-none base-bg-color-1 rounded-5 text-white mb-1" />
+          <button
+            onClick={handleClose}
+            className="btn-close shadow-none base-bg-color-1 rounded-5 text-white mb-1"
+          />
         </div>
 
         <Modal.Body>
           <div className="review-pending-content">
             <div className="row">
-
               {/* ----------LEFT SIDE---------- */}
               <div className="col-lg-6 left-side d-flex flex-column border-end">
-
                 {/* ----------THUMBNAIL---------- */}
                 <div className="thumbnail w-100">
-                  <img className="img-fluid w-100" src={`${rootUrl}/uploads/${content.thumbnail}`} alt="" />
+                  <img
+                    className="img-fluid w-100"
+                    src={`${rootUrl}/uploads/${content.thumbnail}`}
+                    alt=""
+                  />
                 </div>
 
                 {/* ----------TITLE---------- */}
@@ -98,11 +117,18 @@ function ConfirmModal({ content, fileState }) {
                 {/* ----------KEYWORD LIST---------- */}
                 <div className="keywords-list d-flex align-items-center">
                   <h6 className="fw-semibold mb-0 me-2">Keywords: </h6>
-                  <ul className="mb-0">
-                    {
-                      content.keywords.map((keyword, i) => <span key={i} className="text-dark">{keyword}</span>)
-                    }
-                  </ul>
+                  <div className="tags-list overflow-y-auto">
+                    <ul className="mb-0">
+                      {tags.map((keyword, i) => (
+                        <li
+                          key={i}
+                          className="base-bg-color-1 me-1 mb-1 rounded-4 text-center d-inline-block"
+                        >
+                          {keyword}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               </div>
 
@@ -114,17 +140,20 @@ function ConfirmModal({ content, fileState }) {
                   {content.file.length}
                 </h6>
                 <div className="d-flex added-files flex-column">
-                  {
-                  content.file.map((fileName, i) => (
+                  {content.file.map((fileName, i) => (
                     <div key={i}>
                       <li>
                         {fileName}
                         {' '}
                       </li>
-                      <Link to={`${rootUrl}/api/downloadFile?id=${contentId}`} className="btn btn-primary rounded-5">Download</Link>
+                      <Link
+                        to={`${rootUrl}/api/downloadUploadedFile?id=${contentId}&fileName=${fileName}`}
+                        className="btn btn-primary rounded-5"
+                      >
+                        Download
+                      </Link>
                     </div>
-                  ))
-                }
+                  ))}
                 </div>
               </div>
             </div>
@@ -133,15 +162,33 @@ function ConfirmModal({ content, fileState }) {
 
         {!fileState ? (
           <Modal.Footer className="border-0">
-            <Button className="border-0 rounded-4" variant="danger" onClick={() => { handleReject(); handleClose(); }}>
+            <Button
+              className="border-0 rounded-4"
+              variant="danger"
+              onClick={rejecteButton}
+            >
               Reject
             </Button>
-            <Button className="border-0 rounded-4 w-25" variant="primary" onClick={() => { handleApprove(); handleClose(); }}>
+            <Button
+              className="border-0 rounded-4 w-25"
+              variant="primary"
+              onClick={approveButton}
+            >
               Confirm
             </Button>
           </Modal.Footer>
-        ) : ''}
+        ) : (
+          ''
+        )}
       </Modal>
+      <PopUpModal
+        rejectModal={reject}
+        approveModal={approve}
+        setSelectCause={setSelectCause}
+        handleReject={handleReject}
+        contentId={contentId}
+        handleClose={handleClose}
+      />
     </>
   );
 }

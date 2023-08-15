@@ -240,7 +240,7 @@ function ContentUpload() {
                       value={keywords}
                       onChange={setkeywords}
                       name="keywords"
-                      placeHolder="Add Keywords"
+                      placeHolder="Add Keywords and press Enter"
                       isEditOnRemove
                       beforeAddValidate={keywords.length > 14}
                     />
@@ -284,11 +284,11 @@ function ContentUpload() {
                               <li className="mb-0 text-dark upload-file-name" title={uploadFile.name}>
                                 {uploadFile.name}
                                 <br />
-                                <span>
+                                <small>
                                   File size:
                                   {' '}
                                   {sizeCalculate(uploadFile.size)}
-                                </span>
+                                </small>
                               </li>
                               <i type="button" onClick={() => removeFile(uploadFile)} className="fa-solid fa-xmark text-danger fs-5 me-3" />
                             </ul>
