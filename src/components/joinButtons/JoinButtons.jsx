@@ -20,7 +20,7 @@ function JoinButtons() {
       {!loggedInUser && (
       <div className="login-signup mb-3">
         <button onClick={() => { setShowLoginModal(true); setBtn('login'); }} type="button" className="btn btn-login gradient-button border rounded-5">Log In</button>
-        <button onClick={() => { setShowLoginModal(true); setBtn('signup'); }} type="button" className="btn btn-signup border rounded-5 text-white">Sign Up</button>
+        <button onClick={() => { setShowLoginModal(true); setBtn('signup'); }} type="button" className="btn btn-signup gradient-button border rounded-5 text-white">Sign Up</button>
         <Login btn={btn} setBtn={setBtn} />
       </div>
       )}

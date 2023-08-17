@@ -1,7 +1,13 @@
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { rootUrl } from '../../../../config/backendUrl';
+import { ContentState } from '../../../context/StateContext';
 
-function RejectCause({ setSelectCause, handleReject }) {
+function RejectCause({ contentId, handleClose }) {
+  const { fetchAgain, setFetchAgain } = ContentState();
   const [custom, setCustom] = useState(false);
+  const [cause, setCause] = useState(null);
 
   const customRef = useRef();
 
@@ -12,9 +18,35 @@ function RejectCause({ setSelectCause, handleReject }) {
   }, [custom]);
 
   const getcCause = (e) => {
-    setSelectCause(e.target.value);
+    setCause(e.target.value);
     if (e.target.value === 'custom') {
       setCustom(true);
+      setCause(null);
+    }
+  };
+
+  // HANDLE REJECT CONTENT
+  const handleReject = async () => {
+    if (!cause) {
+      toast.error('Please select a reasone');
+      return;
+    }
+
+    const config = {
+      'Content-type': 'application/json; charset=UTF-8',
+    };
+    try {
+      const { data } = await axios.post(
+        `${rootUrl}/api/reject`,
+        { contentId, cause },
+        config
+      );
+      handleClose();
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
     }
   };
 
@@ -61,7 +93,7 @@ function RejectCause({ setSelectCause, handleReject }) {
             onClick={() => setCustom(false)}
             name="report"
             id="four"
-            value="Need more qualityful"
+            value="Need more quality"
           />
           <label htmlFor="four">Need more quality</label>
         </li>

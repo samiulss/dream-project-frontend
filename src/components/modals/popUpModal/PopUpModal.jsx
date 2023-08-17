@@ -22,7 +22,6 @@ function PopUpModal({
 
   const handleClose = () => {
     setPopUpModal(false);
-    setSelectCause(null);
   };
 
   return (
@@ -43,6 +42,8 @@ function PopUpModal({
             <RejectCause
               setSelectCause={setSelectCause}
               handleReject={handleReject}
+              contentId={contentId}
+              handleClose={handleClose}
             />
           )}
           {

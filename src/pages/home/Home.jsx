@@ -7,15 +7,15 @@ import Help from '../../components/help/Help';
 import JoinButtons from '../../components/joinButtons/JoinButtons';
 import Navbar from '../../components/navbar/Navbar';
 import SubNavbar from '../../components/subNavbar/SubNavbar';
+import { ContentState } from '../../context/StateContext';
 import './home.scss';
 
 function Home() {
+  const { loggedInUser } = ContentState();
   return (
     <div className="home p-0">
-
       {/* -------------------BANNER AND HEADER SECTION------------------- */}
       <section className="gradient-background pb-5">
-
         {/* -------------------NAV SECTION------------------- */}
         <div className="container">
           <Navbar />
@@ -33,14 +33,14 @@ function Home() {
         </div>
       </section>
 
-      <Button btn="signUp" />
+      {!loggedInUser ? <Button btn="signUp" /> : <Button btn="beSeller" />}
 
       {/* -------------------CONTACT BANNER SECTION------------------- */}
       <section className="contact-banner">
         <Contact />
       </section>
 
-      <Button />
+      {(!loggedInUser?.role === 'seller' || !loggedInUser) && <Button />}
 
       {/* -------------------SERVICES BANNER SECTION------------------- */}
       <section className="services-banner">

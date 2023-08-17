@@ -40,20 +40,20 @@ function SubNavbar() {
       {dropdown && (
         <div>
           <ul className="dropdown-mobile-menu position-absolute bg-white rounded-3 mb-0">
-            <Link className="nav-link dropdown-for-mobile" to="/content">
-              <li className="d-toggle">Web Template</li>
+            <Link className="nav-link dropdown-for-mobile" to="/contents">
+              <li onClick={() => setCatagory('Web Design')} className="d-toggle">Web Design</li>
             </Link>
 
-            <Link className="nav-link dropdown-for-mobile" to="/content">
-              <li>PSD</li>
+            <Link className="nav-link dropdown-for-mobile" to="/contents">
+              <li onClick={() => setCatagory('PSD')}>PSD</li>
             </Link>
 
-            <Link className="nav-link dropdown-for-mobile" to="/content">
-              <li>Image</li>
+            <Link className="nav-link dropdown-for-mobile" to="/contents">
+              <li onClick={() => setCatagory('Image')}>Image</li>
             </Link>
 
-            <Link className="nav-link dropdown-for-mobile" to="/content">
-              <li>Wallpaper</li>
+            <Link className="nav-link dropdown-for-mobile" to="/contents">
+              <li onClick={() => setCatagory('Wallpaper')}>Wallpaper</li>
             </Link>
           </ul>
         </div>

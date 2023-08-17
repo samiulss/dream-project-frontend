@@ -1,5 +1,9 @@
 .admin-dashboard {
   .left-sidebar {
+    .position-sticky {
+      top: 55px;
+    }
+
     .menu {
       height: calc(100vh - 140px);
       overflow-y: auto;

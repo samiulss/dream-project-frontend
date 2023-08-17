@@ -12,17 +12,15 @@ function SellerAgreement() {
 
   // BECOME A SELLER
   const handleBeSeller = async () => {
-    const user = {
-      userId: loggedInUser.id
-    };
     try {
       const { data } = await axios.post(
-        `${rootUrl}/api/beSeller`,
-        user,
+        `${rootUrl}/api/becomeSeller`,
+        { email: loggedInUser.email },
         config(auth)
       );
+      localStorage.removeItem('token');
       setPopUpModal(false);
-      localStorage.setItem('token', data.token);
+      localStorage.setItem('token', data);
       navigate('/upload');
       window.location.reload();
     } catch (error) {
@@ -37,7 +35,12 @@ function SellerAgreement() {
       accusamus! Alias consectetur delectus aperiam placeat libero odit nihil
       voluptatem dolor fugit!
       <div className="text-end">
-        <button onClick={handleBeSeller} className="btn base-bg-color-2 text-white">Agree</button>
+        <button
+          onClick={handleBeSeller}
+          className="btn base-bg-color-2 text-white"
+        >
+          Agree
+        </button>
       </div>
     </div>
   );

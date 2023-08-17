@@ -1,23 +1,29 @@
 import axios from 'axios';
 import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
-import { useNavigate } from 'react-router-dom';
 import { rootUrl } from '../../../../config/backendUrl';
 import googleIcon from '../../../assets/icons/google.svg';
 import { ContentState } from '../../../context/StateContext';
-import Loadng from '../../commons/loading/Loadng';
+import Loading from '../../commons/loading/Loading';
 import './login.scss';
 
 function Login({ btn, setBtn }) {
   const { showLoginModal, setShowLoginModal } = ContentState();
   const [showPass, setShowPass] = useState(false);
+  const [remember, setRemember] = useState(false);
   const [err, setErr] = useState(null);
   const [loading, setLoading] = useState(false);
   const [otpEmail, setOtpEmail] = useState(null);
-  const navigate = useNavigate();
 
   // modal control
   const handleClose = () => setShowLoginModal(false);
+
+  // handle remember me
+  const handleRemember = (e) => {
+    if (e.target.value === 'remember') {
+      setRemember(true);
+    }
+  };
 
   // HANDLE LOGIN
   const handleLogin = async (e) => {
@@ -34,14 +40,17 @@ function Login({ btn, setBtn }) {
     try {
       const { data } = await axios.post(`${rootUrl}/api/login`, userData, config);
       handleClose();
-      localStorage.setItem('token', data.token);
-      // navigate('/content');
+      if (remember) {
+        localStorage.setItem('token', data.token);
+      } else {
+        sessionStorage.setItem('token', data.token);
+      }
       setLoading(false);
       window.location.reload();
     } catch (error) {
       setLoading(false);
       setErr(error.response.data);
-      console.log(error.response.data);
+      console.log(error);
     }
   };
 
@@ -61,8 +70,11 @@ function Login({ btn, setBtn }) {
     try {
       const { data } = await axios.post(`${rootUrl}/api/register`, userData, config);
       handleClose();
-      localStorage.setItem('token', data.token);
-      navigate('/content');
+      if (remember) {
+        localStorage.setItem('token', data.token);
+      } else {
+        sessionStorage.setItem('token', data.token);
+      }
       setLoading(false);
       window.location.reload();
     } catch (error) {
@@ -224,7 +236,7 @@ function Login({ btn, setBtn }) {
                     btn === 'login'
                       && (
                       <button type="submit" className="btn w-100 rounded-5 gradient-button mb-2" disabled={loading}>
-                        {loading ? <Loadng /> : 'Log In'}
+                        {loading ? <Loading /> : 'Log In'}
                       </button>
                       )
                 }
@@ -233,7 +245,7 @@ function Login({ btn, setBtn }) {
                     btn === 'signup'
                       && (
                       <button type="submit" className="btn w-100 rounded-5 gradient-button mb-2" disabled={loading}>
-                        {loading ? <Loadng /> : 'Sign Up'}
+                        {loading ? <Loading /> : 'Sign Up'}
                       </button>
                       )
                 }
@@ -242,7 +254,7 @@ function Login({ btn, setBtn }) {
                     btn === 'next'
                       && (
                       <button type="submit" className="btn w-100 rounded-5 gradient-button mb-2" disabled={loading}>
-                        {loading ? <Loadng /> : 'Next'}
+                        {loading ? <Loading /> : 'Next'}
                       </button>
                       )
                 }
@@ -251,7 +263,7 @@ function Login({ btn, setBtn }) {
                     btn === 'verify'
                       && (
                       <button type="submit" className="btn w-100 rounded-5 gradient-button mb-2" disabled={loading}>
-                        {loading ? <Loadng /> : 'Verify'}
+                        {loading ? <Loading /> : 'Verify'}
                       </button>
                       )
                 }
@@ -260,7 +272,7 @@ function Login({ btn, setBtn }) {
                     btn === 'newPassword'
                       && (
                       <button type="submit" className="btn w-100 rounded-5 gradient-button mb-2" disabled={loading}>
-                        {loading ? <Loadng /> : 'Change password'}
+                        {loading ? <Loading /> : 'Change password'}
                       </button>
                       )
                 }
@@ -271,7 +283,7 @@ function Login({ btn, setBtn }) {
                 && (
                 <div className="remember-forget-google d-flex justify-content-between">
                   <div className="remember">
-                    <input type="checkbox" name="" id="remember" />
+                    <input type="checkbox" onChange={handleRemember} name="remember" id="remember" value="remember" />
                     {' '}
                     <label htmlFor="remember">Remember me</label>
                   </div>

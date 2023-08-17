@@ -28,6 +28,7 @@ function MainNavbar() {
   // HANDLE LOGOUT
   const logOut = () => {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     window.location.reload();
   };
 
@@ -94,8 +95,8 @@ function MainNavbar() {
     <nav
       className={`${
         pathname !== '/content'
-          ? 'navbar navbar-expand-lg base-bg-color-1 position-sticky'
-          : 'navbar navbar-expand-lg base-bg-color-1'
+          ? 'navbar navbar-expand-md base-bg-color-1 position-sticky'
+          : 'navbar navbar-expand-md base-bg-color-1'
       }`}
     >
       <div className="container-fluid">
@@ -171,13 +172,13 @@ function MainNavbar() {
               </a>
               <ul className="dropdown-menu mt-3 bg-white">
                 <li onClick={() => fetchContentByMenu('PSD')}>
-                  <Link className="dropdown-item">PSD</Link>
+                  <Link to="/contents" className="dropdown-item">PSD</Link>
                 </li>
                 <li onClick={() => fetchContentByMenu('Wallpaper')}>
-                  <Link className="dropdown-item">Wallpaper</Link>
+                  <Link to="/contents" className="dropdown-item">Wallpaper</Link>
                 </li>
                 <li onClick={() => fetchContentByMenu('Ai Image')}>
-                  <Link className="dropdown-item">Ai Image</Link>
+                  <Link to="/contents" className="dropdown-item">Ai Image</Link>
                 </li>
               </ul>
             </li>

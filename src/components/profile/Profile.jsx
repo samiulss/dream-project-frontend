@@ -1,19 +1,54 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
 import ContentList from '../contentList/ContentList';
 import Help from '../help/Help';
+import SocialHandle from '../socialHandle/SocialHandle';
+import UserSkills from '../userSkills/UserSkills';
 import './profile.scss';
 
-function Profile({ fullDetails, contents }) {
+function Profile({ fullDetails, contents, sellerProfile }) {
   const {
     auth, loggedInUser, fetchAgain, setFetchAgain
   } = ContentState();
+  const [userData, setUserData] = useState(null);
   const [favourites, setFavourites] = useState([]);
   const [followingSeller, setFollowingSeller] = useState([]);
+  const [editProfile, setEditProfile] = useState(false);
+  const [infoChange, setInfoChange] = useState(false);
+  const [editLink, setEditLink] = useState(false);
+  const [editSkill, seteditSkill] = useState(false);
+  const [socialSkillName, setSocialSkillName] = useState(null);
+
+  const [editProfileValues, setEditProfileValues] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    address: '',
+    socialHandle: [],
+    skills: [],
+  });
+
+  const firstName = userData?.name.split(' ');
+
+  const fetchUserDetails = async () => {
+    if (!loggedInUser) {
+      return;
+    }
+    try {
+      const { data } = await axios.get(`${rootUrl}/api/user`, config(auth));
+      setUserData(data);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  }, [fetchAgain]);
 
   // FETCH FAVOURITE CONTENT
   const favouriteContents = async () => {
@@ -87,40 +122,167 @@ function Profile({ fullDetails, contents }) {
     }
   };
 
+  const inputRef = useRef();
+  useEffect(() => {
+    if (editProfile && !editLink && !editSkill) {
+      inputRef.current.focus();
+    }
+  }, [editProfile]);
+
+  const getSocialSkillsName = (nam) => {
+    setSocialSkillName(nam);
+  };
+
+  // handle socail and skill change values
+  const handleValue = (index) => (e) => {
+    setEditProfile(true);
+    const getvalues = e.target.value;
+    const getNames = e.target.name;
+
+    function findIndex(item) {
+      return item.name === socialSkillName;
+    }
+
+    if (getNames === 'socialHandle') {
+      const socialNam = {
+        name: socialSkillName,
+        link: getvalues,
+      };
+
+      const getName = editProfileValues.socialHandle.map((item) => item.name);
+      if (!getName.includes(socialSkillName)) {
+        editProfileValues.socialHandle.push(socialNam);
+      } else {
+        const idx = editProfileValues.socialHandle.findIndex(findIndex);
+        editProfileValues.socialHandle[idx].link = getvalues;
+      }
+      setInfoChange(true);
+    }
+
+    if (getNames === 'skills') {
+      const skillNam = {
+        name: socialSkillName,
+        value: getvalues,
+      };
+      const getName = editProfileValues.skills.map((item) => item.name);
+      if (!getName.includes(socialSkillName)) {
+        editProfileValues.skills.push(skillNam);
+      } else {
+        const idx = editProfileValues.skills.findIndex(findIndex);
+        editProfileValues.skills[idx].value = getvalues;
+      }
+      setInfoChange(true);
+    }
+  };
+
+  const getChangingValues = (e) => {
+    const getvalues = e.target.value;
+    const getNames = e.target.name;
+
+    if (getNames === 'socialLink') {
+      setInfoChange(true);
+      setEditProfile(true);
+      const socialNam = {
+        name: socialSkillName,
+        link: getvalues,
+      };
+
+      const getName = editProfileValues.socialHandle?.map((item) => item.name);
+      if (!getName.includes(socialSkillName)) {
+        editProfileValues.socialHandle.push(socialNam);
+      } else {
+        editProfileValues.socialHandle[0].link = getvalues;
+      }
+    }
+    if (getNames === 'value') {
+      setInfoChange(true);
+      setEditProfile(true);
+      const socialNam = {
+        name: socialSkillName,
+        value: getvalues,
+      };
+
+      const getName = editProfileValues.skills.map((item) => item.name);
+      if (!getName.includes(socialSkillName)) {
+        editProfileValues.skills.push(socialNam);
+      } else {
+        editProfileValues.skills[0].value = getvalues;
+      }
+    }
+  };
+
+  // handle user info change values
+  const handleInfoChange = (e) => {
+    setEditProfileValues({
+      ...editProfileValues,
+      [e.target.name]: e.target.value,
+    });
+    setInfoChange(true);
+    setEditProfile(true);
+  };
+
+  // handle update profile
+  const handleProfileUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const { data } = await axios.post(
+        `${rootUrl}/api/updateProfile`,
+        editProfileValues,
+        config(auth)
+      );
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
+      setEditProfile(false);
+      setEditLink(false);
+      seteditSkill(false);
+    } catch (error) {
+      toast.error(error.message);
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     favouriteContents();
     checkFollower();
   }, [fetchAgain]);
 
+  // console.log(editProfileValues);
+
   return (
-    <section className="pb-3" style={{ backgroundColor: '#eee' }}>
+    <section className="pb-3">
       <div className={fullDetails ? 'container pt-3' : 'container-fluid pt-3'}>
-        <div className="row">
-          <div className="col-lg-4">
-            {/* ------------PROFILE CARD CONTENTR------------ */}
-            <div className="card mb-4">
-              <div className="card-body text-center">
-                <img
-                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-                  alt="avatar"
-                  className="rounded-circle img-fluid"
-                  style={{ width: '150px' }}
-                />
-                <h5 className="my-3">
-                  {fullDetails ? loggedInUser.name : contents[0]?.author.name}
-                </h5>
-                <p>
-                  Resources(
-                  {contents?.length}
-                  )
-                </p>
-                <p className="text-muted mb-1">Graphic Designer</p>
-                <p className="text-muted mb-4">Dinajpur Sadar, Dinajpur, BD</p>
-                {!fullDetails
-                  && loggedInUser?.id !== contents[0]?.author._id && (
+        <form onSubmit={handleProfileUpdate}>
+          <div className="row">
+            <div className="col-lg-4">
+              {/* ------------PROFILE CARD CONTENTR------------ */}
+              <div className="card mb-4">
+                <div className="card-body text-center position-relative">
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+                    alt="avatar"
+                    className="rounded-circle img-fluid"
+                    style={{ width: '150px' }}
+                  />
+                  <h5 className="my-3">
+                    {fullDetails && firstName
+                      ? firstName[0]
+                      : sellerProfile?.name}
+                  </h5>
+                  {!fullDetails && (
+                    <p>
+                      Resources(
+                      {contents?.length}
+                      )
+                    </p>
+                  )}
+                  {/* <p className="text-muted mb-1">Graphic Designer</p> */}
+                  <p className="text-muted mb-2">
+                    {userData?.address && userData?.address}
+                  </p>
+                  {!fullDetails && loggedInUser?.id !== sellerProfile?._id && (
                     <div className="d-flex justify-content-center mb-2">
                       {followingSeller.find(
-                        (seller) => seller._id === contents[0]?.author._id
+                        (seller) => seller._id === sellerProfile?._id
                       ) ? (
                         <button
                           onClick={handleUnfollow}
@@ -139,298 +301,315 @@ function Profile({ fullDetails, contents }) {
                           </button>
                         )}
                     </div>
-                )}
+                  )}
+                  {fullDetails && !editProfile && (
+                    <i
+                      className="fa-solid fa-user-pen fs-4 text-dark position-absolute top-0 end-0 me-3 mt-3"
+                      role="button"
+                      onClick={() => setEditProfile(true)}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* ------------SOCIAL LINK CONTENTR------------ */}
+              <div className="card mb-4 mb-lg-4">
+                <div className="card-body">
+                  <div className="d-flex align-items-center justify-content-between mb-2">
+                    <p className="mb-0 fw-semibold">Social Links</p>
+                    {fullDetails && (
+                      <span
+                        onClick={() => {
+                          setEditLink(!editLink);
+                          setEditProfile(false);
+                        }}
+                        className={`btn ${
+                          editLink ? 'bg-danger' : 'bg-primary'
+                        } text-white rounded-5 add-btn-social-skill`}
+                      >
+                        {editLink ? 'Cancel' : 'Add Link'}
+                      </span>
+                    )}
+                  </div>
+                  <ul className="list-group list-group-flush rounded-3">
+                    {fullDetails
+                      ? userData?.socialHandle.map((item, i) => (
+                        <SocialHandle
+                          key={item._id}
+                          item={item}
+                          index={i}
+                          editProfile={editProfile}
+                          handleValue={handleValue}
+                          getSocialSkillsName={getSocialSkillsName}
+                        />
+                      ))
+                      : sellerProfile?.socialHandle.map((item) => (
+                        <SocialHandle key={item._id} item={item} />
+                      ))}
+                  </ul>
+                  {editLink && (
+                    <div className="d-flex">
+                      <select
+                        onChange={getChangingValues || handleValue}
+                        name="socialHandle"
+                        onClick={(e) => getSocialSkillsName(e.target.value)}
+                      >
+                        <option defaultChecked>Choose...</option>
+                        <option value="Website">Website</option>
+                        <option value="Facebook">Facebook</option>
+                        <option value="Instagram">Instagram</option>
+                        <option value="Dribble">Dribble</option>
+                      </select>
+                      <input
+                        type="text"
+                        className="form-control shadow-none"
+                        onChange={getChangingValues || handleValue}
+                        name="socialLink"
+                        maxLength="200"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* ------------SKILLS STATUS CONTENTR------------ */}
+              <div className="card mb-4 mb-md-4">
+                <div className="card-body">
+                  <div className="d-flex align-items-center justify-content-between mb-2">
+                    <p className="mb-0 fw-semibold"> Sklills status</p>
+                    {fullDetails && (
+                      <span
+                        onClick={() => {
+                          seteditSkill(!editSkill);
+                          setEditProfile(false);
+                        }}
+                        className={`btn ${
+                          editSkill ? 'bg-danger' : 'bg-primary'
+                        } text-white rounded-5 add-btn-social-skill`}
+                      >
+                        {editSkill ? 'Cancel' : 'Add skill'}
+                      </span>
+                    )}
+                  </div>
+                  {fullDetails
+                    ? userData?.skills.map((item, i) => (
+                      <UserSkills
+                        key={item._id}
+                        item={item}
+                        index={i}
+                        handleValue={handleValue}
+                        editProfile={editProfile}
+                        getSocialSkillsName={getSocialSkillsName}
+                      />
+                    ))
+                    : sellerProfile?.skills.map((item) => (
+                      <UserSkills key={item._id} item={item} />
+                    ))}
+                  {editSkill && (
+                    <div className="d-flex">
+                      <select
+                        onChange={getChangingValues || handleValue}
+                        name="skills"
+                        onClick={(e) => getSocialSkillsName(e.target.value)}
+                      >
+                        <option defaultChecked>Choose...</option>
+                        <option value="Web Design">Web Design</option>
+                        <option value="Graphic Design">Graphic Design</option>
+                        <option value="Photo Shop">Photo Shop</option>
+                        <option value="illustration">illustration</option>
+                      </select>
+                      <input
+                        type="number"
+                        className="form-control shadow-none"
+                        onChange={getChangingValues || handleValue}
+                        name="value"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* ------------SOCIAL LINK CONTENTR------------ */}
-            <div className="card mb-4 mb-lg-0">
-              <div className="card-body p-0">
-                <ul className="list-group list-group-flush rounded-3">
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i className="fas fa-globe fa-lg text-warning" />
-                    <p className="mb-0">https://example.com</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-github fa-lg"
-                      style={{ color: '#333333' }}
-                    />
-                    <p className="mb-0">example</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-twitter fa-lg"
-                      style={{ color: '#55acee' }}
-                    />
-                    <p className="mb-0">@example</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-instagram fa-lg"
-                      style={{ color: '#ac2bac' }}
-                    />
-                    <p className="mb-0">example</p>
-                  </li>
-                  <li className="list-group-item d-flex justify-content-between align-items-center p-3">
-                    <i
-                      className="fab fa-facebook-f fa-lg"
-                      style={{ color: '#3b5998' }}
-                    />
-                    <p className="mb-0">example</p>
-                  </li>
-                </ul>
-              </div>
+            <div className="col-lg-8">
+              {/* ------------FULL DETAILS CONTENTR------------ */}
+              {fullDetails ? (
+                <>
+                  <div className="card mb-4">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <p className="mb-0">Full Name</p>
+                        </div>
+                        <div className="col-sm-9">
+                          {!editProfile && (
+                            <p className="text-muted mb-0">{userData?.name}</p>
+                          )}
+                          {editProfile && (
+                            <input
+                              type="text"
+                              className="form-control"
+                              onChange={handleInfoChange}
+                              name="name"
+                              maxLength="50"
+                              ref={inputRef}
+                              defaultValue={userData?.name}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <hr />
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <p className="mb-0">Email</p>
+                        </div>
+                        <div className="col-sm-9">
+                          {!editProfile && (
+                            <p className="text-muted mb-0">{userData?.email}</p>
+                          )}
+                          {editProfile && (
+                            <input
+                              type="email"
+                              className="form-control"
+                              onChange={handleInfoChange}
+                              name="email"
+                              maxLength="50"
+                              defaultValue={userData?.email}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <hr />
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <p className="mb-0">Mobile</p>
+                        </div>
+                        <div className="col-sm-9">
+                          {!editProfile && (
+                            <p className="text-muted mb-0">
+                              {userData?.phone ? userData?.phone : 'null'}
+                            </p>
+                          )}
+                          {editProfile && (
+                            <input
+                              type="number"
+                              className="form-control"
+                              onChange={handleInfoChange}
+                              name="phone"
+                              defaultValue={userData?.phone}
+                            />
+                          )}
+                        </div>
+                      </div>
+                      <hr />
+                      <div className="row">
+                        <div className="col-sm-3">
+                          <p className="mb-0">Address</p>
+                        </div>
+                        <div className="col-sm-9">
+                          {!editProfile && (
+                            <p className="text-muted mb-0">
+                              {userData?.address ? userData?.address : 'null'}
+                            </p>
+                          )}
+                          {editProfile && (
+                            <input
+                              type="text"
+                              className="form-control"
+                              onChange={handleInfoChange}
+                              name="address"
+                              maxLength="50"
+                              defaultValue={userData?.address}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="row">
+                    {/* ------------ACCOUNT STATUS CONTENTR------------ */}
+                    <div className="col-md-12">
+                      <div className="card mb-4 mb-md-0 pb-4">
+                        <div className="card-body m-auto d-flex flex-column align-items-center">
+                          <p className="mb-4 fw-semibold"> Account Status</p>
+                          {userData?.restiction === 0 && (
+                            <div
+                              style={{
+                                backgroundColor: 'limegreen',
+                              }}
+                              className="account-status d-flex align-items-center justify-content-center rounded-circle"
+                              title="No restiction"
+                            >
+                              <i className="fa-solid fa-circle-check fs-1" />
+                            </div>
+                          )}
+                          {userData?.restiction === 1 && (
+                            <div
+                              style={{
+                                backgroundColor: '#eee',
+                              }}
+                              className="account-status d-flex align-items-center justify-content-center rounded-circle"
+                              title="Warning"
+                            >
+                              <i className="fa-solid fa-triangle-exclamation text-warning fs-1" />
+                            </div>
+                          )}
+                          {userData?.restiction === 3 && (
+                            <div
+                              style={{
+                                backgroundColor: 'red',
+                              }}
+                              className="account-status d-flex align-items-center justify-content-center rounded-circle"
+                              title="Resticted"
+                            >
+                              <i className="fa-solid fa-circle-xmark fs-1" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {fullDetails && editProfile && (
+                        <div
+                          style={{ gap: '20px' }}
+                          className="mt-4 d-flex action-buttons justify-content-center"
+                        >
+                          <button
+                            className="btn bg-danger text-white rounded-5"
+                            type="reset"
+                            onClick={() => {
+                              setEditProfile(false);
+                              setInfoChange(false);
+                            }}
+                          >
+                            Cancle
+                          </button>
+                          <button
+                            className="btn bg-success text-white rounded-5"
+                            type="submit"
+                            disabled={!infoChange}
+                          >
+                            Update
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="my-content-scroll">
+                  <div className="my-content-section w-100">
+                    {contents.map((content) => (
+                      <ContentList
+                        key={content._id}
+                        content={content}
+                        favourites={favourites}
+                        tooltip
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-
-          <div className="col-lg-8">
-            {/* ------------FULL DETAILS CONTENTR------------ */}
-            {fullDetails ? (
-              <>
-                <div className="card mb-4">
-                  <div className="card-body">
-                    <div className="row">
-                      <div className="col-sm-3">
-                        <p className="mb-0">Full Name</p>
-                      </div>
-                      <div className="col-sm-9">
-                        <p className="text-muted mb-0">{loggedInUser.name}</p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="row">
-                      <div className="col-sm-3">
-                        <p className="mb-0">Email</p>
-                      </div>
-                      <div className="col-sm-9">
-                        <p className="text-muted mb-0">{loggedInUser.email}</p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="row">
-                      <div className="col-sm-3">
-                        <p className="mb-0">Phone</p>
-                      </div>
-                      <div className="col-sm-9">
-                        <p className="text-muted mb-0">01783086680</p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="row">
-                      <div className="col-sm-3">
-                        <p className="mb-0">Mobile</p>
-                      </div>
-                      <div className="col-sm-9">
-                        <p className="text-muted mb-0">01783086680</p>
-                      </div>
-                    </div>
-                    <hr />
-                    <div className="row">
-                      <div className="col-sm-3">
-                        <p className="mb-0">Address</p>
-                      </div>
-                      <div className="col-sm-9">
-                        <p className="text-muted mb-0">
-                          Dinajpur Sadar, Dinajpur, BD
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-6">
-                    <div className="card mb-4 mb-md-0">
-                      <div className="card-body">
-                        <p className="mb-4"> Project Status</p>
-                        <p className="mb-1" style={{ fontSize: '.77rem' }}>
-                          Web Design
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '80%' }}
-                            aria-valuenow={80}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          Website Markup
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '72%' }}
-                            aria-valuenow={72}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          One Page
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '89%' }}
-                            aria-valuenow={89}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          Mobile Template
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '55%' }}
-                            aria-valuenow={55}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          Backend API
-                        </p>
-                        <div
-                          className="progress rounded mb-2"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '66%' }}
-                            aria-valuenow={66}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="card mb-4 mb-md-0">
-                      <div className="card-body">
-                        <p className="mb-4"> Project Status</p>
-                        <p className="mb-1" style={{ fontSize: '.77rem' }}>
-                          Web Design
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '80%' }}
-                            aria-valuenow={80}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          Website Markup
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '72%' }}
-                            aria-valuenow={72}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          One Page
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '89%' }}
-                            aria-valuenow={89}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          Mobile Template
-                        </p>
-                        <div
-                          className="progress rounded"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '55%' }}
-                            aria-valuenow={55}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                        <p className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>
-                          Backend API
-                        </p>
-                        <div
-                          className="progress rounded mb-2"
-                          style={{ height: '5px' }}
-                        >
-                          <div
-                            className="progress-bar"
-                            role="progressbar"
-                            style={{ width: '66%' }}
-                            aria-valuenow={66}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className="my-content-scroll">
-                <div className="my-content-section w-100">
-                  {contents.map((content) => (
-                    <ContentList
-                      key={content._id}
-                      content={content}
-                      favourites={favourites}
-                      tooltip
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        </form>
       </div>
       {!fullDetails && <Help />}
     </section>

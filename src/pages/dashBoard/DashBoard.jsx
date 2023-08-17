@@ -9,21 +9,21 @@ import { config } from '../../../config/tokenVerify';
 import Filter from '../../components/commons/filter/Filter';
 import NextPage from '../../components/commons/nextPage/NextPage';
 import Spinner from '../../components/commons/spinner/Spinner';
-import FollowingList from '../../components/followingList/FollowingList';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
-import ContentUpload from '../../components/modals/contentUpload/ContentUpload';
 import MessageModal from '../../components/modals/messageModal/MessageModal';
 import PopUpModal from '../../components/modals/popUpModal/PopUpModal';
-import Profile from '../../components/profile/Profile';
 import { ContentState } from '../../context/StateContext';
 import './dashBoard.scss';
 
+const Profile = lazy(() => import('../../components/profile/Profile'));
+const FavouriteList = lazy(() => import('../../components/favouriteList/FavouriteList'));
+const FollowingList = lazy(() => import('../../components/followingList/FollowingList'));
+const ContentUpload = lazy(() => import('../../components/modals/contentUpload/ContentUpload'));
 const Message = lazy(() => import('../../components/message/Message'));
 const FileStatus = lazy(() => import('../../components/fileStatus/FileStatus'));
 const Balance = lazy(() => import('../../components/balance/Balance'));
 const DownloadList = lazy(() => import('../../components/downloadList/DownloadList'));
-const FavouriteList = lazy(() => import('../../components/favouriteList/FavouriteList'));
 const ContentList = lazy(() => import('../../components/contentList/ContentList'));
 
 function DashBoard() {
@@ -107,7 +107,7 @@ function DashBoard() {
           <div className="col-2 left-sidebar pc-mode text-white">
             <div className="position-sticky">
               <div className="header">
-                <h3 className="ms-3">Dashboard</h3>
+                <h5 className="ms-3">Dashboard</h5>
               </div>
 
               <div className="menu d-flex flex-column ms-3">
@@ -286,7 +286,9 @@ function DashBoard() {
               {/* ----------CONTENT UPLOAD SELTION---------- */}
               {pathname === '/upload' && (
                 <div className="upload-content d-flex align-items-center justify-content-center">
-                  <ContentUpload />
+                  <Suspense fallback={<Spinner />}>
+                    <ContentUpload />
+                  </Suspense>
                 </div>
               )}
 

@@ -43,10 +43,10 @@ body {
 .btn {
   font-weight: 600;
   font-size: 16px !important;
+  border: none !important;
 
   &:hover {
-    background-image: $gradient-button-reverse;
-    color: #fff;
+    background-color: #7728fe !important;
   }
 }
 

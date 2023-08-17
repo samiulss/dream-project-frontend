@@ -4,7 +4,7 @@ import {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
-import Loadng from '../commons/loading/Loadng';
+import Loading from '../commons/loading/Loading';
 import Spinner from '../commons/spinner/Spinner';
 import MainNavbar from '../mainNavbar/MainNavbar';
 
@@ -14,6 +14,7 @@ function SellerContentProfile() {
   const { sellerId } = useParams();
 
   const [contents, setContents] = useState([]);
+  const [sellerProfile, setSellerProfile] = useState(null);
 
   // FETCH SELLER PROFILE AND CONTENTS
   const fetchSellerProfile = async () => {
@@ -22,6 +23,7 @@ function SellerContentProfile() {
         `${rootUrl}/api/sellerProfile?sellerId=${sellerId}`
       );
       setContents(data);
+      setSellerProfile(data[0].author);
     } catch (error) {
       console.log(error.message);
     }
@@ -36,11 +38,11 @@ function SellerContentProfile() {
       <MainNavbar />
       {contents.length ? (
         <Suspense fallback={<Spinner />}>
-          <Profile fullDetails={false} contents={contents} />
+          <Profile fullDetails={false} contents={contents} sellerProfile={sellerProfile} />
         </Suspense>
       ) : (
         <div className="no-contentloading d-flex align-items-center justify-content-center vh-100">
-          <Loadng />
+          <Loading />
         </div>
       )}
     </div>

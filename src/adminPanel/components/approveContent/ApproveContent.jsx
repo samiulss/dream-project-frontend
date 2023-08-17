@@ -7,7 +7,7 @@ import { ContentState } from '../../../context/StateContext';
 import './approveContent.scss';
 
 function ApproveContent({ contentId, handleClose }) {
-  const { fetchAgain, setFetchAgain, setPopUpModal } = ContentState();
+  const { fetchAgain, setFetchAgain } = ContentState();
   const [price, setPrice] = useState(false);
   const [licence, setLicence] = useState(null);
   const [file, setFile] = useState(null);
@@ -50,7 +50,7 @@ function ApproveContent({ contentId, handleClose }) {
   // HANDLE SUBMIT CONTENT
   const handleApproveContent = async (e) => {
     e.preventDefault();
-    if (e.target[0].files.length === 0) {
+    if (!file) {
       toast.error('Please select file');
       return;
     }
@@ -78,10 +78,9 @@ function ApproveContent({ contentId, handleClose }) {
         formData,
         config
       );
-      toast.success(data);
-      setPopUpModal(false);
-      setFetchAgain(!fetchAgain);
       handleClose();
+      toast.success(data);
+      setFetchAgain(!fetchAgain);
     } catch (error) {
       toast.error(error.message);
     }

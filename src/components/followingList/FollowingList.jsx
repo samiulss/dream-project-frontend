@@ -1,5 +1,6 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
@@ -29,14 +30,19 @@ function FollowingList({ followingSeller }) {
   };
   return (
     <div className="m-portlet__body d-flex align-items-center">
-      <div className="m-widget4__img m-widget4__img--pic" role="button">
-        <img
-          src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
-          alt=""
-        />
+      <div className="m-widget4__img m-widget4__img--pic">
+        <Link to={`/seller/${_id}`}>
+          <img
+            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
+            alt=""
+            type="button"
+          />
+        </Link>
       </div>
       <div className="m-widget4__info">
-        <span className="m-widget4__title fw-semibold">{name}</span>
+        <Link to={`/seller/${_id}`}>
+          <span className="m-widget4__title fw-semibold" role="button">{name}</span>
+        </Link>
         <br />
         <span className="m-widget4__sub">{email}</span>
       </div>

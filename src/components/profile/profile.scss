@@ -21,3 +21,26 @@
 .my-content-scroll {
   overflow: auto;
 }
+
+.account-status {
+  width: 80px;
+  height: 80px;
+}
+
+.action-buttons {
+  justify-content: center;
+  @media (max-width: 400px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.add-btn-social-skill {
+  height: 35px;
+}
+.list-group-item {
+  cursor: default;
+  &:hover {
+    opacity: 1;
+  }
+}

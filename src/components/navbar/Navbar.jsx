@@ -24,14 +24,6 @@ function Navbar() {
   const [searchItem, setSearchItem] = useState(0);
   const [searchkeywords, setSearchkeywords] = useState('');
 
-  const checkLogin = () => {
-    if (!loggedInUser) {
-      setShowLoginModal(true);
-    } else {
-      navigate('/profile');
-    }
-  };
-
   // handle search result
   const handleSearch = async (e) => {
     setSearchkeywords(e.target.value);
@@ -156,18 +148,39 @@ function Navbar() {
   ];
 
   return (
-    <nav className="navbar navbar-expand-lg mb-4 pt-4">
+    <nav className="navbar navbar-expand-md mb-4 pt-4">
       <div className="container-fluid p-0">
         {/* ---------------home logo--------------- */}
         <Link to="/">
           <img
             onClick={() => window.location.reload()}
-            className="site-logo me-4"
+            className="site-logo"
             title="Home"
             src={logo}
             alt=""
           />
         </Link>
+
+        {/* ---------------menu for mobile and tablet--------------- */}
+        <div className="mobile-tablet">
+          <ul className="d-flex align-items-center menu-items mb-0">
+            <li className="nav-item nav-item-none">
+              <Link className="nav-link" to="/client">
+                Our Client
+              </Link>
+            </li>
+            <li className="nav-item nav-item-none">
+              <Link className="nav-link" to="/project">
+                Our Project
+              </Link>
+            </li>
+            <li className="nav-item border rounded-pill hire-us-btn">
+              <a className="nav-link" href="#">
+                Hire Us
+              </a>
+            </li>
+          </ul>
+        </div>
 
         {/* ---------------toggle mobile sidebar--------------- */}
         {loggedInUser ? (
@@ -186,7 +199,7 @@ function Navbar() {
         )}
 
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
+          <ul className="navbar-nav me-auto mb-lg-0 align-items-center">
             <li className="nav-item">
               <Link className="nav-link" to="/client">
                 Our Client
@@ -197,17 +210,6 @@ function Navbar() {
                 Our Project
               </Link>
             </li>
-            {/* <li className="nav-item dropdown">
-              <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown
-              </a>
-              <ul className="dropdown-menu">
-                <li><a className="dropdown-item" href="#">Action</a></li>
-                <li><a className="dropdown-item" href="#">Another action</a></li>
-                <li><hr className="dropdown-divider" /></li>
-                <li><a className="dropdown-item" href="#">Something else here</a></li>
-              </ul>
-            </li> */}
             <li className="nav-item border rounded-pill hire-us-btn">
               <a className="nav-link" href="#">
                 Hire Us
@@ -225,7 +227,7 @@ function Navbar() {
               onChange={handleSearch}
               className="form-control shadow-none bg-transparent text-white border border-0 border-end rounded-0"
               type="search"
-              placeholder="search someting..."
+              placeholder="search..."
               aria-label="Search"
               onKeyDown={handleArrowKey}
               value={searchkeywords}
@@ -253,9 +255,20 @@ function Navbar() {
               </div>
             )}
           </form>
-          <div onClick={checkLogin} className="user-profile">
-            <span className="svg-icon avater" />
-          </div>
+          {loggedInUser ? (
+            <div className="user-profile">
+              <Link to="/profile">
+                <span className="svg-icon avater" />
+              </Link>
+            </div>
+          ) : (
+            <span
+              onClick={() => setShowLoginModal(true)}
+              className="text-white btn rounded-4 ms-2"
+            >
+              Log in
+            </span>
+          )}
         </div>
       </div>
     </nav>

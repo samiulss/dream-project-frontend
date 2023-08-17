@@ -37,6 +37,9 @@
     }
 
     .dropdown {
+      &:hover {
+        opacity: 1;
+      }
       .dropdown-menu {
         .dropdown-item {
           color: #333 !important;

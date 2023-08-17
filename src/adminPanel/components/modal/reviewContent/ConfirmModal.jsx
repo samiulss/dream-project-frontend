@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { rootUrl } from '../../../../../config/backendUrl';
 import PopUpModal from '../../../../components/modals/popUpModal/PopUpModal';
@@ -10,14 +9,13 @@ import { ContentState } from '../../../../context/StateContext';
 import './confirmModal.scss';
 
 function ConfirmModal({ content, fileState }) {
-  const { fetchAgain, setFetchAgain, setPopUpModal } = ContentState();
+  const { setPopUpModal } = ContentState();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const [contentId, setContentId] = useState('');
   const [tags, setTags] = useState([]);
-  const [selectCause, setSelectCause] = useState(null);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
 
@@ -35,31 +33,6 @@ function ConfirmModal({ content, fileState }) {
     setReject(true);
     setApprove(false);
     setPopUpModal(true);
-  };
-
-  // HANDLE REJECT CONTENT
-  const handleReject = async () => {
-    if (!selectCause) {
-      toast.error('Please select a reasone');
-    }
-
-    // const config = {
-    //   'Content-type': 'application/json; charset=UTF-8',
-    // };
-    // try {
-    //   const { data } = await axios.post(
-    //     `${rootUrl}/api/reject`,
-    //     { contentId, selectCause },
-    //     config
-    //   );
-    //   toast.success(data);
-    //   setPopUpModal(false);
-    //   setFetchAgain(!fetchAgain);
-    //   handleClose();
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error(error.message);
-    // }
   };
 
   useEffect(() => {
@@ -184,8 +157,6 @@ function ConfirmModal({ content, fileState }) {
       <PopUpModal
         rejectModal={reject}
         approveModal={approve}
-        setSelectCause={setSelectCause}
-        handleReject={handleReject}
         contentId={contentId}
         handleClose={handleClose}
       />

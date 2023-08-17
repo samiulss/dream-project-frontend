@@ -2,7 +2,7 @@
   //left sidebar desgin
   .left-sidebar {
     .position-sticky {
-      top: 0px;
+      top: 55px;
     }
 
     .menu {
@@ -46,6 +46,17 @@
     }
     .upload-logo {
       background-image: url("../../assets/icons/upload.svg");
+    }
+
+    //profile section design
+    .profile-section {
+      height: calc(100vh - 55px);
+      overflow: auto;
+      @media (max-width: 991px) {
+        height: min-content;
+      }
+
+      background-color: #eee;
     }
 
     //upload section design

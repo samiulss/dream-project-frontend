@@ -19,7 +19,7 @@ export default function ShareContentLink({ path }) {
   return (
     <ShareSocial
       title="Share"
-      url={`http://localhost:5173${path}`}
+      url={`https://dream-project.netlify.app/${path}`}
       socialTypes={['whatsapp', 'telegram', 'facebook', 'twitter', 'reddit', 'linkedin',]}
       style={style}
     />

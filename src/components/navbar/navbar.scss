@@ -2,6 +2,25 @@ nav {
   .site-logo {
     width: 50px;
     cursor: pointer;
+    margin-right: 1.5rem;
+    @media (max-width: 576px) {
+      margin-right: 0;
+    }
+  }
+
+  .mobile-tablet {
+    display: none;
+    @media (max-width: 767px) {
+      display: block;
+      .menu-items {
+        gap: 20px;
+      }
+    }
+    .nav-item-none {
+      @media (max-width: 576px) {
+        display: none;
+      }
+    }
   }
 
   .login-mobile-device {
@@ -9,6 +28,9 @@ nav {
 
     @media (max-width: 991px) {
       display: block;
+    }
+    @media (min-width: 768px) {
+      display: none;
     }
   }
 
@@ -26,7 +48,6 @@ nav {
   .hire-us-btn {
     width: 135px;
     height: 37px;
-    font-style: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -42,6 +63,7 @@ nav {
   }
   form {
     width: 30%;
+    height: 37px;
 
     input {
       border-radius: 0;

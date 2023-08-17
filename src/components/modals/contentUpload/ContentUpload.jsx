@@ -7,7 +7,7 @@ import { rootUrl } from '../../../../config/backendUrl';
 import { configData } from '../../../../config/tokenVerify';
 import { ContentState } from '../../../context/StateContext';
 import Filter from '../../commons/filter/Filter';
-import Loadng from '../../commons/loading/Loadng';
+import Loading from '../../commons/loading/Loading';
 import ProgressBar from '../../commons/progressBar/ProgressBar';
 import './contentUpload.scss';
 
@@ -318,7 +318,7 @@ function ContentUpload() {
             <div className="border-0 text-center">
               <button style={{ height: '45px' }} type="submit" className="btn w-50 base-bg-color-1 text-white rounded-5 border-0 p-0">
                 {
-                  loading ? <Loadng /> : 'Submit'
+                  loading ? <Loading /> : 'Submit'
                 }
               </button>
             </div>

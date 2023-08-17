@@ -22,7 +22,7 @@ function AdminHome() {
             <div className="position-sticky">
               <div className="header">
                 <Link to="/admin-panel">
-                  <h3 className="text-white ms-3">Dashboard</h3>
+                  <h5 className="text-white ms-3">Dashboard</h5>
                 </Link>
               </div>
 

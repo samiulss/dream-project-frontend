@@ -6,7 +6,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import Arrow from '../../components/commons/arrow/Arrow';
-import Loadng from '../../components/commons/loading/Loadng';
+import Loading from '../../components/commons/loading/Loading';
 import Footer from '../../components/footer/Footer';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
@@ -444,7 +444,7 @@ function Download() {
             </>
           ) : (
             <div className="no-contentloading d-flex align-items-center justify-content-center vh-100">
-              <Loadng />
+              <Loading />
             </div>
           )}
         </div>
