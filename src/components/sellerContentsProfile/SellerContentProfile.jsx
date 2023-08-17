@@ -19,11 +19,12 @@ function SellerContentProfile() {
   // FETCH SELLER PROFILE AND CONTENTS
   const fetchSellerProfile = async () => {
     try {
-      const { data } = await axios.get(
+      let { data } = await axios.get(
         `${rootUrl}/api/sellerProfile?sellerId=${sellerId}`
       );
-      setContents(data);
       setSellerProfile(data[0].author);
+      data = data.reverse();
+      setContents(data);
     } catch (error) {
       console.log(error.message);
     }

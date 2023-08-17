@@ -40,6 +40,8 @@
 }
 .list-group-item {
   cursor: default;
+  padding: 1rem 0 !important;
+
   &:hover {
     opacity: 1;
   }

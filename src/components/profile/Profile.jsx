@@ -246,8 +246,6 @@ function Profile({ fullDetails, contents, sellerProfile }) {
     checkFollower();
   }, [fetchAgain]);
 
-  // console.log(editProfileValues);
-
   return (
     <section className="pb-3">
       <div className={fullDetails ? 'container pt-3' : 'container-fluid pt-3'}>
@@ -358,7 +356,9 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                         <option value="Website">Website</option>
                         <option value="Facebook">Facebook</option>
                         <option value="Instagram">Instagram</option>
-                        <option value="Dribble">Dribble</option>
+                        <option value="Dribbble">Dribbble</option>
+                        <option value="Behance">Behance</option>
+                        <option value="LinkdIn">LinkdIn</option>
                       </select>
                       <input
                         type="text"
@@ -413,10 +413,10 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                         onClick={(e) => getSocialSkillsName(e.target.value)}
                       >
                         <option defaultChecked>Choose...</option>
-                        <option value="Web Design">Web Design</option>
-                        <option value="Graphic Design">Graphic Design</option>
-                        <option value="Photo Shop">Photo Shop</option>
-                        <option value="illustration">illustration</option>
+                        <option value="Photoshop">Photoshop</option>
+                        <option value="Illustrator">Illustrator</option>
+                        <option value="Figma">Figma</option>
+                        <option value="MERN STACK">MERN STACK</option>
                       </select>
                       <input
                         type="number"
@@ -525,8 +525,35 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                       </div>
                     </div>
                   </div>
+
+                  {/* ------------UPDATE ACTION BUTTON------------ */}
+                  {fullDetails && editProfile && (
+                  <div
+                    style={{ gap: '20px' }}
+                    className="mt-4 d-flex action-buttons justify-content-center mb-4"
+                  >
+                    <button
+                      className="btn bg-danger text-white rounded-5"
+                      type="reset"
+                      onClick={() => {
+                        setEditProfile(false);
+                        setInfoChange(false);
+                      }}
+                    >
+                      Cancle
+                    </button>
+                    <button
+                      className="btn bg-success text-white rounded-5"
+                      type="submit"
+                      disabled={!infoChange}
+                    >
+                      Update
+                    </button>
+                  </div>
+                  )}
+
+                  {/* ------------ACCOUNT STATUS CONTENTR------------ */}
                   <div className="row">
-                    {/* ------------ACCOUNT STATUS CONTENTR------------ */}
                     <div className="col-md-12">
                       <div className="card mb-4 mb-md-0 pb-4">
                         <div className="card-body m-auto d-flex flex-column align-items-center">
@@ -535,61 +562,36 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                             <div
                               style={{
                                 backgroundColor: 'limegreen',
+                                height: '50px',
+                                width: '150px',
                               }}
-                              className="account-status d-flex align-items-center justify-content-center rounded-circle"
+                              className="account-status d-flex align-items-center justify-content-center rounded-3 w-100"
                               title="No restiction"
                             >
-                              <i className="fa-solid fa-circle-check fs-1" />
+                              <span className="text-white fw-bold fs-3">
+                                Safe
+                              </span>
                             </div>
                           )}
                           {userData?.restiction === 1 && (
                             <div
                               style={{
                                 backgroundColor: '#eee',
+                                height: '50px',
+                                width: '150px',
                               }}
-                              className="account-status d-flex align-items-center justify-content-center rounded-circle"
+                              className="account-status d-flex align-items-center justify-content-center rounded-3 bg-danger"
                               title="Warning"
                             >
-                              <i className="fa-solid fa-triangle-exclamation text-warning fs-1" />
-                            </div>
-                          )}
-                          {userData?.restiction === 3 && (
-                            <div
-                              style={{
-                                backgroundColor: 'red',
-                              }}
-                              className="account-status d-flex align-items-center justify-content-center rounded-circle"
-                              title="Resticted"
-                            >
-                              <i className="fa-solid fa-circle-xmark fs-1" />
+                              <span className="text-white fw-bold fs-6">
+                                Warning (
+                                {userData.restiction}
+                                /10)
+                              </span>
                             </div>
                           )}
                         </div>
                       </div>
-                      {fullDetails && editProfile && (
-                        <div
-                          style={{ gap: '20px' }}
-                          className="mt-4 d-flex action-buttons justify-content-center"
-                        >
-                          <button
-                            className="btn bg-danger text-white rounded-5"
-                            type="reset"
-                            onClick={() => {
-                              setEditProfile(false);
-                              setInfoChange(false);
-                            }}
-                          >
-                            Cancle
-                          </button>
-                          <button
-                            className="btn bg-success text-white rounded-5"
-                            type="submit"
-                            disabled={!infoChange}
-                          >
-                            Update
-                          </button>
-                        </div>
-                      )}
                     </div>
                   </div>
                 </>

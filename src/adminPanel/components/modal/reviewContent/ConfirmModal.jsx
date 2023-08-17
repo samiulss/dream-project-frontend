@@ -153,13 +153,13 @@ function ConfirmModal({ content, fileState }) {
         ) : (
           ''
         )}
+        <PopUpModal
+          rejectModal={reject}
+          approveModal={approve}
+          contentId={contentId}
+          handleClose={handleClose}
+        />
       </Modal>
-      <PopUpModal
-        rejectModal={reject}
-        approveModal={approve}
-        contentId={contentId}
-        handleClose={handleClose}
-      />
     </>
   );
 }

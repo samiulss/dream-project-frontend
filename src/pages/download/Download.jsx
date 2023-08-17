@@ -88,10 +88,11 @@ function Download() {
       );
       setContent(data.content);
       setTotalContent(data.total);
-      const relatedData = data.relatedContents.filter(
+      const relatedData = data.relatedContents[0].filter(
         (item) => item._id !== data.content._id
       );
       setRelatedContents(relatedData);
+      console.log(relatedData);
     } catch (error) {
       setNoContent(true);
     }
@@ -255,7 +256,7 @@ function Download() {
                         <div className="author-avater">
                           <img
                             className="img-fluid"
-                            src="https://cdn-icons-png.flaticon.com/512/6386/6386976.png"
+                            src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp"
                             alt=""
                           />
                         </div>

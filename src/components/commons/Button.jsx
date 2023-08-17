@@ -4,6 +4,14 @@ import './button.scss';
 
 function Button({ btn }) {
   const { loggedInUser, setShowLoginModal, setPopUpModal } = ContentState();
+
+  const beSellarBtn = () => {
+    if (!loggedInUser) {
+      setShowLoginModal(true);
+    } else {
+      setPopUpModal(true);
+    }
+  };
   return (
     <div className="common row align-items-center text-center p-5">
       <div className="col-md-8">
@@ -42,7 +50,7 @@ function Button({ btn }) {
           && (!loggedInUser || loggedInUser?.role === 'user') && (
             <button
               type="button"
-              onClick={() => setPopUpModal(true)}
+              onClick={beSellarBtn}
               className="btn gradient-button border-0 rounded-1"
             >
               Become a seller

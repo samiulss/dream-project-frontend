@@ -1,14 +1,11 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
 
 function SellerAgreement() {
   const { auth, loggedInUser, setPopUpModal } = ContentState();
-
-  const navigate = useNavigate();
 
   // BECOME A SELLER
   const handleBeSeller = async () => {
@@ -19,10 +16,13 @@ function SellerAgreement() {
         config(auth)
       );
       localStorage.removeItem('token');
+      sessionStorage.removeItem('token');
+      toast.success('You are a seller now');
       setPopUpModal(false);
       localStorage.setItem('token', data);
-      navigate('/upload');
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       toast.error(error.message);
     }

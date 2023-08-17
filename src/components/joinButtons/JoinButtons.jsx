@@ -8,6 +8,8 @@ function JoinButtons() {
   const { loggedInUser, setShowLoginModal, setPopUpModal } = ContentState();
   const [btn, setBtn] = useState('login');
 
+  console.log(loggedInUser);
+
   const beSellarBtn = () => {
     if (!loggedInUser) {
       setShowLoginModal(true);

@@ -1,1 +1,1 @@
-export const rootUrl = 'https://dream-project-backend.onrender.com';
+export const rootUrl = 'http://test.noxakar.com';

@@ -7,17 +7,17 @@ const State = createContext();
 
 function StateContext({ children }) {
   const token = localStorage.getItem('token');
-  const tempToken = sessionStorage.getItem('token');
+  const tempLogin = sessionStorage.getItem('token');
   let decode;
   if (token) {
     decode = jwtDecode(token);
   }
-  if (tempToken) {
-    decode = jwtDecode(tempToken);
+  if (!token && tempLogin) {
+    decode = jwtDecode(tempLogin);
   }
   const [loggedInUser, setLoggedInUser] = useState(decode);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [auth, setAuth] = useState(token || tempToken);
+  const [auth, setAuth] = useState(token || tempLogin);
   const [contents, setContents] = useState([]);
   const [catagory, setCatagory] = useState(null);
   const [resultFor, setResultFor] = useState('');

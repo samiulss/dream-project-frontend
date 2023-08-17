@@ -132,9 +132,6 @@ function ContentContainer() {
     }
   }, [catagory, sortByTime, sortByLicence]);
 
-  // console.log(contents);
-  // console.log(filterContents);
-
   return (
     <main className="ContentContainer">
       {/* ------------SEARCH SECTION------------ */}

@@ -5,7 +5,7 @@ function SocialHandle({
 }) {
   return (
     <li
-      className="list-group-item d-flex justify-content-between align-items-center p-3"
+      className="list-group-item d-flex justify-content-between align-items-center"
     >
       <p className="mb-0">{item.name}</p>
       {!editProfile && (

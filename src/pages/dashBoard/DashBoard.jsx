@@ -28,15 +28,17 @@ const ContentList = lazy(() => import('../../components/contentList/ContentList'
 
 function DashBoard() {
   const {
-    auth, loggedInUser, fetchAgain, setPopUpModal
+    auth, loggedInUser, fetchAgain, setPopUpModal, catagory, setCatagory
   } = ContentState();
+
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
   const [contents, setcontents] = useState([]);
+  const [approvedContent, setApprovedContent] = useState([]);
   const [filterContent, setFilterContent] = useState([]);
   const [filterBox, setFilterBox] = useState(false);
   const [followList, setFollowList] = useState([]);
-  const [catagory, setCatagory] = useState(null);
   const [downloads, setDownloads] = useState([]);
   const [messages, setMessages] = useState([1]);
 
@@ -49,6 +51,8 @@ function DashBoard() {
       );
       setcontents(data);
       setFilterContent(data);
+      const findApproved = data.filter((item) => item.status === 'Approved');
+      setApprovedContent(findApproved);
       const downloadedFiles = data.filter((item) => item.downloadCount > 0);
       setDownloads(downloadedFiles);
     } catch (error) {
@@ -80,13 +84,14 @@ function DashBoard() {
   // FILTER BY CATAGORY
   useEffect(() => {
     if (catagory) {
-      const filterCatagory = contents.filter(
+      const filterCatagory = approvedContent.filter(
         (favourite) => favourite.catagory === catagory
       );
       setFilterContent(filterCatagory);
     }
   }, [catagory]);
 
+  // FILTER BY STATUS
   const filterWise = (staus) => {
     const doFilter = filterContent.filter(
       (content) => content.status === staus
@@ -454,7 +459,7 @@ function DashBoard() {
                     <div className="my-content-scroll">
                       <div className="my-content-section w-100">
                         {catagory === null
-                          ? contents.map((content) => (
+                          ? approvedContent.map((content) => (
                             <ContentList
                               key={content._id}
                               content={content}

@@ -12,7 +12,7 @@ import ProgressBar from '../../commons/progressBar/ProgressBar';
 import './contentUpload.scss';
 
 function ContentUpload() {
-  const { loggedInUser } = ContentState();
+  const { loggedInUser, auth } = ContentState();
   const [keywords, setkeywords] = useState([]);
   const [selectedFile, setSelectedFile] = useState([]);
   const [uploadedFiles, setuploadedFIles] = useState([]);
@@ -27,8 +27,6 @@ function ContentUpload() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const token = localStorage.getItem('token');
 
   // SHOW THUMBNAIL
   const handleThumbnail = (e) => {
@@ -75,7 +73,7 @@ function ContentUpload() {
     }
 
     try {
-      const { data } = await axios.post(`${rootUrl}/api/contentUpload`, formData, configData(token));
+      const { data } = await axios.post(`${rootUrl}/api/contentUpload`, formData, configData(auth));
       const { message, success } = data;
       if (success) {
         setLoading(false);
@@ -118,7 +116,7 @@ function ContentUpload() {
     try {
       await axios.post('/', formData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${auth}`,
           'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: (event) => {
