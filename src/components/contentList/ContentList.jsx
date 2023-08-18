@@ -89,7 +89,7 @@ function ContentList({ content, tooltip, favourites }) {
           width="100%"
           height="400"
           id={_id}
-          src={`${rootUrl}/uploads/${thumbnail}`}
+          src={`${rootUrl}/${thumbnail}`}
           alt={content.title}
         />
       </Link>

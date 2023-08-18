@@ -1,15 +1,18 @@
 import moment from 'moment';
-import './message.scss';
+import { ContentState } from '../../context/StateContext';
+import Canvas from '../commons/offCanvas/Offcanvas';
+import './notification.scss';
 
-function Message() {
+function Notification() {
+  const { setShowCanvas } = ContentState();
   return (
     <>
-      <tbody>
-        <tr data-bs-toggle="modal" data-bs-target="#exampleModal">
+      <tbody onClick={() => setShowCanvas(true)}>
+        <tr>
           <td>{moment().subtract(10, 'days').calendar()}</td>
           <td>{moment().format('LT')}</td>
           <td>
-            Account restiction
+            Title
           </td>
           <td>
             <span className="svg-icon message-icon position-relative">
@@ -18,8 +21,9 @@ function Message() {
           </td>
         </tr>
       </tbody>
+      <Canvas notification />
     </>
   );
 }
 
-export default Message;
+export default Notification;

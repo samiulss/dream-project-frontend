@@ -10,7 +10,9 @@ import Canvas from '../commons/offCanvas/Offcanvas';
 import './fileStatus.scss';
 
 function FileStatus({ content, index }) {
-  const { auth, fetchAgain, setFetchAgain } = ContentState();
+  const {
+    auth, fetchAgain, setFetchAgain, setShowCanvas
+  } = ContentState();
   const { title, status, createdAt } = content;
   const navigate = useNavigate();
 
@@ -33,28 +35,29 @@ function FileStatus({ content, index }) {
   };
 
   return (
-    <tbody>
-      <tr>
-        <td>{index + 1}</td>
-        <td>{title}</td>
-        <td>
-          <span className="me-2">{moment(createdAt).format('L')}</span>
-          {moment(createdAt).format('LT')}
-          <span />
-        </td>
-        <td
-          className={
+    <>
+      <tbody>
+        <tr>
+          <td>{index + 1}</td>
+          <td>{title}</td>
+          <td>
+            <span className="me-2">{moment(createdAt).format('L')}</span>
+            {moment(createdAt).format('LT')}
+            <span />
+          </td>
+          <td
+            className={
             (status === 'Pending' && 'text-warning')
             || (status === 'Approved' && 'text-success')
             || (status === 'Rejected' && 'text-danger')
           }
-        >
-          {status}
-        </td>
-        <td>
-          <ConfirmModal content={content} fileState />
-        </td>
-        {status === 'Pending' && (
+          >
+            {status}
+          </td>
+          <td className="p-0">
+            <ConfirmModal content={content} fileState />
+          </td>
+          {status === 'Pending' && (
           <td>
             <i
               onClick={() => cancelPending(content._id)}
@@ -63,14 +66,23 @@ function FileStatus({ content, index }) {
               role="button"
             />
           </td>
-        )}
-        {status === 'Rejected' && (
+          )}
+          {status === 'Rejected' && (
           <td>
-            <Canvas rejectCause={content.rejectCause} />
+            <p
+              style={{ width: '80px' }}
+              onClick={() => setShowCanvas(true)}
+              className="bg-danger-subtle see-why-btn text-danger rounded-4 mb-0 text-center"
+              type="button"
+            >
+              See Why
+            </p>
           </td>
-        )}
-      </tr>
-    </tbody>
+          )}
+        </tr>
+      </tbody>
+      <Canvas fileStatus rejectCause={content.rejectCause} />
+    </>
   );
 }
 

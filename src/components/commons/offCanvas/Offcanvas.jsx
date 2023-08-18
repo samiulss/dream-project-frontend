@@ -1,22 +1,24 @@
-import { useState } from 'react';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import { ContentState } from '../../../context/StateContext';
+import NotificationView from '../../notificationView/NotificationView';
 
-function Canvas({ rejectCause }) {
-  const [show, setShow] = useState(false);
+function Canvas({ rejectCause, fileStatus, notification }) {
+  const { showCanvas, setShowCanvas } = ContentState();
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShowCanvas(false);
 
   return (
     <>
-      <span onClick={handleShow} className="bg-danger-subtle see-why-btn text-danger rounded-4" role="button">See Why</span>
-
-      <Offcanvas show={show} onHide={handleClose} placement="end">
+      <Offcanvas show={showCanvas} onHide={handleClose} placement="end">
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Reasone</Offcanvas.Title>
+          <Offcanvas.Title>
+            {fileStatus && 'Rejected'}
+            {notification && 'Notification'}
+          </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          {rejectCause}
+          {fileStatus && rejectCause}
+          {notification && <NotificationView />}
         </Offcanvas.Body>
       </Offcanvas>
     </>

@@ -68,7 +68,7 @@ function ApproveContent({ contentId, handleClose }) {
     };
     const formData = new FormData();
     formData.append('contentId', contentId);
-    formData.append('mainFile', e.target[0].files[0]);
+    formData.append('zipFile', e.target[0].files[0]);
     formData.append('licence', licence);
     formData.append('price', e.target[3].value);
 
@@ -94,7 +94,7 @@ function ApproveContent({ contentId, handleClose }) {
             onChange={handleFile}
             className="d-none"
             type="file"
-            name="mainFile"
+            name="zipFile"
             id="addfile"
           />
           <label

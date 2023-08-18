@@ -11,7 +11,7 @@ import './contentContainer.scss';
 import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
-import Loading from '../commons/loading/Loading';
+import Spinner from '../commons/spinner/Spinner';
 import ContentList from '../contentList/ContentList';
 
 function ContentContainer() {
@@ -217,7 +217,7 @@ function ContentContainer() {
             {contents.length === 0 && filterContents.length === 0 && (
               <div className="d-flex flex-column align-items-center justify-content-center h-50">
                 {loading ? (
-                  <Loading />
+                  <Spinner />
                 ) : (
                   <>
                     <i className="fa-solid fa-face-frown fs-1 text-warning fa-2xl" />

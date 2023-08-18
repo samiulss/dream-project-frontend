@@ -1,1 +1,1 @@
-export const rootUrl = 'http://test.noxakar.com';
+export const rootUrl = 'https://noxakar.com';

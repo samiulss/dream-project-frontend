@@ -6,7 +6,7 @@ import { Link, useLocation, useParams } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import Arrow from '../../components/commons/arrow/Arrow';
-import Loading from '../../components/commons/loading/Loading';
+import Spinner from '../../components/commons/spinner/Spinner';
 import Footer from '../../components/footer/Footer';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
@@ -194,10 +194,6 @@ function Download() {
 
   // HANDLE SHARE LINK
   const handleShareLink = () => {
-    if (!loggedInUser) {
-      toast.error('Please log in first');
-      return;
-    }
     setShareLink(true);
     setReport(false);
     setPopUpModal(true);
@@ -237,7 +233,7 @@ function Download() {
                         {content && (
                           <img
                             className="img-fluid"
-                            src={`${rootUrl}/uploads/${content?.thumbnail}`}
+                            src={`${rootUrl}/${content?.thumbnail}`}
                             alt=""
                           />
                         )}
@@ -316,6 +312,7 @@ function Download() {
                           to={`${rootUrl}/api/downloadFile?id=${
                             contentId || relatedContentUrl
                           }`}
+                          target="_blank"
                           download={content.title}
                           rel="noreferrer"
                         >
@@ -325,13 +322,13 @@ function Download() {
                     ) : (
                       <div className="content-download">
                         <Link
-                          onClick={handleDownloadCount}
+                          // onClick={handleDownloadCount}
                           className="btn base-bg-color-1 text-white w-100 mb-3"
-                          to={`${rootUrl}/api/downloadFile?id=${
-                            contentId || relatedContentUrl
-                          }`}
-                          download={content.title}
-                          rel="noreferrer"
+                          // to={`${rootUrl}/api/downloadFile?id=${
+                          //   contentId || relatedContentUrl
+                          // }`}
+                          // download={content.title}
+                          // rel="noreferrer"
                         >
                           Premium Download
                           {' '}
@@ -427,7 +424,7 @@ function Download() {
                           <img
                             onClick={() => rContentUrl(item._id)}
                             key={item.id}
-                            src={`${rootUrl}/uploads/${item.thumbnail}`}
+                            src={`${rootUrl}/${item.thumbnail}`}
                             alt={item.title}
                           />
                         </Link>
@@ -444,8 +441,8 @@ function Download() {
               <Footer />
             </>
           ) : (
-            <div className="no-contentloading d-flex align-items-center justify-content-center vh-100">
-              <Loading />
+            <div className="no-contentloading d-flex align-items-center justify-content-center">
+              <Spinner />
             </div>
           )}
         </div>

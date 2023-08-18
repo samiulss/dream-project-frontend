@@ -28,6 +28,7 @@ function FollowingList({ followingSeller }) {
       console.log(error.message);
     }
   };
+
   return (
     <div className="m-portlet__body d-flex align-items-center">
       <div className="m-widget4__img m-widget4__img--pic">
@@ -41,7 +42,9 @@ function FollowingList({ followingSeller }) {
       </div>
       <div className="m-widget4__info">
         <Link to={`/seller/${_id}`}>
-          <span className="m-widget4__title fw-semibold" role="button">{name}</span>
+          <span className="m-widget4__title fw-semibold" role="button">
+            {name}
+          </span>
         </Link>
         <br />
         <span className="m-widget4__sub">{email}</span>

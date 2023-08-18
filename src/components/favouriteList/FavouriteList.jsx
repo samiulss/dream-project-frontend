@@ -6,7 +6,7 @@ import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
 import ContentList from '../contentList/ContentList';
 
-function FavouriteList({ catagory }) {
+function FavouriteList({ catagory, setFavoriteList }) {
   const { auth, fetchAgain } = ContentState();
 
   const [favourites, setFavourites] = useState([]);
@@ -20,6 +20,7 @@ function FavouriteList({ catagory }) {
         config(auth)
       );
       setFavourites(data[0].favourite);
+      setFavoriteList(data[0].favourite);
     } catch (error) {
       toast.error(error.message);
     }

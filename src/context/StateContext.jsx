@@ -18,12 +18,13 @@ function StateContext({ children }) {
   const [loggedInUser, setLoggedInUser] = useState(decode);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [auth, setAuth] = useState(token || tempLogin);
+  const [homeSearch, setHomeSearch] = useState(false);
   const [contents, setContents] = useState([]);
   const [catagory, setCatagory] = useState(null);
   const [resultFor, setResultFor] = useState('');
   const [fetchAgain, setFetchAgain] = useState(false);
   const [popUpModal, setPopUpModal] = useState(false);
-  const [homeSearch, setHomeSearch] = useState(false);
+  const [showCanvas, setShowCanvas] = useState(false);
   return (
     <State.Provider value={{
       loggedInUser,
@@ -44,6 +45,8 @@ function StateContext({ children }) {
       setFetchAgain,
       popUpModal,
       setPopUpModal,
+      showCanvas,
+      setShowCanvas
     }}
     >
       {children}

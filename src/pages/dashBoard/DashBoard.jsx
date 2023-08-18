@@ -11,7 +11,6 @@ import NextPage from '../../components/commons/nextPage/NextPage';
 import Spinner from '../../components/commons/spinner/Spinner';
 import Help from '../../components/help/Help';
 import MainNavbar from '../../components/mainNavbar/MainNavbar';
-import MessageModal from '../../components/modals/messageModal/MessageModal';
 import PopUpModal from '../../components/modals/popUpModal/PopUpModal';
 import { ContentState } from '../../context/StateContext';
 import './dashBoard.scss';
@@ -20,7 +19,7 @@ const Profile = lazy(() => import('../../components/profile/Profile'));
 const FavouriteList = lazy(() => import('../../components/favouriteList/FavouriteList'));
 const FollowingList = lazy(() => import('../../components/followingList/FollowingList'));
 const ContentUpload = lazy(() => import('../../components/modals/contentUpload/ContentUpload'));
-const Message = lazy(() => import('../../components/message/Message'));
+const Notification = lazy(() => import('../../components/message/Notification'));
 const FileStatus = lazy(() => import('../../components/fileStatus/FileStatus'));
 const Balance = lazy(() => import('../../components/balance/Balance'));
 const DownloadList = lazy(() => import('../../components/downloadList/DownloadList'));
@@ -28,34 +27,44 @@ const ContentList = lazy(() => import('../../components/contentList/ContentList'
 
 function DashBoard() {
   const {
-    auth, loggedInUser, fetchAgain, setPopUpModal, catagory, setCatagory
+    auth,
+    loggedInUser,
+    fetchAgain,
+    setPopUpModal,
+    catagory,
+    setCatagory,
   } = ContentState();
 
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const [contents, setcontents] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [approvedContent, setApprovedContent] = useState([]);
   const [filterContent, setFilterContent] = useState([]);
   const [filterBox, setFilterBox] = useState(false);
   const [followList, setFollowList] = useState([]);
   const [downloads, setDownloads] = useState([]);
-  const [messages, setMessages] = useState([1]);
+  const [notification, setNotification] = useState([]);
+  const [favoriteList, setFavoriteList] = useState([]);
 
   // FETCH FILE STATUS
   const fetchContentStatus = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get(
         `${rootUrl}/api/fileStatus`,
         config(auth)
       );
       setcontents(data);
-      setFilterContent(data);
+      setLoading(false);
       const findApproved = data.filter((item) => item.status === 'Approved');
       setApprovedContent(findApproved);
+      setFilterContent(findApproved);
       const downloadedFiles = data.filter((item) => item.downloadCount > 0);
       setDownloads(downloadedFiles);
     } catch (error) {
+      setLoading(false);
       console.log(error.message);
       if (error.response.status === 401) {
         navigate('/');
@@ -65,14 +74,17 @@ function DashBoard() {
 
   // FETCH FOLLOWING SELLER
   const fatchFollowing = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get(
         `${rootUrl}/api/followingList`,
         config(auth)
       );
       setFollowList(data[0].following);
+      setLoading(false);
     } catch (error) {
       console.log(error.message);
+      setLoading(false);
     }
   };
 
@@ -157,16 +169,13 @@ function DashBoard() {
                         </li>
                       </Link>
 
-                      <Link to="/message">
+                      <Link to="/notification">
                         <li
                           className={`${
-                            pathname === '/message' && 'base-color-1'
+                            pathname === '/notification' && 'base-color-1'
                           }`}
                         >
-                          Message
-                          <span className="ms-1 d-inline-block rounded-5 text-white message-notification">
-                            01
-                          </span>
+                          Notification
                         </li>
                       </Link>
 
@@ -254,18 +263,35 @@ function DashBoard() {
                   <Suspense fallback={<Spinner />}>
                     <div className="m-portlet__head-title">
                       <h4 className="text-center base-color-1 fw-semibold mb-4">
-                        Following:
-                        {' '}
+                        Following (
                         {followList.length}
+                        )
                       </h4>
                     </div>
 
-                    {followList.map((follow) => (
-                      <FollowingList
-                        key={follow._id}
-                        followingSeller={follow}
-                      />
-                    ))}
+                    {followList.length ? (
+                      <>
+                        {followList.map((follow) => (
+                          <FollowingList
+                            key={follow._id}
+                            followingSeller={follow}
+                          />
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        {loading ? (
+                          <Spinner />
+                        ) : (
+                          <div
+                            style={{ height: 'calc(100vh - 155px)' }}
+                            className="d-flex align-items-center justify-content-center"
+                          >
+                            <span className="fs-4">Following list empty</span>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </Suspense>
                   {/* <NextPage /> */}
                 </div>
@@ -273,19 +299,35 @@ function DashBoard() {
 
               {/* ----------FAVOURITE SELTION---------- */}
               {pathname === '/favourite' && (
-                <div>
+                <>
                   <div className="d-flex justify-content-end pt-3 pb-1">
                     <Filter setCatagory={setCatagory} catagory={catagory} />
                   </div>
                   <Suspense fallback={<Spinner />}>
-                    <div className="my-content-scroll">
-                      <div className="my-content-section w-100">
-                        <FavouriteList catagory={catagory} />
+                    {favoriteList.length > 0 ? (
+                      <div className="my-content-section w-100 overflow-auto">
+                        <FavouriteList
+                          catagory={catagory}
+                          setFavoriteList={setFavoriteList}
+                        />
                       </div>
-                    </div>
+                    ) : (
+                      <>
+                        {loading ? (
+                          <Spinner />
+                        ) : (
+                          <div
+                            style={{ height: 'calc(100vh - 155px)' }}
+                            className="d-flex align-items-center justify-content-center"
+                          >
+                            <span className="fs-4">Favourite list empty</span>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </Suspense>
                   {/* <NextPage /> */}
-                </div>
+                </>
               )}
 
               {/* ----------CONTENT UPLOAD SELTION---------- */}
@@ -297,27 +339,37 @@ function DashBoard() {
                 </div>
               )}
 
-              {/* ----------MESSAGE SELTION---------- */}
-              {pathname === '/message' && (
+              {/* ----------NOTIFICATION SELTION---------- */}
+              {pathname === '/notification' && (
                 <div className="message-section overflow-x-auto pt-3">
                   <h4 className="text-center base-color-1 fw-semibold mb-4">
-                    Messages
+                    Notification
                   </h4>
                   <Suspense fallback={<Spinner />}>
-                    <table className="message-list w-100">
-                      <thead>
-                        <tr className="border-0">
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Subject</th>
-                          <th>Status</th>
-                        </tr>
-                      </thead>
-                      {messages.map((msg) => (
-                        <Message />
-                      ))}
-                    </table>
-                    <MessageModal />
+                    {notification.length > 0 ? (
+                      <table className="message-list w-100">
+                        <thead>
+                          <tr className="border-0">
+                            <th className="ps-4">Date</th>
+                            <th>Time</th>
+                            <th>Details</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <>
+                          {notification.map((msg) => (
+                            <Notification key={1} />
+                          ))}
+                        </>
+                      </table>
+                    ) : (
+                      <div
+                        style={{ height: 'calc(100vh - 155px)' }}
+                        className="d-flex align-items-center justify-content-center"
+                      >
+                        <span className="fs-4">No new notification</span>
+                      </div>
+                    )}
                   </Suspense>
                 </div>
               )}
@@ -326,38 +378,53 @@ function DashBoard() {
               {pathname === '/file-status' && (
                 <div className="file-status pt-3">
                   <h4 className="text-center base-color-1 fw-semibold">
-                    Uploaded files:
-                    {' '}
+                    Uploaded files (
                     {contents.length}
+                    )
                   </h4>
                   <div className="file-status-list position-relative">
                     <Suspense fallback={<Spinner />}>
-                      <div className="w-100 overflow-x-auto">
-                        <table>
-                          {/* ----------TABLE HEADING---------- */}
-                          <thead>
-                            <tr>
-                              <th className="serial-no">No.</th>
-                              <th className="name">Item Name</th>
-                              <th className="date">Date</th>
-                              <th
-                                onClick={() => setFilterBox(!filterBox)}
-                                role="button"
-                              >
-                                Status
-                                <i className="fa-solid fa-caret-down text-dark ms-2" />
-                              </th>
-                            </tr>
-                          </thead>
-                          {contents.map((content, index) => (
-                            <FileStatus
-                              key={content._id}
-                              content={content}
-                              index={index}
-                            />
-                          ))}
-                        </table>
-                      </div>
+                      {contents.length > 0 ? (
+                        <div className="w-100 overflow-x-auto">
+                          <table>
+                            {/* ----------TABLE HEADING---------- */}
+                            <thead>
+                              <tr>
+                                <th className="serial-no">No.</th>
+                                <th className="name">Item Name</th>
+                                <th className="date">Date</th>
+                                <th
+                                  onClick={() => setFilterBox(!filterBox)}
+                                  role="button"
+                                >
+                                  Status
+                                  <i className="fa-solid fa-caret-down text-dark ms-2" />
+                                </th>
+                              </tr>
+                            </thead>
+                            {contents.map((content, index) => (
+                              <FileStatus
+                                key={content._id}
+                                content={content}
+                                index={index}
+                              />
+                            ))}
+                          </table>
+                        </div>
+                      ) : (
+                        <>
+                          {loading ? (
+                            <Spinner />
+                          ) : (
+                            <div
+                              style={{ height: 'calc(100vh - 155px)' }}
+                              className="d-flex align-items-center justify-content-center"
+                            >
+                              <span className="fs-4">No new file</span>
+                            </div>
+                          )}
+                        </>
+                      )}
                     </Suspense>
                     {filterBox && (
                       <div className="filter-menu filter-menu-file-status rounded-3 p-1 position-absolute bg-white">
@@ -400,42 +467,58 @@ function DashBoard() {
               {pathname === '/download-list' && (
                 <div className="download-section download-list w-100 p-3 position-relative">
                   <h4 className="text-center base-color-1 fw-semibold mb-4">
-                    Downloaded files:
-                    {' '}
+                    Downloaded files (
                     {downloads.length}
+                    )
                   </h4>
                   <Suspense fallback={<Spinner />}>
-                    <div className="w-100 overflow-x-auto">
-                      <table>
-                        {/* ----------TABLE HEADING---------- */}
-                        <thead>
-                          <tr>
-                            <th className="serial-no">NO.</th>
-                            <th className="name">Item Name</th>
-                            <th
-                              onClick={() => setFilterBox(!filterBox)}
-                              role="button"
-                              className="position-relative"
-                            >
-                              Download count
-                              <i className="fa-solid fa-caret-down text-dark ms-2" />
-                            </th>
-                            <th>Price</th>
-                          </tr>
-                        </thead>
-                        {downloads.map((file, index) => (
-                          <DownloadList
-                            key={file._id}
-                            file={file}
-                            index={index}
-                            downloads={downloads}
-                          />
-                        ))}
-                      </table>
-                    </div>
+                    {downloads.length > 0 ? (
+                      <div className="w-100 overflow-x-auto">
+                        <table>
+                          {/* ----------TABLE HEADING---------- */}
+                          <thead>
+                            <tr>
+                              <th className="serial-no">NO.</th>
+                              <th className="name">Item Name</th>
+                              <th
+                                onClick={() => setFilterBox(!filterBox)}
+                                role="button"
+                                className="position-relative"
+                              >
+                                Download count
+                                {/* <i className="fa-solid fa-caret-down text-dark ms-2" /> */}
+                              </th>
+                              <th>Price</th>
+                            </tr>
+                          </thead>
+                          {downloads.map((file, index) => (
+                            <DownloadList
+                              key={file._id}
+                              file={file}
+                              index={index}
+                              downloads={downloads}
+                            />
+                          ))}
+                        </table>
+                      </div>
+                    ) : (
+                      <>
+                        {loading ? (
+                          <Spinner />
+                        ) : (
+                          <div
+                            style={{ height: 'calc(100vh - 155px)' }}
+                            className="d-flex align-items-center justify-content-center"
+                          >
+                            <span className="fs-4">No download</span>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </Suspense>
-                  {filterBox && (
-                    <div className="filter-menu filter-menu-download rounded-3 p-1 position-absolute bg-white">
+                  {/* {filterBox && (
+                    <div className="filter-menu filter-menu-download rounded-3
+                     p-1 position-absolute bg-white">
                       <ul onClick={() => setFilterBox(!filterBox)}>
                         <li className="text-dark">This Week</li>
                         <li className="text-dark">This Month</li>
@@ -445,7 +528,7 @@ function DashBoard() {
                         <li className="text-dark">In July</li>
                       </ul>
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
 
@@ -456,25 +539,40 @@ function DashBoard() {
                     <div className="d-flex justify-content-end pt-3 pb-1">
                       <Filter setCatagory={setCatagory} catagory={catagory} />
                     </div>
-                    <div className="my-content-scroll">
-                      <div className="my-content-section w-100">
-                        {catagory === null
-                          ? approvedContent.map((content) => (
-                            <ContentList
-                              key={content._id}
-                              content={content}
-                              tooltip="none"
-                            />
-                          ))
-                          : filterContent.map((content) => (
-                            <ContentList
-                              key={content._id}
-                              content={content}
-                              tooltip="none"
-                            />
-                          ))}
+                    {approvedContent.length > 0 || filterContent.length > 0 ? (
+                      <div className="my-content-scroll">
+                        <div className="my-content-section w-100">
+                          {catagory === null
+                            ? approvedContent.map((content) => (
+                              <ContentList
+                                key={content._id}
+                                content={content}
+                                tooltip="none"
+                              />
+                            ))
+                            : filterContent.map((content) => (
+                              <ContentList
+                                key={content._id}
+                                content={content}
+                                tooltip="none"
+                              />
+                            ))}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <>
+                        {loading ? (
+                          <Spinner />
+                        ) : (
+                          <div
+                            style={{ height: 'calc(100vh - 155px)' }}
+                            className="d-flex align-items-center justify-content-center"
+                          >
+                            <span className="fs-4">No content</span>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </Suspense>
                   {contents.length > 10 && <NextPage />}
                 </div>

@@ -44,7 +44,7 @@ function ConfirmModal({ content, fileState }) {
     <>
       <button
         onClick={() => viewContent()}
-        className="btn btn-primary border-0 rounded-4 me-4"
+        className="btn btn-primary border-0 rounded-4 me-3"
       >
         View
       </button>
@@ -67,7 +67,7 @@ function ConfirmModal({ content, fileState }) {
                 <div className="thumbnail w-100">
                   <img
                     className="img-fluid w-100"
-                    src={`${rootUrl}/uploads/${content.thumbnail}`}
+                    src={`${rootUrl}/${content.thumbnail}`}
                     alt=""
                   />
                 </div>
@@ -110,10 +110,10 @@ function ConfirmModal({ content, fileState }) {
                 <h6>
                   Main Files:
                   {' '}
-                  {content.file.length}
+                  {content.files.length}
                 </h6>
                 <div className="d-flex added-files flex-column">
-                  {content.file.map((fileName, i) => (
+                  {content.files.map((fileName, i) => (
                     <div key={i}>
                       <li>
                         {fileName}
@@ -121,6 +121,9 @@ function ConfirmModal({ content, fileState }) {
                       </li>
                       <Link
                         to={`${rootUrl}/api/downloadUploadedFile?id=${contentId}&fileName=${fileName}`}
+                        target="_blank"
+                        download={content.title}
+                        rel="noreferrer"
                         className="btn btn-primary rounded-5"
                       >
                         Download
