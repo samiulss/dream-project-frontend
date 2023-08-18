@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { rootUrl } from '../../../../config/backendUrl';
+import Loading from '../../../components/commons/loading/Loading';
 import ProgressBar from '../../../components/commons/progressBar/ProgressBar';
 import { ContentState } from '../../../context/StateContext';
 import './approveContent.scss';
@@ -11,6 +12,7 @@ function ApproveContent({ contentId, handleClose }) {
   const [price, setPrice] = useState(false);
   const [licence, setLicence] = useState(null);
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
 
   const inputRef = useRef();
@@ -50,15 +52,19 @@ function ApproveContent({ contentId, handleClose }) {
   // HANDLE SUBMIT CONTENT
   const handleApproveContent = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (!file) {
+      setLoading(false);
       toast.error('Please select file');
       return;
     }
     if (!licence) {
+      setLoading(false);
       toast.error('Please select licence');
       return;
     }
     if (licence === 'Premium' && e.target[3].value <= 0) {
+      setLoading(false);
       toast.error('Please select price');
       return;
     }
@@ -81,8 +87,10 @@ function ApproveContent({ contentId, handleClose }) {
       handleClose();
       toast.success(data);
       setFetchAgain(!fetchAgain);
+      setLoading(false);
     } catch (error) {
       toast.error(error.message);
+      setLoading(false);
     }
   };
 
@@ -192,10 +200,11 @@ function ApproveContent({ contentId, handleClose }) {
         )}
         <div className="confirm-btn text-end">
           <button
+            style={{ height: '50px' }}
             type="submit"
-            className="btn base-bg-color-1 rounded-5 text-white"
+            className="btn base-bg-color-1 rounded-5 text-white w-25"
           >
-            Confirm
+            {loading ? <Loading /> : 'Confirm'}
           </button>
         </div>
       </form>

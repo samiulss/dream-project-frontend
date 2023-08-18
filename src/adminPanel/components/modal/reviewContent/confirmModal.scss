@@ -35,3 +35,9 @@
     }
   }
 }
+
+.btn-reject {
+  &:hover {
+    background-color: red !important;
+  }
+}

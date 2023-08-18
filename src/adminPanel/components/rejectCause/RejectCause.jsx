@@ -2,12 +2,14 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { rootUrl } from '../../../../config/backendUrl';
+import Loading from '../../../components/commons/loading/Loading';
 import { ContentState } from '../../../context/StateContext';
 
 function RejectCause({ contentId, handleClose }) {
   const { fetchAgain, setFetchAgain } = ContentState();
   const [custom, setCustom] = useState(false);
   const [cause, setCause] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const customRef = useRef();
 
@@ -27,7 +29,9 @@ function RejectCause({ contentId, handleClose }) {
 
   // HANDLE REJECT CONTENT
   const handleReject = async () => {
+    setLoading(true);
     if (!cause) {
+      setLoading(false);
       toast.error('Please select a reasone');
       return;
     }
@@ -44,7 +48,9 @@ function RejectCause({ contentId, handleClose }) {
       handleClose();
       toast.success(data);
       setFetchAgain(!fetchAgain);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
       toast.error(error.message);
     }
@@ -131,10 +137,11 @@ function RejectCause({ contentId, handleClose }) {
       </ul>
       <div className="text-end">
         <button
+          style={{ height: '50px' }}
           onClick={handleReject}
-          className="btn base-bg-color-2 text-white"
+          className="btn btn-reject bg-danger text-white rounded-5 w-25"
         >
-          Submit
+          {loading ? <Loading /> : 'Reject'}
         </button>
       </div>
     </div>
