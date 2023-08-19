@@ -2,7 +2,11 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import { ContentState } from '../../../context/StateContext';
 import NotificationView from '../../notificationView/NotificationView';
 
-function Canvas({ rejectCause, fileStatus, notification }) {
+function Canvas({
+  rejectCause,
+  fileStatus,
+  notification,
+}) {
   const { showCanvas, setShowCanvas } = ContentState();
 
   const handleClose = () => setShowCanvas(false);
@@ -16,7 +20,7 @@ function Canvas({ rejectCause, fileStatus, notification }) {
             {notification && 'Notification'}
           </Offcanvas.Title>
         </Offcanvas.Header>
-        <Offcanvas.Body>
+        <Offcanvas.Body className="bg-info">
           {fileStatus && rejectCause}
           {notification && <NotificationView />}
         </Offcanvas.Body>

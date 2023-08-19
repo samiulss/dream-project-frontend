@@ -3,7 +3,7 @@ import {
   lazy, Suspense, useEffect, useState
 } from 'react';
 import { Toaster } from 'react-hot-toast';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
 import { config } from '../../../config/tokenVerify';
 import Filter from '../../components/commons/filter/Filter';
@@ -36,7 +36,6 @@ function DashBoard() {
   } = ContentState();
 
   const { pathname } = useLocation();
-  const navigate = useNavigate();
 
   const [contents, setcontents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +45,13 @@ function DashBoard() {
   const [followList, setFollowList] = useState([]);
   const [downloads, setDownloads] = useState([]);
   const [notification, setNotification] = useState([]);
-  const [favoriteList, setFavoriteList] = useState([]);
+  const [favourites, setFavourites] = useState([]);
+
+  useEffect(() => {
+    document.body.addEventListener('click', () => {
+      setFilterBox(false);
+    });
+  }, [filterBox]);
 
   // FETCH FILE STATUS
   const fetchContentStatus = async () => {
@@ -66,9 +71,6 @@ function DashBoard() {
     } catch (error) {
       setLoading(false);
       console.log(error.message);
-      if (error.response.status === 401) {
-        navigate('/');
-      }
     }
   };
 
@@ -88,9 +90,26 @@ function DashBoard() {
     }
   };
 
+  // FETCH FAVOURITE CONTENT
+  const favouriteContents = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${rootUrl}/api/favouriteList`,
+        config(auth)
+      );
+      setLoading(false);
+      setFavourites(data[0].favourite);
+    } catch (error) {
+      setLoading(false);
+      console.log(error.message);
+    }
+  };
+
   useEffect(() => {
-    fetchContentStatus();
     fatchFollowing();
+    favouriteContents();
+    fetchContentStatus();
   }, [pathname, fetchAgain]);
 
   // FILTER BY CATAGORY
@@ -241,7 +260,7 @@ function DashBoard() {
           <div
             className={
               pathname === '/upload'
-                ? 'col-7 main-content d-flex align-items-center justify-content-center'
+                ? 'col-7 main-content d-flex align-items-center justify-content-center m-auto'
                 : `${
                   mobileDevice.matches ? 'col-12' : 'col-10'
                 } main-content d-flex align-items-start justify-content-center p-0`
@@ -269,7 +288,7 @@ function DashBoard() {
                       </h4>
                     </div>
 
-                    {followList.length ? (
+                    {followList.length > 0 ? (
                       <>
                         {followList.map((follow) => (
                           <FollowingList
@@ -304,11 +323,11 @@ function DashBoard() {
                     <Filter setCatagory={setCatagory} catagory={catagory} />
                   </div>
                   <Suspense fallback={<Spinner />}>
-                    {favoriteList.length > 0 ? (
+                    {favourites.length > 0 ? (
                       <div className="my-content-section w-100 overflow-auto">
                         <FavouriteList
                           catagory={catagory}
-                          setFavoriteList={setFavoriteList}
+                          favourites={favourites}
                         />
                       </div>
                     ) : (
@@ -326,6 +345,7 @@ function DashBoard() {
                       </>
                     )}
                   </Suspense>
+
                   {/* <NextPage /> */}
                 </>
               )}
@@ -378,53 +398,48 @@ function DashBoard() {
               {pathname === '/file-status' && (
                 <div className="file-status pt-3">
                   <h4 className="text-center base-color-1 fw-semibold">
-                    Uploaded files (
-                    {contents.length}
-                    )
+                    All Content
                   </h4>
                   <div className="file-status-list position-relative">
                     <Suspense fallback={<Spinner />}>
-                      {contents.length > 0 ? (
-                        <div className="w-100 overflow-x-auto">
-                          <table>
-                            {/* ----------TABLE HEADING---------- */}
-                            <thead>
-                              <tr>
-                                <th className="serial-no">No.</th>
-                                <th className="name">Item Name</th>
-                                <th className="date">Date</th>
-                                <th
-                                  onClick={() => setFilterBox(!filterBox)}
-                                  role="button"
-                                >
-                                  Status
-                                  <i className="fa-solid fa-caret-down text-dark ms-2" />
-                                </th>
-                              </tr>
-                            </thead>
-                            {contents.map((content, index) => (
+                      <div className="w-100 overflow-x-auto">
+                        <table>
+                          {/* ----------TABLE HEADING---------- */}
+                          <thead>
+                            <tr>
+                              <th className="serial-no">No.</th>
+                              <th className="name">Item Name</th>
+                              <th className="date">Date</th>
+                              <th
+                                onClick={(e) => { setFilterBox(!filterBox); e.stopPropagation(); }}
+                                role="button"
+                              >
+                                Status
+                                <i className="fa-solid fa-caret-down text-dark ms-2" />
+                              </th>
+                            </tr>
+                          </thead>
+
+                          {contents.length > 0
+                            && contents.map((content, index) => (
                               <FileStatus
                                 key={content._id}
                                 content={content}
                                 index={index}
                               />
                             ))}
-                          </table>
-                        </div>
-                      ) : (
+                        </table>
                         <>
-                          {loading ? (
-                            <Spinner />
-                          ) : (
+                          {contents.length === 0 && (
                             <div
-                              style={{ height: 'calc(100vh - 155px)' }}
+                              style={{ height: 'calc(100vh - 165px)' }}
                               className="d-flex align-items-center justify-content-center"
                             >
-                              <span className="fs-4">No new file</span>
+                              <span className="fs-4">No content</span>
                             </div>
                           )}
                         </>
-                      )}
+                      </div>
                     </Suspense>
                     {filterBox && (
                       <div className="filter-menu filter-menu-file-status rounded-3 p-1 position-absolute bg-white">

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import logo from '../../assets/freeLogo.png';
 import { ContentState } from '../../context/StateContext';
 import MobileSidebar from '../commons/mobileSidebar/MobileSidebar';
@@ -17,11 +17,18 @@ function MainNavbar() {
     fetchAgain,
     setFetchAgain,
   } = ContentState();
-  const navigate = useNavigate();
   const [showGrid, setShowGrid] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
   const [showMyAccount, setShowMyAccount] = useState(false);
   const [btn, setBtn] = useState('login');
+
+  useEffect(() => {
+    document.body.addEventListener('click', () => {
+      setShowGrid(false);
+      setShowMyAccount(false);
+      setShowNotification(false);
+    });
+  }, [showGrid, showNotification, showMyAccount]);
 
   const { pathname } = useLocation();
 
@@ -91,8 +98,20 @@ function MainNavbar() {
     setContents([]);
   };
 
+  let prevScrollpos = window.pageYOffset;
+  window.onscroll = () => {
+    const currentScrollPos = window.pageYOffset;
+    if (prevScrollpos > currentScrollPos) {
+      document.getElementById('nav-scroll-up').style.top = '0';
+    } else {
+      document.getElementById('nav-scroll-up').style.top = '-58px';
+    }
+    prevScrollpos = currentScrollPos;
+  };
+
   return (
     <nav
+      id="nav-scroll-up"
       className={`${
         pathname !== '/content'
           ? 'navbar navbar-expand-md base-bg-color-1 position-sticky'
@@ -172,13 +191,19 @@ function MainNavbar() {
               </a>
               <ul className="dropdown-menu mt-3 bg-white">
                 <li onClick={() => fetchContentByMenu('PSD')}>
-                  <Link to="/contents" className="dropdown-item">PSD</Link>
+                  <Link to="/contents" className="dropdown-item">
+                    PSD
+                  </Link>
                 </li>
                 <li onClick={() => fetchContentByMenu('Wallpaper')}>
-                  <Link to="/contents" className="dropdown-item">Wallpaper</Link>
+                  <Link to="/contents" className="dropdown-item">
+                    Wallpaper
+                  </Link>
                 </li>
                 <li onClick={() => fetchContentByMenu('Ai Image')}>
-                  <Link to="/contents" className="dropdown-item">Ai Image</Link>
+                  <Link to="/contents" className="dropdown-item">
+                    Ai Image
+                  </Link>
                 </li>
               </ul>
             </li>
@@ -195,11 +220,12 @@ function MainNavbar() {
           <div className="nav-right me-4 position-relative align-items-center">
             {/* ---------------GRID MENU--------------- */}
             <div
-              onClick={() => setShowGrid(
-                !showGrid,
-                setShowNotification(false),
-                setShowMyAccount(false)
-              )}
+              onClick={(e) => {
+                setShowGrid(!showGrid);
+                setShowMyAccount(false);
+                setShowNotification(false);
+                e.stopPropagation();
+              }}
               className="grid-menu d-flex align-items-center"
             >
               <span className="svg-icon menu-icons grid-icon" />
@@ -207,11 +233,12 @@ function MainNavbar() {
 
             {/* ---------------NOTIFICATION MENU--------------- */}
             <div
-              onClick={() => setShowNotification(
-                !showNotification,
-                setShowGrid(false),
-                setShowMyAccount(false)
-              )}
+              onClick={(e) => {
+                setShowNotification(!showNotification);
+                setShowGrid(false);
+                setShowMyAccount(false);
+                e.stopPropagation();
+              }}
               className="notification d-flex align-items-center"
             >
               <div className="position-relative mt-2">
@@ -224,11 +251,12 @@ function MainNavbar() {
 
             {/* ---------------MY ACCOUNT MENU--------------- */}
             <div
-              onClick={() => setShowMyAccount(
-                !showMyAccount,
-                setShowGrid(false),
-                setShowNotification(false)
-              )}
+              onClick={(e) => {
+                setShowMyAccount(!showMyAccount);
+                setShowGrid(false);
+                setShowNotification(false);
+                e.stopPropagation();
+              }}
               className="my-account d-flex align-itmes-center"
             >
               <span className="svg-icon menu-icons avater-icon" />

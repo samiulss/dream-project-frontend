@@ -1,7 +1,10 @@
-.navbar {
+#nav-scroll-up {
   top: 0;
-  z-index: 999;
+  z-index: 100;
+  transition: top 0.3s;
+}
 
+.navbar {
   .navbar-toggler {
     @media (min-width: 769px) {
       display: none;
@@ -109,7 +112,7 @@
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     position: absolute;
     z-index: 100;
-    top: 50px;
+    top: 58px;
     border-radius: 11px;
     padding: 8px 12px;
   }

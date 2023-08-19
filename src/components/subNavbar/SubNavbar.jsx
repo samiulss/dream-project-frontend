@@ -7,7 +7,7 @@ function SubNavbar() {
   const { setCatagory, setHomeSearch } = ContentState();
   const [dropdown, setDropDown] = useState(false);
   return (
-    <div className="sub-navbar border border-1 rounded-pill mb-4 position-relative">
+    <div className="sub-navbar border border-1 rounded-pill mb-4">
       <ul onClick={() => setHomeSearch(true)} className="sub-navbar-list">
         <Link className="nav-link" to="/contents">
           <li onClick={() => setCatagory('Font')}>Font</li>
@@ -41,7 +41,12 @@ function SubNavbar() {
         <div>
           <ul className="dropdown-mobile-menu position-absolute bg-white rounded-3 mb-0">
             <Link className="nav-link dropdown-for-mobile" to="/contents">
-              <li onClick={() => setCatagory('Web Design')} className="d-toggle">Web Design</li>
+              <li
+                onClick={() => setCatagory('Web Design')}
+                className="d-toggle"
+              >
+                Web Design
+              </li>
             </Link>
 
             <Link className="nav-link dropdown-for-mobile" to="/contents">

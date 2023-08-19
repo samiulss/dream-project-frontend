@@ -81,7 +81,7 @@ function SearchFilter({
                 onChange={handleSortBy}
                 id="best-match"
                 name="sort"
-                value="bestMatch"
+                value="Best Match"
               />
               <label htmlFor="best-match">Best Match</label>
             </div>

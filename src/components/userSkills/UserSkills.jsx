@@ -1,5 +1,5 @@
 function UserSkills({
-  item, editProfile, handleValue, getSocialSkillsName, index
+  item, editProfile, handleValue, getSocialSkillsName
 }) {
   return (
     <div className=" mb-4">
@@ -23,7 +23,7 @@ function UserSkills({
           type="number"
           onClick={() => getSocialSkillsName(item.name)}
           className="form-control"
-          onChange={handleValue(index)}
+          onChange={handleValue}
           name="skills"
           defaultValue={item.value}
         />

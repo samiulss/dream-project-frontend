@@ -1,15 +1,28 @@
 .searchBox {
   position: sticky;
   top: 0;
-  z-index: 99;
+  z-index: 10;
   background-color: #fff;
   padding: 7px 0;
-  padding-bottom: 0;
+
+  .form-search {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
 
   .search-from {
     width: 83%;
     height: 50px;
     border: 1px solid;
+
+    @media (max-width: 768px) {
+      width: 75%;
+    }
+
+    @media (max-width: 480px) {
+      width: 70%;
+    }
 
     input {
       background-color: #f3f4f5 !important;
@@ -40,7 +53,18 @@
     }
   }
 
+  .fa-sliders {
+    border: 1px solid #b0bdc6;
+    display: none;
+    padding: 12px 9px;
+
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+
   .search-list-container {
+    top: 60px;
     left: 20.3%;
     width: 67%;
     max-height: 250px;

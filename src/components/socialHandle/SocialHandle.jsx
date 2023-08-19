@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 function SocialHandle({
-  item, editProfile, handleValue, getSocialSkillsName, index
+  item, editProfile, handleValue, getSocialSkillsName
 }) {
   return (
     <li
@@ -21,7 +21,7 @@ function SocialHandle({
         style={{ width: '60%' }}
         type="text"
         className="form-control"
-        onChange={handleValue(index)}
+        onChange={handleValue}
         name="socialHandle"
         maxLength="200"
         defaultValue={item.link || 'hello'}

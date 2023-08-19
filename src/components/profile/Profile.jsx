@@ -33,8 +33,10 @@ function Profile({ fullDetails, contents, sellerProfile }) {
     skills: [],
   });
 
+  // get user firstname
   const firstName = userData?.name.split(' ');
 
+  // get user fulldetails
   const fetchUserDetails = async () => {
     if (!loggedInUser) {
       return;
@@ -67,7 +69,7 @@ function Profile({ fullDetails, contents, sellerProfile }) {
     }
   };
 
-  //
+  // checking following or not
   const checkFollower = async () => {
     if (!loggedInUser) {
       return;
@@ -135,10 +137,10 @@ function Profile({ fullDetails, contents, sellerProfile }) {
   };
 
   // handle socail and skill change values
-  const handleValue = (index) => (e) => {
-    setEditProfile(true);
+  const handleValue = (e) => {
     const getvalues = e.target.value;
     const getNames = e.target.name;
+    setInfoChange(true);
 
     function findIndex(item) {
       return item.name === socialSkillName;
@@ -157,7 +159,6 @@ function Profile({ fullDetails, contents, sellerProfile }) {
         const idx = editProfileValues.socialHandle.findIndex(findIndex);
         editProfileValues.socialHandle[idx].link = getvalues;
       }
-      setInfoChange(true);
     }
 
     if (getNames === 'skills') {
@@ -172,7 +173,6 @@ function Profile({ fullDetails, contents, sellerProfile }) {
         const idx = editProfileValues.skills.findIndex(findIndex);
         editProfileValues.skills[idx].value = getvalues;
       }
-      setInfoChange(true);
     }
   };
 
@@ -182,7 +182,6 @@ function Profile({ fullDetails, contents, sellerProfile }) {
 
     if (getNames === 'socialLink') {
       setInfoChange(true);
-      setEditProfile(true);
       const socialNam = {
         name: socialSkillName,
         link: getvalues,
@@ -197,7 +196,6 @@ function Profile({ fullDetails, contents, sellerProfile }) {
     }
     if (getNames === 'value') {
       setInfoChange(true);
-      setEditProfile(true);
       const socialNam = {
         name: socialSkillName,
         value: getvalues,
@@ -214,17 +212,36 @@ function Profile({ fullDetails, contents, sellerProfile }) {
 
   // handle user info change values
   const handleInfoChange = (e) => {
+    setInfoChange(true);
     setEditProfileValues({
       ...editProfileValues,
       [e.target.name]: e.target.value,
     });
-    setInfoChange(true);
-    setEditProfile(true);
   };
 
   // handle update profile
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
+
+    // if handle name is missing
+    if (
+      editProfileValues.socialHandle[0]?.name === null
+      || editProfileValues.socialHandle[0]?.name === 'Choose...'
+      || editProfileValues.skills[0]?.name === null
+      || editProfileValues.skills[0]?.name === 'Choose...'
+    ) {
+      setEditProfileValues({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        socialHandle: [],
+        skills: [],
+      });
+      toast.error('Please select name');
+      return;
+    }
+
     try {
       const { data } = await axios.post(
         `${rootUrl}/api/updateProfile`,
@@ -236,8 +253,16 @@ function Profile({ fullDetails, contents, sellerProfile }) {
       setEditProfile(false);
       setEditLink(false);
       seteditSkill(false);
+      setEditProfileValues({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        socialHandle: [],
+        skills: [],
+      });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response.data);
       console.log(error);
     }
   };
@@ -250,7 +275,7 @@ function Profile({ fullDetails, contents, sellerProfile }) {
   return (
     <>
       {
-      userData
+      userData || !fullDetails
         ? (
           <section className="pb-3">
             <div className={fullDetails ? 'container pt-3' : 'container-fluid pt-3'}>
@@ -280,7 +305,7 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                         )}
                         {/* <p className="text-muted mb-1">Graphic Designer</p> */}
                         <p className="text-muted mb-2">
-                          {userData?.address && userData?.address}
+                          {fullDetails ? userData?.address : sellerProfile?.address}
                         </p>
                         {!fullDetails && loggedInUser?.id !== sellerProfile?._id && (
                         <div className="d-flex justify-content-center mb-2">
@@ -325,6 +350,7 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                             onClick={() => {
                               setEditLink(!editLink);
                               setEditProfile(false);
+                              setInfoChange(false);
                             }}
                             className={`btn ${
                               editLink ? 'bg-danger' : 'bg-primary'
@@ -336,11 +362,10 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                         </div>
                         <ul className="list-group list-group-flush rounded-3">
                           {fullDetails
-                            ? userData?.socialHandle.map((item, i) => (
+                            ? userData?.socialHandle.map((item) => (
                               <SocialHandle
                                 key={item._id}
                                 item={item}
-                                index={i}
                                 editProfile={editProfile}
                                 handleValue={handleValue}
                                 getSocialSkillsName={getSocialSkillsName}
@@ -387,6 +412,7 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                             onClick={() => {
                               seteditSkill(!editSkill);
                               setEditProfile(false);
+                              setInfoChange(false);
                             }}
                             className={`btn ${
                               editSkill ? 'bg-danger' : 'bg-primary'
@@ -397,11 +423,10 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                           )}
                         </div>
                         {fullDetails
-                          ? userData?.skills.map((item, i) => (
+                          ? userData?.skills.map((item) => (
                             <UserSkills
                               key={item._id}
                               item={item}
-                              index={i}
                               handleValue={handleValue}
                               editProfile={editProfile}
                               getSocialSkillsName={getSocialSkillsName}
@@ -532,7 +557,7 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                         </div>
 
                         {/* ------------UPDATE ACTION BUTTON------------ */}
-                        {fullDetails && editProfile && (
+                        {fullDetails && (editProfile || editLink || editSkill) && (
                         <div
                           style={{ gap: '20px' }}
                           className="mt-4 d-flex action-buttons justify-content-center mb-4"
@@ -543,6 +568,8 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                             onClick={() => {
                               setEditProfile(false);
                               setInfoChange(false);
+                              setEditLink(false);
+                              seteditSkill(false);
                             }}
                           >
                             Cancle

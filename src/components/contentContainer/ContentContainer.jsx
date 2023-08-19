@@ -13,6 +13,7 @@ import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
 import Spinner from '../commons/spinner/Spinner';
 import ContentList from '../contentList/ContentList';
+import MiniDeviceFilter from '../miniDeviceFilter/MiniDeviceFilter';
 
 function ContentContainer() {
   const {
@@ -34,6 +35,9 @@ function ContentContainer() {
   const [sortByLicence, setsortByLicence] = useState(null);
   const [filterOn, setFilterOn] = useState(false);
   const [searchkeywords, setSearchkeywords] = useState('');
+
+  // opem mobile and tab filter
+  const [show, setShow] = useState(false);
 
   // FETCH ALL CONTENTS
   const fetchContents = async () => {
@@ -103,7 +107,7 @@ function ContentContainer() {
         setFilterContents(newSort);
       }
     }
-    if (sortByTime === 'bestMatch') {
+    if (sortByTime === 'Best Match') {
       fetchContents();
     }
 
@@ -141,6 +145,7 @@ function ContentContainer() {
         setSearchkeywords={setSearchkeywords}
         setFilterContents={setFilterContents}
         setFilterOn={setFilterOn}
+        setShow={setShow}
       />
 
       <div className="container-fluid mt-3">
@@ -233,6 +238,15 @@ function ContentContainer() {
           </div>
         </div>
       </div>
+      <MiniDeviceFilter
+        setShow={setShow}
+        show={show}
+        setsortByTime={setsortByTime}
+        setsortByLicence={setsortByLicence}
+        setFilterOn={setFilterOn}
+        sortByTime={sortByTime}
+        sortLicence={sortByLicence}
+      />
     </main>
   );
 }

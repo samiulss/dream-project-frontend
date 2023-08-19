@@ -1,14 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { ContentState } from '../../../context/StateContext';
 import './filter.scss';
 
-function Filter({ catagory, setCatagory }) {
+function Filter({ contentUpload, closeCatagory, setCloseCatagory }) {
+  const { catagory, setCatagory } = ContentState();
   const [customSelect, setCustomSelect] = useState(false);
 
+  const { pathname } = useLocation();
+  useEffect(() => {
+    setCatagory(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.addEventListener('click', () => {
+      if (!contentUpload) {
+        setCustomSelect(false);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (closeCatagory) {
+      setCustomSelect(false);
+    }
+  }, [closeCatagory]);
+
+  const handleShowCatagory = (e) => {
+    setCustomSelect(!customSelect);
+    e.stopPropagation();
+    if (contentUpload) {
+      setCloseCatagory(false);
+    }
+  };
+
   return (
-    <div onClick={() => setCustomSelect(!customSelect)} className="custom-select custom-border-color d-flex">
+    <div
+      onClick={(e) => handleShowCatagory(e)}
+      className="custom-select custom-border-color d-flex"
+    >
       <span className="me-2 p-1">{catagory || 'Catagory'}</span>
       <i className="fa-solid fa-caret-down text-dark" />
-      <div className={`${!customSelect ? 'd-none' : 'select-menu overflow-y-auto rounded-4'}`}>
+      <div
+        style={{ top: contentUpload && '36px' }}
+        className={`${
+          customSelect ? 'select-menu overflow-y-auto rounded-4' : 'd-none'
+        }`}
+      >
         <ul>
           <li onClick={() => setCatagory('PSD')}>
             <i className="fa-regular fa-file-lines" />

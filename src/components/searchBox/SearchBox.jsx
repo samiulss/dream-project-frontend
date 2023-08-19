@@ -12,7 +12,8 @@ function SearchBox({
   searchkeywords,
   setSearchkeywords,
   setFilterContents,
-  setFilterOn
+  setFilterOn,
+  setShow
 }) {
   const {
     catagory, setContents, setCatagory, setResultFor
@@ -121,9 +122,9 @@ function SearchBox({
   }, [pathname, catagory]);
 
   return (
-    <div className="searchBox mt-2 position-relative">
-      <form onSubmit={handleSubmit} role="search">
-        <div className="d-flex search-from rounded-3 m-auto custom-border-color">
+    <div className="searchBox mt-2 pb-3">
+      <form onSubmit={handleSubmit} role="search" className="form-search">
+        <div className="d-flex search-from rounded-3 custom-border-color">
           <Filter catagory={catagory} setCatagory={setCatagory} />
           <input
             onChange={handleSearch}
@@ -139,6 +140,7 @@ function SearchBox({
             <span className="svg-icon search" />
           </button>
         </div>
+        <i onClick={() => setShow(true)} className="fa-solid fa-sliders text-dark fs-4 rounded-2" role="button" />
         {searchBox && showResult.length > 0 && (
           <div className="search-list-container position-absolute pt-2">
             <ul>

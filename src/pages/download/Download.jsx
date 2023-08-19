@@ -92,7 +92,6 @@ function Download() {
         (item) => item._id !== data.content._id
       );
       setRelatedContents(relatedData);
-      console.log(relatedData);
     } catch (error) {
       setNoContent(true);
     }
@@ -223,7 +222,7 @@ function Download() {
           {/* --------------CONTENT DETAILS-------------- */}
           {content ? (
             <>
-              <div className="container-fluid">
+              <div className="container-fluid mb-4">
                 <div className="row align-items-center">
                   {/* -----------IMAGE CONTAINER SECTION----------- */}
                   <div className="col-md-8 border-end custom-border-color p-0">

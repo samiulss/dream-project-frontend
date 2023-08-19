@@ -1,18 +1,8 @@
-.filter-content {
+.filter-content,
+.filter-mini-device {
   border-top: 1px solid;
   border-right: 1px solid;
   border-radius: 0 5px;
-  min-height: calc(100vh - 72px);
-  position: -webkit-sticky;
-  position: sticky;
-  top: 73px;
-
-  @media (max-width: 768px) {
-    display: none;
-  }
-  @media (max-width: 480px) {
-    display: none;
-  }
 
   .header {
     border-bottom: 1px solid;
@@ -51,5 +41,16 @@
         cursor: pointer;
       }
     }
+  }
+}
+
+.filter-content {
+  min-height: calc(100vh - 72px);
+  position: -webkit-sticky;
+  position: sticky;
+  top: 73px;
+
+  @media (max-width: 768px) {
+    display: none;
   }
 }

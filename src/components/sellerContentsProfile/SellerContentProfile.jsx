@@ -4,7 +4,6 @@ import {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { rootUrl } from '../../../config/backendUrl';
-import Loading from '../commons/loading/Loading';
 import Spinner from '../commons/spinner/Spinner';
 import MainNavbar from '../mainNavbar/MainNavbar';
 
@@ -15,6 +14,7 @@ function SellerContentProfile() {
 
   const [contents, setContents] = useState([]);
   const [sellerProfile, setSellerProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   // FETCH SELLER PROFILE AND CONTENTS
   const fetchSellerProfile = async () => {
@@ -22,10 +22,12 @@ function SellerContentProfile() {
       let { data } = await axios.get(
         `${rootUrl}/api/sellerProfile?sellerId=${sellerId}`
       );
+      setLoading(false);
       setSellerProfile(data[0].author);
       data = data.reverse();
       setContents(data);
     } catch (error) {
+      setLoading(false);
       console.log(error.message);
     }
   };
@@ -37,15 +39,19 @@ function SellerContentProfile() {
   return (
     <div>
       <MainNavbar />
-      {contents.length ? (
-        <Suspense fallback={<Spinner />}>
-          <Profile fullDetails={false} contents={contents} sellerProfile={sellerProfile} />
-        </Suspense>
-      ) : (
-        <div className="no-contentloading d-flex align-items-center justify-content-center vh-100">
-          <Loading />
-        </div>
-      )}
+      <Suspense fallback={<Spinner />}>
+        {loading ? (
+          <div className="d-flex align-items-center justify-content-center loading-spinner">
+            <Spinner />
+          </div>
+        ) : (
+          <Profile
+            fullDetails={false}
+            contents={contents}
+            sellerProfile={sellerProfile}
+          />
+        )}
+      </Suspense>
     </div>
   );
 }
