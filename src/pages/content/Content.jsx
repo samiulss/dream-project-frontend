@@ -6,13 +6,13 @@ import './content.scss';
 
 function Content() {
   return (
-    <div>
+    <>
       <MainNavbar />
       <ContentContainer />
       {/* -------------------GET HELP------------------- */}
       <Help />
       <Footer />
-    </div>
+    </>
   );
 }
 

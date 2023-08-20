@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { ContentState } from '../../context/StateContext';
 import ContentList from '../contentList/ContentList';
 
-function FavouriteList({ catagory, favourites }) {
+function FavouriteList() {
   const [sortFavourites, setSortFavourites] = useState([]);
+  const { favourites, catagory } = ContentState();
 
   useEffect(() => {
     if (catagory) {

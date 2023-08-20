@@ -14,13 +14,11 @@ function ConfirmModal({ content, fileState }) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [contentId, setContentId] = useState('');
   const [tags, setTags] = useState([]);
   const [approve, setApprove] = useState(false);
   const [reject, setReject] = useState(false);
 
   const viewContent = () => {
-    setContentId(content._id);
     handleShow();
   };
 
@@ -120,7 +118,7 @@ function ConfirmModal({ content, fileState }) {
                         {' '}
                       </li>
                       <Link
-                        to={`${rootUrl}/api/downloadUploadedFile?id=${contentId}&fileName=${fileName}`}
+                        to={`${rootUrl}/api/downloadUploadedFile?id=${content._id}&fileName=${fileName}`}
                         target="_blank"
                         download={content.title}
                         rel="noreferrer"
@@ -159,7 +157,7 @@ function ConfirmModal({ content, fileState }) {
         <PopUpModal
           rejectModal={reject}
           approveModal={approve}
-          contentId={contentId}
+          content={content}
           handleClose={handleClose}
         />
       </Modal>

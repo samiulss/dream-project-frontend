@@ -1,28 +1,23 @@
-import moment from 'moment';
+import axios from 'axios';
+import { rootUrl } from '../../../config/backendUrl';
+import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
-import Canvas from '../commons/offCanvas/Offcanvas';
+import DataTable from '../../shareComponent/dataTable/DataTable';
 import './notification.scss';
 
-function Notification() {
-  const { setShowCanvas } = ContentState();
+function Notification({ ...pros }) {
+  const { auth } = ContentState();
+
+  // handle seen notification
+  const handleSeen = async (id) => {
+    try {
+      await axios.post(`${rootUrl}/api/seenNotification`, { notificationId: id }, config(auth));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
-    <>
-      <tbody onClick={() => setShowCanvas(true)}>
-        <tr>
-          <td>{moment().subtract(10, 'days').calendar()}</td>
-          <td>{moment().format('LT')}</td>
-          <td>
-            Title
-          </td>
-          <td>
-            <span className="svg-icon message-icon position-relative">
-              <span className="d-inline-block rounded-5 message-notification position-absolute" />
-            </span>
-          </td>
-        </tr>
-      </tbody>
-      <Canvas notification />
-    </>
+    <DataTable data={pros} handleSeen={handleSeen} />
   );
 }
 

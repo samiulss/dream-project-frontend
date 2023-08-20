@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ContentState } from '../../context/StateContext';
 import './subNavbar.scss';
@@ -6,6 +6,11 @@ import './subNavbar.scss';
 function SubNavbar() {
   const { setCatagory, setHomeSearch } = ContentState();
   const [dropdown, setDropDown] = useState(false);
+  useEffect(() => {
+    document.body.addEventListener('click', () => {
+      setDropDown(false);
+    });
+  }, []);
   return (
     <div className="sub-navbar border border-1 rounded-pill mb-4">
       <ul onClick={() => setHomeSearch(true)} className="sub-navbar-list">
@@ -28,7 +33,7 @@ function SubNavbar() {
           <li onClick={() => setCatagory('Wallpaper')}>Wallpaper</li>
         </Link>
         <li
-          onClick={() => setDropDown(!dropdown)}
+          onClick={(e) => { e.stopPropagation(); setDropDown(!dropdown); }}
           className="nav-item dropdown opacity-100"
         >
           <span className="nav-link dropdown-toggle" role="button">

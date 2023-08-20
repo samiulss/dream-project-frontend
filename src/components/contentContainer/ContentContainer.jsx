@@ -9,7 +9,6 @@ import SearchFilter from '../searchFilter/SearchFilter';
 import './contentContainer.scss';
 
 import { rootUrl } from '../../../config/backendUrl';
-import { config } from '../../../config/tokenVerify';
 import { ContentState } from '../../context/StateContext';
 import Spinner from '../commons/spinner/Spinner';
 import ContentList from '../contentList/ContentList';
@@ -19,6 +18,7 @@ function ContentContainer() {
   const {
     auth,
     loggedInUser,
+    favourites,
     contents,
     setContents,
     catagory,
@@ -29,7 +29,6 @@ function ContentContainer() {
 
   const [topSearch, setTopSearch] = useState([]);
   const [filterContents, setFilterContents] = useState([]);
-  const [favourites, setFavourites] = useState([]);
   const [loading, setLoading] = useState(false);
   const [sortByTime, setsortByTime] = useState(null);
   const [sortByLicence, setsortByLicence] = useState(null);
@@ -60,22 +59,6 @@ function ContentContainer() {
     }
   };
 
-  // FETCH FAVOURITE CONTENT
-  const favouriteContents = async () => {
-    if (!loggedInUser) {
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${rootUrl}/api/favouriteList`,
-        config(auth)
-      );
-      setFavourites(data[0].favourite);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
   // handle top search
   const handleTopSearch = (title) => {
     const selectTop = topSearch.filter((top) => top.title === title);
@@ -89,9 +72,6 @@ function ContentContainer() {
     }
     if (homeSearch) {
       fetchContents();
-    }
-    if (loggedInUser) {
-      favouriteContents();
     }
   }, [fetchAgain]);
 

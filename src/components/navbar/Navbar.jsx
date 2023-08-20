@@ -77,7 +77,7 @@ function Navbar() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (e.target[0].value === '') {
-      toast.error('Plese type something');
+      toast.error('Please type something');
       return;
     }
     setHomeSearch(false);

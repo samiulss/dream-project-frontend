@@ -1,5 +1,9 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { Link, useLocation } from 'react-router-dom';
+import { rootUrl } from '../../../config/backendUrl';
+import { config } from '../../../config/tokenVerify';
 import logo from '../../assets/freeLogo.png';
 import { ContentState } from '../../context/StateContext';
 import MobileSidebar from '../commons/mobileSidebar/MobileSidebar';
@@ -8,7 +12,14 @@ import './mainNavbar.scss';
 
 function MainNavbar() {
   const {
+    setLoading,
     loggedInUser,
+    auth,
+    setNotifications,
+    setUserData,
+    setFavourites,
+    setFollowList,
+    setDownloadHistory,
     setShowLoginModal,
     setCatagory,
     setResultFor,
@@ -18,17 +29,17 @@ function MainNavbar() {
     setFetchAgain,
   } = ContentState();
   const [showGrid, setShowGrid] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
   const [showMyAccount, setShowMyAccount] = useState(false);
+  const [notificationMenu, setNotificationMenu] = useState(false);
+  const [unseenNotification, setUnseenNotification] = useState([]);
+  const [sliceNotification, setSliceNotification] = useState([]);
   const [btn, setBtn] = useState('login');
 
-  useEffect(() => {
-    document.body.addEventListener('click', () => {
-      setShowGrid(false);
-      setShowMyAccount(false);
-      setShowNotification(false);
-    });
-  }, [showGrid, showNotification, showMyAccount]);
+  document.body.addEventListener('click', () => {
+    setShowGrid(false);
+    setShowMyAccount(false);
+    setNotificationMenu(false);
+  });
 
   const { pathname } = useLocation();
 
@@ -47,11 +58,50 @@ function MainNavbar() {
     setResultFor('');
   };
 
+  // fetch all notification
   useEffect(() => {
-    setShowMyAccount(false);
-    setShowNotification(false);
-    setShowGrid(false);
-  }, [pathname]);
+    const fetchNotification = async () => {
+      if (!loggedInUser) {
+        return;
+      }
+      try {
+        let { data } = await axios.get(
+          `${rootUrl}/api/getNotifiction`,
+          config(auth)
+        );
+        setNotifications(data);
+        data = data.filter((item) => item.status === 'unseen');
+        setUnseenNotification(data);
+        data = data.slice(0, 10);
+        setSliceNotification(data);
+      } catch (error) {
+        // logOut();
+      }
+    };
+    fetchNotification();
+  }, [fetchAgain]);
+
+  // get user fulldetails
+  useEffect(() => {
+    setLoading(true);
+    const fetchUserDetails = async () => {
+      if (!loggedInUser) {
+        return;
+      }
+      try {
+        const { data } = await axios.get(`${rootUrl}/api/user`, config(auth));
+        setUserData(data);
+        setFavourites(data.favourite);
+        setFollowList(data.following);
+        setDownloadHistory(data.dHistory);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        toast.error(error.message);
+      }
+    };
+    fetchUserDetails();
+  }, [fetchAgain]);
 
   let menuNames = [];
   let pathnames = [];
@@ -132,14 +182,20 @@ function MainNavbar() {
 
         <div className="icons-for-mobile-device">
           <i
-            onClick={() => setShowNotification(
-              !showNotification,
-              setShowGrid(false),
-              setShowMyAccount(false)
-            )}
+            onClick={(e) => {
+              e.stopPropagation();
+              setNotificationMenu(!notificationMenu);
+              setShowGrid(false);
+              setShowMyAccount(false);
+            }}
             className="fa-solid fa-bell"
             role="button"
           />
+          {unseenNotification.length > 0 && (
+            <span className="position-absolute start-100 translate-middle badge d-flex justify-content-center rounded-circle">
+              {unseenNotification.length}
+            </span>
+          )}
         </div>
 
         {/* ---------------toggle mobile sidebar--------------- */}
@@ -223,7 +279,7 @@ function MainNavbar() {
               onClick={(e) => {
                 setShowGrid(!showGrid);
                 setShowMyAccount(false);
-                setShowNotification(false);
+                setNotificationMenu(false);
                 e.stopPropagation();
               }}
               className="grid-menu d-flex align-items-center"
@@ -234,7 +290,7 @@ function MainNavbar() {
             {/* ---------------NOTIFICATION MENU--------------- */}
             <div
               onClick={(e) => {
-                setShowNotification(!showNotification);
+                setNotificationMenu(!notificationMenu);
                 setShowGrid(false);
                 setShowMyAccount(false);
                 e.stopPropagation();
@@ -243,9 +299,11 @@ function MainNavbar() {
             >
               <div className="position-relative mt-2">
                 <span className="svg-icon menu-icons notification-icon" />
-                <span className="position-absolute start-100 translate-middle badge d-flex justify-content-center rounded-circle">
-                  01
-                </span>
+                {unseenNotification.length > 0 && (
+                  <span className="position-absolute start-100 translate-middle badge d-flex justify-content-center rounded-circle">
+                    {unseenNotification.length}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -254,7 +312,7 @@ function MainNavbar() {
               onClick={(e) => {
                 setShowMyAccount(!showMyAccount);
                 setShowGrid(false);
-                setShowNotification(false);
+                setNotificationMenu(false);
                 e.stopPropagation();
               }}
               className="my-account d-flex align-itmes-center"
@@ -285,18 +343,38 @@ function MainNavbar() {
         )}
 
         {/* ---------------NOTIFICATION DROPDOWN MENU--------------- */}
-        {showNotification && (
+        {notificationMenu && (
           <div className="notification-dropdown-box">
             <h5>Notification</h5>
             <div className="notification-list d-flex align-items-center justify-content-center">
               <ul className="w-100">
-                <li>Business Web Template was approved</li>
-                <hr className="mt-0 mb-0" />
-                <li>Illustration of Bird was rejected</li>
-                <hr className="mt-0 mb-0" />
-                <li>Wallpaper of Bird was approved</li>
+                <Link to="/notification">
+                  {unseenNotification.length > 0
+                    && sliceNotification.map((item) => (item.status === 'unseen'
+                      && (
+                      <li key={item._id} className="pb-0">
+                        {item.content?.status === 'Approved' && <span className="text-primary">Congratulations!</span>}
+                        {' '}
+                        Your content
+                        {' '}
+                        <span className="fw-semibold">{item.content?.title}</span>
+                        {' '}
+                        has been
+                        {' '}
+                        {item.content?.status === 'Approved' ? 'approved' : 'rejected'}
+                        <hr className="mt-0 mb-0" />
+                      </li>
+                      )
+                    ))}
+                </Link>
+                {pathname === '/contents' && unseenNotification.length > 0 && <Link to="/notification"><p className="text-center" type="button">See all</p></Link>}
               </ul>
             </div>
+            {unseenNotification.length === 0 && (
+            <div style={{ height: '210px' }} className="d-flex align-items-center justify-content-center">
+              <p>No new notification</p>
+            </div>
+            )}
           </div>
         )}
 

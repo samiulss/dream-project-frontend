@@ -5,7 +5,7 @@ import { rootUrl } from '../../../../config/backendUrl';
 import Loading from '../../../components/commons/loading/Loading';
 import { ContentState } from '../../../context/StateContext';
 
-function RejectCause({ contentId, handleClose }) {
+function RejectCause({ content, handleClose }) {
   const { fetchAgain, setFetchAgain } = ContentState();
   const [custom, setCustom] = useState(false);
   const [cause, setCause] = useState(null);
@@ -40,9 +40,14 @@ function RejectCause({ contentId, handleClose }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     try {
+      const rejectDetails = {
+        contentId: content._id,
+        author: content.author,
+        cause
+      };
       const { data } = await axios.post(
         `${rootUrl}/api/reject`,
-        { contentId, cause },
+        rejectDetails,
         config
       );
       handleClose();

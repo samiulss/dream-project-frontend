@@ -18,20 +18,15 @@ import './download.scss';
 function Download() {
   const { contentId } = useParams();
   const {
-    auth,
-    loggedInUser,
-    fetchAgain,
-    setFetchAgain,
-    setPopUpModal,
+    auth, loggedInUser, favourites, followList, fetchAgain, setFetchAgain, setPopUpModal
   } = ContentState();
 
   const [content, setContent] = useState(null);
   const [totalContent, setTotalContent] = useState('');
   const [relatedContents, setRelatedContents] = useState([]);
   const [noContent, setNoContent] = useState(false);
-  const [followingSeller, setFollowingSeller] = useState([]);
-  const [favourites, setFavourites] = useState([]);
   const [report, setReport] = useState(false);
+  const [reportCause, setReportCause] = useState(null);
   const [shareLink, setShareLink] = useState(false);
   const [relatedContentUrl, setRelatedContentUrl] = useState('');
 
@@ -100,41 +95,8 @@ function Download() {
   const handleDownloadCount = async () => {
     try {
       await axios.post(
-        `${rootUrl}/api/downloadCount?id=${contentId || relatedContentUrl}`
+        `${rootUrl}/api/downloadCount?id=${contentId || relatedContentUrl}&user=${loggedInUser.id}`
       );
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  // SELLER FOLLOWING OR NOT
-  const checkFollower = async () => {
-    if (!loggedInUser) {
-      toast.error('Please log in first');
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${rootUrl}/api/followingList`,
-        config(auth)
-      );
-      setFollowingSeller(data[0].following);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  // FETCH FAVOURITE CONTENT
-  const favouriteContents = async () => {
-    if (!loggedInUser) {
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${rootUrl}/api/favouriteList`,
-        config(auth)
-      );
-      setFavourites(data[0].favourite);
     } catch (error) {
       toast.error(error.message);
     }
@@ -180,15 +142,41 @@ function Download() {
     }
   };
 
+  // CREATE REPORT
+  const makeReport = () => {
+    setReport(true);
+    setShareLink(false);
+    setPopUpModal(true);
+  };
+
   // HANDLE REPORT
-  const handleReport = () => {
+  const handleReport = async () => {
     if (!loggedInUser) {
       toast.error('Please log in first');
       return;
     }
-    setReport(true);
-    setShareLink(false);
-    setPopUpModal(true);
+
+    if (!reportCause) {
+      toast.error('Please select a reasone');
+    }
+
+    const reportDetails = {
+      content: contentId,
+      reasone: reportCause,
+    };
+
+    try {
+      const { data } = await axios.post(
+        `${rootUrl}/api/makeReport`,
+        reportDetails,
+        config(auth)
+      );
+      setPopUpModal(false);
+      toast.success('Report submited');
+      console.log(data);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   // HANDLE SHARE LINK
@@ -206,10 +194,6 @@ function Download() {
 
   useEffect(() => {
     fetchDownloadingContent();
-    favouriteContents();
-    if (loggedInUser) {
-      checkFollower();
-    }
   }, [fetchAgain, relatedContentUrl, pathname]);
 
   return (
@@ -273,7 +257,7 @@ function Download() {
                         {/* -----------AUTHOR FOLLOW BUTTON----------- */}
                         {loggedInUser?.id !== content.author._id && (
                           <div className="author-follow-btn">
-                            {followingSeller.find(
+                            {followList.find(
                               (seller) => seller._id === content.author._id
                             ) ? (
                               <button
@@ -329,9 +313,7 @@ function Download() {
                           // download={content.title}
                           // rel="noreferrer"
                         >
-                          Premium Download
-                          {' '}
-                          (
+                          Premium Download (
                           {content.price}
                           {' '}
                           BDT)
@@ -342,7 +324,7 @@ function Download() {
                       <div className="report-btn">
                         <button
                           type="button"
-                          onClick={handleReport}
+                          onClick={makeReport}
                           className="btn-light custom-border-color"
                         >
                           <i className="fa-solid fa-flag" />
@@ -448,7 +430,13 @@ function Download() {
       ) : (
         <NotFound />
       )}
-      <PopUpModal report={report} shareLink={shareLink} path={pathname} />
+      <PopUpModal
+        report={report}
+        setReportCause={setReportCause}
+        handleReport={handleReport}
+        shareLink={shareLink}
+        path={pathname}
+      />
     </>
   );
 }

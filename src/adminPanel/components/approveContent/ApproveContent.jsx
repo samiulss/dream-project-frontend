@@ -7,7 +7,7 @@ import ProgressBar from '../../../components/commons/progressBar/ProgressBar';
 import { ContentState } from '../../../context/StateContext';
 import './approveContent.scss';
 
-function ApproveContent({ contentId, handleClose }) {
+function ApproveContent({ content, handleClose }) {
   const { fetchAgain, setFetchAgain } = ContentState();
   const [price, setPrice] = useState(false);
   const [licence, setLicence] = useState(null);
@@ -73,7 +73,8 @@ function ApproveContent({ contentId, handleClose }) {
       'Content-type': 'application/json; charset=UTF-8',
     };
     const formData = new FormData();
-    formData.append('contentId', contentId);
+    formData.append('contentId', content._id);
+    formData.append('author', content.author._id);
     formData.append('zipFile', e.target[0].files[0]);
     formData.append('licence', licence);
     formData.append('price', e.target[3].value);

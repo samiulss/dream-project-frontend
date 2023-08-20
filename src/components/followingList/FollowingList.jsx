@@ -30,7 +30,7 @@ function FollowingList({ followingSeller }) {
   };
 
   return (
-    <div className="m-portlet__body d-flex align-items-center">
+    <div className="m-portlet__body d-flex align-items-center border-bottom pb-2">
       <div className="m-widget4__img m-widget4__img--pic">
         <Link to={`/seller/${_id}`}>
           <img

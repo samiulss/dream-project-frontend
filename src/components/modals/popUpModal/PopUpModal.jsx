@@ -10,13 +10,15 @@ import './popUpModal.scss';
 function PopUpModal({
   beSellear,
   report,
+  setReportCause,
+  handleReport,
   shareLink,
   path,
   rejectModal,
+  content,
   approveModal,
   setSelectCause,
   handleReject,
-  contentId
 }) {
   const { popUpModal, setPopUpModal } = ContentState();
 
@@ -35,20 +37,25 @@ function PopUpModal({
       <div onClick={handleClose} className="close-btn rounded-5 text-end" />
       <Modal.Body className="p-0 border-0">
         <div className="modal-container">
-          {report && <ReportCauseList />}
+          {report && (
+            <ReportCauseList
+              setReportCause={setReportCause}
+              handleReport={handleReport}
+            />
+          )}
           {beSellear && <SellerAgreement />}
           {shareLink && <ShareContentLink path={path} />}
           {rejectModal && (
             <RejectCause
               setSelectCause={setSelectCause}
               handleReject={handleReject}
-              contentId={contentId}
+              content={content}
               handleClose={handleClose}
             />
           )}
-          {
-            approveModal && <ApproveContent contentId={contentId} handleClose={handleClose} />
-          }
+          {approveModal && (
+            <ApproveContent content={content} handleClose={handleClose} />
+          )}
         </div>
       </Modal.Body>
     </Modal>

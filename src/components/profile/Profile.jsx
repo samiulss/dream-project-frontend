@@ -11,13 +11,12 @@ import SocialHandle from '../socialHandle/SocialHandle';
 import UserSkills from '../userSkills/UserSkills';
 import './profile.scss';
 
-function Profile({ fullDetails, contents, sellerProfile }) {
+function Profile({
+  fullDetails, contents, sellerProfile,
+}) {
   const {
-    auth, loggedInUser, fetchAgain, setFetchAgain
+    auth, loggedInUser, userData, favourites, followList, fetchAgain, setFetchAgain
   } = ContentState();
-  const [userData, setUserData] = useState(null);
-  const [favourites, setFavourites] = useState([]);
-  const [followingSeller, setFollowingSeller] = useState([]);
   const [editProfile, setEditProfile] = useState(false);
   const [infoChange, setInfoChange] = useState(false);
   const [editLink, setEditLink] = useState(false);
@@ -35,55 +34,6 @@ function Profile({ fullDetails, contents, sellerProfile }) {
 
   // get user firstname
   const firstName = userData?.name.split(' ');
-
-  // get user fulldetails
-  const fetchUserDetails = async () => {
-    if (!loggedInUser) {
-      return;
-    }
-    try {
-      const { data } = await axios.get(`${rootUrl}/api/user`, config(auth));
-      setUserData(data);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserDetails();
-  }, [fetchAgain]);
-
-  // FETCH FAVOURITE CONTENT
-  const favouriteContents = async () => {
-    if (!loggedInUser) {
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${rootUrl}/api/favouriteList`,
-        config(auth)
-      );
-      setFavourites(data[0].favourite);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  // checking following or not
-  const checkFollower = async () => {
-    if (!loggedInUser) {
-      return;
-    }
-    try {
-      const { data } = await axios.get(
-        `${rootUrl}/api/followingList`,
-        config(auth)
-      );
-      setFollowingSeller(data[0].following);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   // HANDLE FOLLOW SELLER
   const handleFollow = async () => {
@@ -267,11 +217,6 @@ function Profile({ fullDetails, contents, sellerProfile }) {
     }
   };
 
-  useEffect(() => {
-    favouriteContents();
-    checkFollower();
-  }, [fetchAgain]);
-
   return (
     <>
       {
@@ -309,7 +254,7 @@ function Profile({ fullDetails, contents, sellerProfile }) {
                         </p>
                         {!fullDetails && loggedInUser?.id !== sellerProfile?._id && (
                         <div className="d-flex justify-content-center mb-2">
-                          {followingSeller.find(
+                          {followList?.find(
                             (seller) => seller._id === sellerProfile?._id
                           ) ? (
                             <button

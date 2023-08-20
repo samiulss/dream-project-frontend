@@ -147,7 +147,7 @@ function Login({ btn, setBtn }) {
       console.log(data);
       setBtn('login');
       setLoading(false);
-      setErr('Password change successfully');
+      setErr('Password changed successfully');
     } catch (error) {
       setLoading(false);
       setErr(error.response.data);

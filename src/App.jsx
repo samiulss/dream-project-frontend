@@ -32,6 +32,7 @@ function App() {
         <Route path="/profile" element={<DashBoard />} />
         <Route path="/following" element={<DashBoard />} />
         <Route path="/favourite" element={<DashBoard />} />
+        <Route path="/download-history" element={<DashBoard />} />
       </Route>
       <Route element={<SellerProtection />}>
         <Route path="/upload" element={<DashBoard />} />
