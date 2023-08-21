@@ -309,10 +309,10 @@ function Login({ btn, setBtn }) {
                     btn === 'login'
                       ? (
                         <div className="text-center mb-2">
-                          <button type="submit" className="btn google-btn rounded-5 border">
-                            Continue with
+                          <span role="button">
+                            Continue width
                             <img style={{ width: '28px' }} className="rounded-5 ms-2" src={googleIcon} alt="" />
-                          </button>
+                          </span>
                         </div>
                       )
 

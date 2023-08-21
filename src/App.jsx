@@ -10,6 +10,7 @@ import DashBoard from './pages/dashBoard/DashBoard';
 import Download from './pages/download/Download';
 import Home from './pages/home/Home';
 import NotFound from './pages/notFound/NotFound';
+import PremiumDownload from './pages/premiumDownload/PremiumDownload';
 import PrivateRoute from './privateRoute/PrivateRoute';
 import SellerProtection from './privateRoute/SellerProtection';
 
@@ -28,6 +29,7 @@ function App() {
       <Route path="/project" element={<OurProject />} />
       <Route path="/seller/:sellerId" element={<SellerContentProfile />} />
       <Route path="/download/:contentId" element={<Download />} />
+      <Route path="/premium-download/:tranId" element={<PremiumDownload />} />
       <Route element={<PrivateRoute />}>
         <Route path="/profile" element={<DashBoard />} />
         <Route path="/following" element={<DashBoard />} />

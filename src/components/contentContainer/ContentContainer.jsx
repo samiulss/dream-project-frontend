@@ -46,12 +46,12 @@ function ContentContainer() {
     };
     try {
       const { data } = await axios.get(
-        `${rootUrl}/api/contents?catagory=${catagory}`,
+        `${rootUrl}/api/contents?catagory=${catagory}&limit=15`,
         headers
       );
+      setLoading(false);
       setContents(data);
       setTopSearch(data);
-      setLoading(false);
       setFilterOn(false);
     } catch (error) {
       setLoading(false);

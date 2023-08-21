@@ -112,14 +112,15 @@ function Navbar() {
   let pathnames = [];
 
   if (loggedInUser?.role === 'user') {
-    menuNames = ['Profile', 'Fovourite', 'Following'];
-    pathnames = ['/profile', '/favourite', '/following'];
+    menuNames = ['Profile', 'Fovourite', 'Following', 'Download History'];
+    pathnames = ['/profile', '/favourite', '/following', '/download-history'];
   }
   if (loggedInUser?.role === 'seller') {
     menuNames = [
       'Profile',
       'Fovourite',
       'Following',
+      'Download History',
       'Upload',
       'Notification',
       'File status',
@@ -131,6 +132,7 @@ function Navbar() {
       '/profile',
       '/favourite',
       '/following',
+      '/download-history',
       '/upload',
       '/notification',
       '/file-status',

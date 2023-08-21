@@ -359,7 +359,7 @@ function DashBoard() {
                           </thead>
                           {downloadHistory.map((item, i) => (
                             <DownloadHistory
-                              key={item._id}
+                              key={i}
                               item={item}
                               index={i}
                               dHistoryData

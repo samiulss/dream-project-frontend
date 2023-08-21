@@ -18,9 +18,16 @@ import './download.scss';
 function Download() {
   const { contentId } = useParams();
   const {
-    auth, loggedInUser, favourites, followList, fetchAgain, setFetchAgain, setPopUpModal
+    auth,
+    loggedInUser,
+    favourites,
+    followList,
+    fetchAgain,
+    setFetchAgain,
+    setPopUpModal,
   } = ContentState();
 
+  const [loading, setLoading] = useState(false);
   const [content, setContent] = useState(null);
   const [totalContent, setTotalContent] = useState('');
   const [relatedContents, setRelatedContents] = useState([]);
@@ -28,7 +35,6 @@ function Download() {
   const [report, setReport] = useState(false);
   const [reportCause, setReportCause] = useState(null);
   const [shareLink, setShareLink] = useState(false);
-  const [relatedContentUrl, setRelatedContentUrl] = useState('');
 
   const { pathname } = useLocation();
 
@@ -74,33 +80,29 @@ function Download() {
     }
   };
 
-  // FETCH DOWNLOAD CONTENT
-  const fetchDownloadingContent = async () => {
-    setRelatedContents([]);
-    try {
-      const { data } = await axios.get(
-        `${rootUrl}/api/singleContent?id=${contentId || relatedContentUrl}`
-      );
-      setContent(data.content);
-      setTotalContent(data.total);
-      const relatedData = data.relatedContents[0].filter(
-        (item) => item._id !== data.content._id
-      );
-      setRelatedContents(relatedData);
-    } catch (error) {
-      setNoContent(true);
-    }
-  };
-
-  const handleDownloadCount = async () => {
-    try {
-      await axios.post(
-        `${rootUrl}/api/downloadCount?id=${contentId || relatedContentUrl}&user=${loggedInUser.id}`
-      );
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  // FETCH REQUESTED CONTENT FOR DOWNLOAD
+  useEffect(() => {
+    const fetchDownloadingContent = async () => {
+      // setRelatedContents([]);
+      setLoading(true);
+      try {
+        const { data } = await axios.get(
+          `${rootUrl}/api/singleContent?id=${contentId}`
+        );
+        setLoading(false);
+        setContent(data.content);
+        setTotalContent(data.total);
+        const relatedData = data.relatedContents[0].filter(
+          (item) => item._id !== data.content._id
+        );
+        setRelatedContents(relatedData);
+      } catch (error) {
+        setLoading(false);
+        setNoContent(true);
+      }
+    };
+    fetchDownloadingContent();
+  }, [contentId]);
 
   // // HANDLE FAVOURITE
   const handleFavourite = async (id) => {
@@ -186,15 +188,14 @@ function Download() {
     setPopUpModal(true);
   };
 
-  // RELATED CONTENT URL
-  const rContentUrl = (url) => {
-    setContent(null);
-    setRelatedContentUrl(url);
+  const handlePayment = async () => {
+    try {
+      const { data } = await axios.get(`${rootUrl}/api/payment?content=${contentId}`);
+      window.location.replace(data);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
-
-  useEffect(() => {
-    fetchDownloadingContent();
-  }, [fetchAgain, relatedContentUrl, pathname]);
 
   return (
     <>
@@ -204,7 +205,7 @@ function Download() {
           <MainNavbar />
 
           {/* --------------CONTENT DETAILS-------------- */}
-          {content ? (
+          {!loading && content ? (
             <>
               <div className="container-fluid mb-4">
                 <div className="row align-items-center">
@@ -216,7 +217,7 @@ function Download() {
                         {content && (
                           <img
                             className="img-fluid"
-                            src={`${rootUrl}/${content?.thumbnail}`}
+                            src={`${rootUrl}/${content.thumbnail}`}
                             alt=""
                           />
                         )}
@@ -225,7 +226,7 @@ function Download() {
 
                     {/* -----------CONTENT TITLE----------- */}
                     <div className="content-title text-center mb-3">
-                      <h1 className="fs-4">{content?.title}</h1>
+                      <h1 className="fs-4">{content.title}</h1>
                     </div>
 
                     {/* -----------CONTENT AUTHOR----------- */}
@@ -290,11 +291,8 @@ function Download() {
                     {content.licence === 'Free' ? (
                       <div className="content-download">
                         <Link
-                          onClick={handleDownloadCount}
                           className="btn base-bg-color-1 text-white w-100 mb-3"
-                          to={`${rootUrl}/api/downloadFile?id=${
-                            contentId || relatedContentUrl
-                          }`}
+                          to={`${rootUrl}/api/downloadFile?id=${contentId}&user=${loggedInUser.id}`}
                           target="_blank"
                           download={content.title}
                           rel="noreferrer"
@@ -304,20 +302,15 @@ function Download() {
                       </div>
                     ) : (
                       <div className="content-download">
-                        <Link
-                          // onClick={handleDownloadCount}
+                        <button
+                          onClick={handlePayment}
                           className="btn base-bg-color-1 text-white w-100 mb-3"
-                          // to={`${rootUrl}/api/downloadFile?id=${
-                          //   contentId || relatedContentUrl
-                          // }`}
-                          // download={content.title}
-                          // rel="noreferrer"
                         >
                           Premium Download (
                           {content.price}
                           {' '}
                           BDT)
-                        </Link>
+                        </button>
                       </div>
                     )}
                     <div className="action-buttons d-flex justify-content-between mb-4 flex-wrap">
@@ -403,7 +396,6 @@ function Download() {
                       {relatedContents.map((item) => (
                         <Link to={`/download/${item._id}`} key={item._id}>
                           <img
-                            onClick={() => rContentUrl(item._id)}
                             key={item.id}
                             src={`${rootUrl}/${item.thumbnail}`}
                             alt={item.title}

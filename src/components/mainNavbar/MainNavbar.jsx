@@ -51,9 +51,9 @@ function MainNavbar() {
   };
 
   const fetchContentByMenu = (menu) => {
+    setCatagory(menu);
     setFetchAgain(!fetchAgain);
     setHomeSearch(true);
-    setCatagory(menu);
     setContents([]);
     setResultFor('');
   };
@@ -90,11 +90,11 @@ function MainNavbar() {
       }
       try {
         const { data } = await axios.get(`${rootUrl}/api/user`, config(auth));
+        setLoading(false);
         setUserData(data);
         setFavourites(data.favourite);
         setFollowList(data.following);
-        setDownloadHistory(data.dHistory);
-        setLoading(false);
+        setDownloadHistory(data.dHistory.reverse());
       } catch (error) {
         setLoading(false);
         toast.error(error.message);
@@ -107,17 +107,18 @@ function MainNavbar() {
   let pathnames = [];
 
   if (loggedInUser?.role === 'user') {
-    menuNames = ['Profile', 'Fovourite', 'Following'];
-    pathnames = ['/profile', '/favourite', '/following'];
+    menuNames = ['Profile', 'Fovourite', 'Following', 'Download History'];
+    pathnames = ['/profile', '/favourite', '/following', '/download-history'];
   }
   if (loggedInUser?.role === 'seller') {
     menuNames = [
       'Profile',
       'Fovourite',
       'Following',
+      'Download History',
       'Upload',
       'Notification',
-      'File status',
+      'File Status',
       'Balance',
       'Download',
       'My Content',
@@ -126,6 +127,7 @@ function MainNavbar() {
       '/profile',
       '/favourite',
       '/following',
+      '/download-history',
       '/upload',
       '/notification',
       '/file-status',
@@ -402,10 +404,12 @@ function MainNavbar() {
                     Following
                   </li>
                 </Link>
-                <li>
-                  <i className="fa-solid fa-folder-plus" />
-                  Collection
-                </li>
+                <Link to="/download-history">
+                  <li>
+                    <i className="fa-solid fa-download" />
+                    History
+                  </li>
+                </Link>
 
                 {/* ---------------log out button--------------- */}
                 <li
